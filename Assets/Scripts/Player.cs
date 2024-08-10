@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -28,6 +29,12 @@ public class Player : MonoBehaviour
         anim.SetFloat("inputy",inputY);
 
         transform.Translate(new Vector2(inputX,inputY) * Time.deltaTime * moveSpeed);
+    }
 
+    private void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject.tag == "Point") {
+            Debug.Log(other.gameObject.name);
+            SceneManager.LoadScene("Information");
+        }
     }
 }
