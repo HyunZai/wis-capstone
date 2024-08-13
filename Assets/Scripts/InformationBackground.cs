@@ -35,6 +35,10 @@ public class InformationBackground : MonoBehaviour
         {
             ChangeBackground(3);
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            ChangeBackground(4);
+        }
     }
 
     public void ChangeBackground(int index)
