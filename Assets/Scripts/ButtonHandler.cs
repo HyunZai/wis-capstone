@@ -16,8 +16,8 @@ public class ButtonHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     void StartButtonClick()
     {
-        string buildingName = PlayerPrefs.GetString("BuildingName");
-        SceneManager.LoadScene(buildingName + "GameScene");
+        string building = PlayerPrefs.GetString("BuildingName");
+        SceneManager.LoadScene(building + "GameScene");
     }
 
     public Image startButtonImg;
