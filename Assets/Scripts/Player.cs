@@ -82,6 +82,6 @@ public class Player : MonoBehaviour
     void EndReached(VideoPlayer vp)
     {
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
-        SceneManager.LoadScene("Information");
+        SceneManager.LoadScene("InformationScene");
     }
 }
