@@ -55,24 +55,24 @@ public class Player : MonoBehaviour
                 case "FireStation":
                     videoPlayer.clip = videoClips[0];
                     break;
-                // case "Library":
-                //     videoPlayer.clip = null;
-                //     break;
-                // case "Home":
-                //     videoPlayer.clip = null;
-                //     break;
-                // case "Mart":
-                //     videoPlayer.clip = null;
-                //     break;
+                case "Library":
+                    videoPlayer.clip = videoClips[6];
+                    break;
+                case "Home":
+                    videoPlayer.clip = videoClips[4];
+                    break;
+                case "Mart":
+                    videoPlayer.clip = videoClips[7];
+                    break;
                 case "Police":
                     videoPlayer.clip = videoClips[1];
                     break;
-                // case "Bank":
-                //     videoPlayer.clip = null;
-                //     break;
-                // case "Hospital":
-                //     videoPlayer.clip = null;
-                //     break;
+                case "Bank":
+                    videoPlayer.clip = videoClips[3];
+                    break;
+                case "Hospital":
+                    videoPlayer.clip = videoClips[5];
+                    break;
             }
 
             videoPlayer.Play();

@@ -1332,6 +1332,11 @@ MonoBehaviour:
   - {fileID: 32900000, guid: e171b24cc1ac44928bf2af67fef6f6b0, type: 3}
   - {fileID: 32900000, guid: 379f38b0dd5c14419a99876c567c8914, type: 3}
   - {fileID: 32900000, guid: eb6ec92a344bc4aa087b0f3853a9ef14, type: 3}
+  - {fileID: 32900000, guid: d15109f13e45745d3971384898c0da9d, type: 3}
+  - {fileID: 32900000, guid: 47ae6802f3929462e8b35ea35efaa8fd, type: 3}
+  - {fileID: 32900000, guid: e744188bc69b249bdaca67f480eb7ba1, type: 3}
+  - {fileID: 32900000, guid: 60a9abc6c449e4005b0748d9d818daf8, type: 3}
+  - {fileID: 32900000, guid: 19fa5c11dfea04cffa7d36b81c0b04aa, type: 3}
   moveSpeed: 4
 --- !u!50 &1010290226
 Rigidbody2D:
