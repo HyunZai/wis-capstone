@@ -1,18 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class startfirestationgame : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void GameScenesCtrl()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        SceneManager .LoadScene("FIrestationGame"); // 소방서 게임1 씬으로 이동
+        Debuge.Log("FIrestationGame Scenes Go");
     }
 }
