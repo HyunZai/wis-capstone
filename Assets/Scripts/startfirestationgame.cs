@@ -7,7 +7,6 @@ public class startfirestationgame : MonoBehaviour
 {
     public void GameScenesCtrl()
     {
-        SceneManager .LoadScene("FIrestationGame"); // 소방서 게임1 씬으로 이동
-        Debuge.Log("FIrestationGame Scenes Go");
+        SceneManager.LoadScene("FIrestationGame"); // 소방서 게임1 씬으로 이동
     }
 }
