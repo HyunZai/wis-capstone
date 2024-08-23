@@ -342,8 +342,9 @@ GameObject:
   m_Component:
   - component: {fileID: 289836837}
   - component: {fileID: 289836836}
+  - component: {fileID: 289836838}
   m_Layer: 0
-  m_Name: "\uC18C\uBC29\uD638\uC2A4(\uD655)"
+  m_Name: FireHose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -416,6 +417,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1223630916}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &289836838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289836835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ba02d611a114e346aea7a7dd409a26c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fixedY: -3.8
+  moveSpeed: 50
 --- !u!1 &504930111
 GameObject:
   m_ObjectHideFlags: 0
@@ -714,8 +729,8 @@ MonoBehaviour:
   - {fileID: 2076690381}
   - {fileID: 1696117970}
   - {fileID: 1865518673}
-  minSpawnInterval: 2
-  maxSpawnInterval: 3
+  minSpawnInterval: 1
+  maxSpawnInterval: 2
 --- !u!4 &1035730450
 Transform:
   m_ObjectHideFlags: 0
