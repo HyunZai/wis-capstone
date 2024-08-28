@@ -7,6 +7,7 @@ TagManager:
   - Background
   - Point
   - VideoPlayer
+  - Star
   layers:
   - Default
   - TransparentFX

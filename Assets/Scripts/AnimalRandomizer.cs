@@ -19,27 +19,36 @@ public class AnimalRandomizer : MonoBehaviour
                                     "올 빼 미", "앵 무 새", "악 어", "사 마 귀", "잠 자 리", "나 비", "메 뚜 기", "달 팽 이", "문 어", "오 징 어", "해 파 리", "불 가 사 리", "지 렁 이" };
 
         // 랜덤으로 이름 선택
-        SetRandomAnimalName();
+        SetRandomAnimalName(false);
     }
 
-    public void SetRandomAnimalName()
+    public void SetRandomAnimalName(bool isEnd)
     {
-        // 배열에서 랜덤으로 하나의 이름 선택
-        int randomIndex = Random.Range(0, animalNames.Length);
-        animalText.text = animalNames[randomIndex];
-        
-        float x = 0f;
-        switch(animalNames[randomIndex].Length)
-        {
-            case 1: x = 240; break;
-            case 3: x = 173; break;
-            case 5: x = 93; break;
-            case 7: x = 19; break;
-        }
-
         RectTransform rectTransform = animalText.GetComponent<RectTransform>();
         Vector2 newPosition = rectTransform.anchoredPosition;
-        newPosition.x = x;
+        
+        if (isEnd)
+        {
+            animalText.text = "참 잘했어요!";
+            newPosition.x = -28;
+        }
+        else 
+        {
+            // 배열에서 랜덤으로 하나의 이름 선택
+            int randomIndex = Random.Range(0, animalNames.Length);
+            animalText.text = animalNames[randomIndex];
+            
+            float x = 0f;
+            switch(animalNames[randomIndex].Length)
+            {
+                case 1: x = 240; break;
+                case 3: x = 173; break;
+                case 5: x = 93; break;
+                case 7: x = 19; break;
+            }
+            newPosition.x = x;
+        }
+
         rectTransform.anchoredPosition = newPosition;
     }
 }
