@@ -13,13 +13,19 @@ public class Player : MonoBehaviour
     public float moveSpeed;  //이동속도
     Animator anim;
 
+    public GameObject popup;
+
     void Start()
     {   
-        if (PlayerPrefs.HasKey("playerPosition"))
+        popup.SetActive(false);
+
+        if (PlayerPrefs.HasKey("playerPosition")) //특정 건물에서 나왔을 때
         {
-            float x = float.Parse(PlayerPrefs.GetString("playerPosition").Split("/")[0]); 
-            float y = float.Parse(PlayerPrefs.GetString("playerPosition").Split("/")[1]); 
+            float x = float.Parse(PlayerPrefs.GetString("playerPosition").Split("/")[0]);
+            float y = float.Parse(PlayerPrefs.GetString("playerPosition").Split("/")[1]);
             transform.position = new Vector3(x, y, 0);
+
+            popup.SetActive(true);
 
             PlayerPrefs.DeleteKey("playerPosition");
         }
