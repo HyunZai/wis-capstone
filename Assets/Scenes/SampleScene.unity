@@ -278,6 +278,7 @@ GameObject:
   m_Component:
   - component: {fileID: 115800694}
   - component: {fileID: 115800693}
+  - component: {fileID: 115800695}
   m_Layer: 0
   m_Name: Popup
   m_TagString: Popup
@@ -325,7 +326,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 5
   m_Sprite: {fileID: 447740951, guid: 6d1a2570067e3ae4cb5c72a2bca3b8d5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -353,6 +354,21 @@ Transform:
   - {fileID: 1784489947}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &115800695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115800692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c0f7d6948427471b94a4478d35b8b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popup: {fileID: 115800692}
+  homeButton: {fileID: 1949924771}
+  nopeButton: {fileID: 482927074}
 --- !u!1 &126626219
 GameObject:
   m_ObjectHideFlags: 0
@@ -723,8 +739,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 155.40002, y: -349}
-  m_SizeDelta: {x: 72.63, y: 41.48}
+  m_AnchoredPosition: {x: 155.40002, y: -342.18}
+  m_SizeDelta: {x: 72.63, y: 55.13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &482927074
 MonoBehaviour:
@@ -4061,8 +4077,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 233, y: -349.00003}
-  m_SizeDelta: {x: 72.63, y: 41.48}
+  m_AnchoredPosition: {x: 233, y: -342.18}
+  m_SizeDelta: {x: 72.63, y: 55.13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1949924771
 MonoBehaviour:

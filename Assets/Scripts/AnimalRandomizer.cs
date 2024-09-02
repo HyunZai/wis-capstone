@@ -36,6 +36,17 @@ public class AnimalRandomizer : MonoBehaviour
         {
             // 배열에서 랜덤으로 하나의 이름 선택
             int randomIndex = Random.Range(0, animalNames.Length);
+
+            if (animalText.text == animalNames[randomIndex]) //이전과 동일한 동물이름이 나오지 않도록 하기 위한 
+            {
+                randomIndex = Random.Range(0, animalNames.Length);
+
+                if (animalText.text == animalNames[randomIndex])
+                {
+                    randomIndex = Random.Range(0, animalNames.Length);
+                }
+            }
+
             animalText.text = animalNames[randomIndex];
             
             float x = 0f;
