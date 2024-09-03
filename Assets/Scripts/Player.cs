@@ -19,12 +19,20 @@ public class Player : MonoBehaviour
     {   
         popup.SetActive(false);
 
-        if (PlayerPrefs.HasKey("playerPosition")) //특정 건물에서 나왔을 때
+        if (PlayerPrefs.HasKey("playerPosition")) //건물에서 나왔을 때
         {
             float x = float.Parse(PlayerPrefs.GetString("playerPosition").Split("/")[0]);
             float y = float.Parse(PlayerPrefs.GetString("playerPosition").Split("/")[1]);
             transform.position = new Vector3(x, y, 0);
 
+            if (y < -2f)
+            {
+                Debug.Log(y);
+                Vector3 popupNewPosition = popup.transform.position;
+                popupNewPosition.y = 2.8f;
+                popup.transform.position = popupNewPosition;
+            }
+            
             popup.SetActive(true);
 
             PlayerPrefs.DeleteKey("playerPosition");

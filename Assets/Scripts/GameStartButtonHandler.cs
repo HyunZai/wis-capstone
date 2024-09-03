@@ -17,7 +17,15 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
     void StartButtonClick()
     {
         string buildingName = PlayerPrefs.GetString("BuildingName");
-        SceneManager.LoadScene(buildingName + "GameScene");
+
+        if(Application.CanStreamedLevelBeLoaded(buildingName + "GameScene")) //해당 게임 씬 존재하는지
+        {
+            SceneManager.LoadScene(buildingName + "GameScene");
+        }
+        else
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
     }
 
     public Image startButtonImg;
