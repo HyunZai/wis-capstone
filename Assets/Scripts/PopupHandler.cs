@@ -12,8 +12,8 @@ public class PopupHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // homeButton.onClick.AddListener(HomeButtonClick);
-        // nopeButton.onClick.AddListener(NopeButtonClick);
+        homeButton.onClick.AddListener(HomeButtonClick);
+        nopeButton.onClick.AddListener(NopeButtonClick);
     }
 
     // Update is called once per frame

@@ -25,9 +25,8 @@ public class Player : MonoBehaviour
             float y = float.Parse(PlayerPrefs.GetString("playerPosition").Split("/")[1]);
             transform.position = new Vector3(x, y, 0);
 
-            if (y < -2f)
+            if (y < -2f) //팝업 위치 변경(캐릭터가 아래쪽 건물에서 나오면 팝업에 가려져서)
             {
-                Debug.Log(y);
                 Vector3 popupNewPosition = popup.transform.position;
                 popupNewPosition.y = 2.8f;
                 popup.transform.position = popupNewPosition;
@@ -80,11 +79,11 @@ public class Player : MonoBehaviour
                     videoPlayer.clip = videoClips[2];
                     break;
                 case "FireStation":
-                    position = (transform.position.x - 0.1).ToString() + "/" + transform.position.y.ToString();
+                    position = (transform.position.x - 0.2).ToString() + "/" + transform.position.y.ToString();
                     videoPlayer.clip = videoClips[0];
                     break;
                 case "Library":
-                    position = (transform.position.x + 0.1).ToString() + "/" + transform.position.y.ToString();
+                    position = (transform.position.x + 0.2).ToString() + "/" + transform.position.y.ToString();
                     videoPlayer.clip = videoClips[6];
                     break;
                 case "Home":
@@ -95,15 +94,15 @@ public class Player : MonoBehaviour
                     videoPlayer.clip = videoClips[7];
                     break;
                 case "Police":
-                    position = (transform.position.x + 0.1).ToString() + "/" + transform.position.y.ToString();
+                    position = (transform.position.x + 0.2).ToString() + "/" + transform.position.y.ToString();
                     videoPlayer.clip = videoClips[1];
                     break;
                 case "Bank":
-                    position = (transform.position.x - 0.1).ToString() + "/" + transform.position.y.ToString();
+                    position = (transform.position.x - 0.2).ToString() + "/" + transform.position.y.ToString();
                     videoPlayer.clip = videoClips[3];
                     break;
                 case "Hospital":
-                    position = (transform.position.x - 0.1).ToString() + "/" + transform.position.y.ToString();
+                    position = (transform.position.x - 0.2).ToString() + "/" + transform.position.y.ToString();
                     videoPlayer.clip = videoClips[5];
                     break;
                 case "Cafe":
