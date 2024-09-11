@@ -99,6 +99,6 @@ public class CoffeePlayer : MonoBehaviour
         }
 
         // 모든 아이콘이 초록색이라면 씬 전환
-        SceneManager.LoadScene("NextScene");  // "NextScene" 씬으로 전환
+        SceneManager.LoadScene("CafeNextScene");  // "NextScene" 씬으로 전환
     }
 }
