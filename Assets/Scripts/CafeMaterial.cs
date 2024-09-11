@@ -5,7 +5,7 @@ using UnityEngine;
 public class CafeMaterial : MonoBehaviour
 {
     [SerializeField]
-    private float moveSpeed = -0.5f;
+    private float moveSpeed = -0.05f;
     private float minY = -7;
     // Update is called once per frame
     void Update()
