@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "wis-capstone.sln"
+    "dotnet.defaultSolution": "wis-test_source.sln"
 }
