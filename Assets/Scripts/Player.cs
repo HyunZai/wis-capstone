@@ -55,14 +55,15 @@ public class Player : MonoBehaviour
         float inputY = Input.GetAxisRaw("Vertical");
 
         //에니메이션
-        if (inputX != 0 || inputY != 0)
+        if (inputX != 0 || inputY != 0){
             anim.SetBool("ismove",true);
+            }
         else
             anim.SetBool("ismove",false);
 
         anim.SetFloat("inputx",inputX);
         anim.SetFloat("inputy",inputY);
-
+        
         transform.Translate(new Vector2(inputX,inputY) * Time.deltaTime * moveSpeed);
     }
 
@@ -118,6 +119,7 @@ public class Player : MonoBehaviour
 
     void EndReached(VideoPlayer vp)
     {
+        Debug.Log("vp.clip.name : " + vp.clip.name);
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
         SceneManager.LoadScene("InformationScene");
     }
