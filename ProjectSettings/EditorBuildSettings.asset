@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SchoolGameScene.unity
     guid: 2048433ceea8243a9a26cb39cdffbc17
+  - enabled: 1
+    path: Assets/Scenes/FireStationGameScene.unity
+    guid: 0593c7b350af8704b8ef33277b8ae245
   m_configObjects: {}
