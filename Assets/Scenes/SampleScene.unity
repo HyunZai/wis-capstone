@@ -1832,14 +1832,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   videoClips:
-  - {fileID: 32900000, guid: e171b24cc1ac44928bf2af67fef6f6b0, type: 3}
-  - {fileID: 32900000, guid: 379f38b0dd5c14419a99876c567c8914, type: 3}
-  - {fileID: 32900000, guid: eb6ec92a344bc4aa087b0f3853a9ef14, type: 3}
-  - {fileID: 32900000, guid: d15109f13e45745d3971384898c0da9d, type: 3}
-  - {fileID: 32900000, guid: 47ae6802f3929462e8b35ea35efaa8fd, type: 3}
-  - {fileID: 32900000, guid: e744188bc69b249bdaca67f480eb7ba1, type: 3}
-  - {fileID: 32900000, guid: 60a9abc6c449e4005b0748d9d818daf8, type: 3}
-  - {fileID: 32900000, guid: 19fa5c11dfea04cffa7d36b81c0b04aa, type: 3}
+  - {fileID: 32900000, guid: d672bb2dd16914f8ba43d3d3aaf547eb, type: 3}
+  - {fileID: 32900000, guid: b254cac9578714eeaadac054fbfedd11, type: 3}
+  - {fileID: 32900000, guid: 931870b290acf4841ba22da3c8dd534b, type: 3}
+  - {fileID: 32900000, guid: 2563bd13c400b4aa78af4a8a2034ae0d, type: 3}
+  - {fileID: 32900000, guid: 5ca9fe7d373d0427488709293ba38fcc, type: 3}
+  - {fileID: 32900000, guid: e6ea5bffb9b8e4f4382178a38c993681, type: 3}
+  - {fileID: 32900000, guid: 5925fe6eea8aa4d5fad6bfa4310dfd5c, type: 3}
+  - {fileID: 32900000, guid: 952baeaf6b8e248d789b73bca95a16c7, type: 3}
+  - {fileID: 32900000, guid: cb86e05a7094747569dd0e750972945b, type: 3}
+  - {fileID: 32900000, guid: a38777422523f4728a54bf078e9bf19d, type: 3}
+  - {fileID: 32900000, guid: 941741f71d57b4eea98deed570dbe5e0, type: 3}
+  - {fileID: 32900000, guid: 58612fd0a70bd42e6b0a752418256bc7, type: 3}
+  - {fileID: 32900000, guid: b0dc064d2c2fc4ba2a6332a54e39e7b2, type: 3}
+  - {fileID: 32900000, guid: 0606af65b645c4c8aa8a026a4be750c1, type: 3}
+  - {fileID: 32900000, guid: 3941d9db22eb24ca5a1bd8f33e122fa8, type: 3}
+  - {fileID: 32900000, guid: 8a9e53dfb8a5f4562be06ee6d9ba0913, type: 3}
   moveSpeed: 4
   popup: {fileID: 115800692}
 --- !u!50 &1010290226
