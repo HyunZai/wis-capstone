@@ -56,9 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-<<<<<<< HEAD
+    "wis-test_source.sln=======dotnet.defaultSolution": "wis-dev_source.sln>>>>>>>7a7445eb14a01638c6ea3ed648d8c0873d6db27f",
     "dotnet.defaultSolution": "wis-test_source.sln"
-=======
-    "dotnet.defaultSolution": "wis-dev_source.sln"
->>>>>>> 7a7445eb14a01638c6ea3ed648d8c0873d6db27f
 }
