@@ -10,10 +10,11 @@ public class Player : MonoBehaviour
 {
     private VideoPlayer videoPlayer;
     public VideoClip[] videoClips;
-    public float moveSpeed;  //이동속도
+    private float moveSpeed = 4f;  //이동속도
     Animator anim;
 
     public GameObject popup;
+    //Rigidbody2D rb;
 
     void Start()
     {   
@@ -24,6 +25,9 @@ public class Player : MonoBehaviour
             float x = float.Parse(PlayerPrefs.GetString("playerPosition").Split("/")[0]);
             float y = float.Parse(PlayerPrefs.GetString("playerPosition").Split("/")[1]);
             transform.position = new Vector3(x, y, 0);
+
+            //소방서 버그 확인 로그
+            Debug.Log("Player position: x-[" + transform.position.x + "] y-[" + transform.position.y + "]");
 
             if (y < -2f) //팝업 위치 변경(캐릭터가 아래쪽 건물에서 나오면 팝업에 가려져서)
             {
@@ -37,7 +41,8 @@ public class Player : MonoBehaviour
             PlayerPrefs.DeleteKey("playerPosition");
         }
 
-        anim = GetComponent<Animator>();  //에니메이션 접근
+        if (anim == null) anim = GetComponent<Animator>();  //에니메이션 접근
+        //rb = GetComponent<Rigidbody2D>();
 
         //Video Player 컴포넌트 가져오기
         if (videoPlayer == null)
@@ -45,7 +50,6 @@ public class Player : MonoBehaviour
 
         if (videoPlayer != null)
             videoPlayer.loopPointReached += EndReached;
-
     }
     
     void Update()
@@ -56,18 +60,28 @@ public class Player : MonoBehaviour
 
         //에니메이션
         if (inputX != 0 || inputY != 0)
+        {
             anim.SetBool("ismove",true);
+        }
         else
+        {
             anim.SetBool("ismove",false);
+        }
+
+        //소방서 버그 확인 로그
+        Debug.Log("anim-ismove: " + anim.GetBool("ismove").ToString());
 
         anim.SetFloat("inputx",inputX);
         anim.SetFloat("inputy",inputY);
-
+        
         transform.Translate(new Vector2(inputX,inputY) * Time.deltaTime * moveSpeed);
     }
 
     //캐릭터가 특정건물 앞에 도착했을 때
     private void OnTriggerEnter2D(Collider2D other) {
+        //소방서 버그 확인 로그
+        Debug.Log("OnTriggerEnter2D other: " + other.gameObject.tag);
+
         string position = "";
 
         if (other.gameObject.tag == "Point" && videoPlayer != null) 
