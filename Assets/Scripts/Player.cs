@@ -26,9 +26,6 @@ public class Player : MonoBehaviour
             float y = float.Parse(PlayerPrefs.GetString("playerPosition").Split("/")[1]);
             transform.position = new Vector3(x, y, 0);
 
-            //소방서 버그 확인 로그
-            Debug.Log("Player position: x-[" + transform.position.x + "] y-[" + transform.position.y + "]");
-
             if (y < -2f) //팝업 위치 변경(캐릭터가 아래쪽 건물에서 나오면 팝업에 가려져서)
             {
                 Vector3 popupNewPosition = popup.transform.position;
@@ -68,20 +65,20 @@ public class Player : MonoBehaviour
             anim.SetBool("ismove",false);
         }
 
-        //소방서 버그 확인 로그
-        Debug.Log("anim-ismove: " + anim.GetBool("ismove").ToString());
-
         anim.SetFloat("inputx",inputX);
         anim.SetFloat("inputy",inputY);
         
         transform.Translate(new Vector2(inputX,inputY) * Time.deltaTime * moveSpeed);
+
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.1f);
+        if (colliders.Length > 0)
+        {
+            Debug.Log("Collision detected with: " + colliders[0].gameObject.name);
+        }
     }
 
     //캐릭터가 특정건물 앞에 도착했을 때
     private void OnTriggerEnter2D(Collider2D other) {
-        //소방서 버그 확인 로그
-        Debug.Log("OnTriggerEnter2D other: " + other.gameObject.tag);
-
         string position = "";
 
         if (other.gameObject.tag == "Point" && videoPlayer != null) 
