@@ -23,6 +23,7 @@ public class InformationBackground : MonoBehaviour
             //     ChangeBackground(0);
             //     break;
             case "FireStation":
+                Debug.Log("[InformationBackground.cs - buildingName: FireStation]");
                 ChangeBackground(3);
                 break;
             case "Hospital":
