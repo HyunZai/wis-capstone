@@ -4,11 +4,15 @@
 TagManager:
   serializedVersion: 2
   tags:
+<<<<<<< HEAD
   - Background
   - Point
   - VideoPlayer
   - Star
   - Popup
+=======
+  - Material
+>>>>>>> origin/dahye
   layers:
   - Default
   - TransparentFX
