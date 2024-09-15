@@ -1848,7 +1848,6 @@ MonoBehaviour:
   - {fileID: 32900000, guid: 0606af65b645c4c8aa8a026a4be750c1, type: 3}
   - {fileID: 32900000, guid: 3941d9db22eb24ca5a1bd8f33e122fa8, type: 3}
   - {fileID: 32900000, guid: 8a9e53dfb8a5f4562be06ee6d9ba0913, type: 3}
-  moveSpeed: 4
   popup: {fileID: 115800692}
 --- !u!50 &1010290226
 Rigidbody2D:
@@ -3421,7 +3420,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 670938881
-  m_SortingOrder: 1
+  m_SortingOrder: 6
   m_TargetDisplay: 0
 --- !u!1 &1847243210
 GameObject:
