@@ -286,7 +286,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &115800693
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1848,7 +1848,6 @@ MonoBehaviour:
   - {fileID: 32900000, guid: 0606af65b645c4c8aa8a026a4be750c1, type: 3}
   - {fileID: 32900000, guid: 3941d9db22eb24ca5a1bd8f33e122fa8, type: 3}
   - {fileID: 32900000, guid: 8a9e53dfb8a5f4562be06ee6d9ba0913, type: 3}
-  moveSpeed: 4
   popup: {fileID: 115800692}
 --- !u!50 &1010290226
 Rigidbody2D:
@@ -1909,7 +1908,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.12723929, y: -2.936852}
+  m_Offset: {x: 0.12723929, y: -3}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1920,7 +1919,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.7692479, y: 1.2114897}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!95 &1010290228
 Animator:
@@ -3421,7 +3420,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 670938881
-  m_SortingOrder: 1
+  m_SortingOrder: 6
   m_TargetDisplay: 0
 --- !u!1 &1847243210
 GameObject:
