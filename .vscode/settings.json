@@ -57,9 +57,6 @@
         "Temp/": true
     },
     "wis-test_source.sln=======dotnet.defaultSolution": "wis-dev_source.sln>>>>>>>7a7445eb14a01638c6ea3ed648d8c0873d6db27f",
-<<<<<<< HEAD
+    "wis-dev_source.sln=======dotnet.defaultSolution": "wis-capstone.sln>>>>>>>origin/hyunjae",
     "dotnet.defaultSolution": "wis-dev_source.sln"
-=======
-    "dotnet.defaultSolution": "wis-capstone.sln"
->>>>>>> origin/hyunjae
 }
