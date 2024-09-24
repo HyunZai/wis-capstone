@@ -30,7 +30,7 @@ public class AnimalRandomizer : MonoBehaviour
         if (isEnd)
         {
             animalText.text = "참 잘했어요!";
-            newPosition.x = -28;
+            newPosition.x = -102;
         }
         else 
         {
@@ -52,10 +52,10 @@ public class AnimalRandomizer : MonoBehaviour
             float x = 0f;
             switch(animalNames[randomIndex].Length)
             {
-                case 1: x = 240; break;
-                case 3: x = 173; break;
-                case 5: x = 93; break;
-                case 7: x = 19; break;
+                case 1: x = 413; break;
+                case 3: x = 289; break;
+                case 5: x = 141; break;
+                case 7: x = -28; break;
             }
             newPosition.x = x;
         }
