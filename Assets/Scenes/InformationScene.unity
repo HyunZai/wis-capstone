@@ -157,13 +157,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-<<<<<<< HEAD
-  m_AnchoredPosition: {x: -798, y: -376}
-  m_SizeDelta: {x: 17.7735, y: 12.5463}
-=======
   m_AnchoredPosition: {x: -276, y: -346}
   m_SizeDelta: {x: 1118.95, y: 259.75}
->>>>>>> origin/hyunjae
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &684395206
 MonoBehaviour:
@@ -214,13 +209,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-<<<<<<< HEAD
-  m_fontSize: 60
-  m_fontSizeBase: 60
-=======
   m_fontSize: 50
   m_fontSizeBase: 50
->>>>>>> origin/hyunjae
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -255,11 +245,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-<<<<<<< HEAD
-  m_margin: {x: 15.471603, y: -174.69354, z: -1270.638, w: -194.05219}
-=======
   m_margin: {x: 15.471603, y: 2.4633026, z: -0.4066772, w: 5.8435745}
->>>>>>> origin/hyunjae
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -323,13 +309,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-<<<<<<< HEAD
-  m_AnchoredPosition: {x: 750, y: -442}
-  m_SizeDelta: {x: 344.4448, y: 110.4298}
-=======
   m_AnchoredPosition: {x: 760, y: -448}
   m_SizeDelta: {x: 270.84, y: 86.83}
->>>>>>> origin/hyunjae
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &992197594
 MonoBehaviour:
@@ -822,13 +803,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-<<<<<<< HEAD
-  m_fontSize: 60
-  m_fontSizeBase: 60
-=======
   m_fontSize: 45
   m_fontSizeBase: 45
->>>>>>> origin/hyunjae
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
