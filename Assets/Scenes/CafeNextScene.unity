@@ -251,8 +251,13 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
+<<<<<<< HEAD
   m_AnchoredPosition: {x: 472, y: -451}
   m_SizeDelta: {x: 330.31, y: 82.06}
+=======
+  m_AnchoredPosition: {x: 489, y: -456}
+  m_SizeDelta: {x: 280.28, y: 69.64}
+>>>>>>> origin/hyunjae
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1179183776
 MonoBehaviour:
@@ -687,8 +692,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
+<<<<<<< HEAD
   m_fontSize: 60
   m_fontSizeBase: 60
+=======
+  m_fontSize: 50
+  m_fontSizeBase: 50
+>>>>>>> origin/hyunjae
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
