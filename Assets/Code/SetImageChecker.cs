@@ -4,52 +4,38 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MatchImage : MonoBehaviour
+public class SetImageChecker : MonoBehaviour
 {
-    public Button[] Clickbtns = new Button[3]; // 버튼 클릭 
     public GameObject answer; //정답 오브젝트
     public GameObject[] imageList; // 오브젝트 목록
     public GameObject[] showingImages = new GameObject[3]; //결정된 오브젝트 3개
     public GameObject[] targets = new GameObject[3]; // 결정오브젝트 이동위치
-    public bool currect;
-    public GameObjectControl gameObjectControl;
+    public bool success;
+    public GameObjectControler goc;
 
     public int[] randN = new int[3];
     void Start()
     {
-        for (int i = 0; i < showingImages.Length; i++)
-        {
-            Clickbtns[i].interactable = false;
-        }
-        StartBtnSetting();
+        StartSetting();
     }
 
-    void Update()
+    void StartSetting()
     {
-    }
-
-    void StartBtnSetting()
-    {
-        gameObjectControl.startBtn.onClick.AddListener(() => ActiveClickBtns());
-        for (int i = 0; i < showingImages.Length; i++)
-        {
-            Clickbtns[i].interactable = false;
-        }
+        goc.startBtn.onClick.AddListener(() => ActiveclickBtns()); //메인화면 시작 버튼 클릭시 호출
         ChangeImage();
     }
 
-    void ActiveClickBtns()
+   void ActiveclickBtns()
+{
+    for (int i = 0; i < showingImages.Length; i++)
     {
-        for (int i = 0; i < showingImages.Length; i++)
-        {
-            Clickbtns[i].interactable = true;
-            Clickbtns[i].onClick.AddListener(() => CheckMatchImage(i));
-        }
+        goc.clickBtns[i].gameObject.SetActive(true);
+        int index = i;  // 지역 변수로 저장
+        goc.clickBtns[index].onClick.AddListener(() => CheckMatchImage(index));
     }
-
+}
     void ChangeImage()
     {
-
         for (int i = 0; i < randN.Length; i++)
         {
             randN[i] = Random.Range(0, imageList.Length);
@@ -62,37 +48,30 @@ public class MatchImage : MonoBehaviour
                 }
             }
         }
-
         for (int i = 0; i < targets.Length; i++)
         {
             targets[i].gameObject.GetComponent<SpriteRenderer>().sprite = imageList[randN[i]].gameObject.GetComponent<SpriteRenderer>().sprite;
         }
         SetAnswer();
     }
-
     void SetAnswer()
     {
         int randAnswer = Random.Range(0, showingImages.Length);
         answer.GetComponent<SpriteRenderer>().sprite = targets[randAnswer].GetComponent<SpriteRenderer>().sprite;
     }
-
     void CheckMatchImage(int i)
     {
-        if (showingImages[i].GetComponent<SpriteRenderer>().sprite == answer.GetComponent<SpriteRenderer>().sprite)
+        if (targets[i].GetComponent<SpriteRenderer>().sprite.name == answer.GetComponent<SpriteRenderer>().sprite.name)
         {
-            currect = true;
+            success = true;
+            goc.popupControler.PopupEvent(goc.popupControler.popupPanel[0]);
         }
-        else
+        else 
         {
-            currect = false;
+            success = false; 
+            goc.popupControler.PopupEvent(goc.popupControler.popupPanel[1]);
         }
-    }
-
-    void moveImagePos()
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            showingImages[i].transform.position = targets[i].gameObject.transform.position;
-        }
+        
     }
 }
+
