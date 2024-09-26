@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class GameObjectControler : MonoBehaviour
 {
-    Vector2 playtPanelPos = new Vector2(0, -3.5f);
+    Vector2 playtPenalPos = new Vector2(0, -3.5f);
 
     Vector2 playTruckPos = new Vector2(0, 0.5f);
     Vector2 endTruckPos = new Vector2(-20.0f, 0.5f);
 
-    Vector2 playImagePanelPos = new Vector2(-7f, 3.5f);
+    //Vector2 playImagePanelPos = new Vector2(-6.5f, 3.5f);
     Vector2 giniusPos = new Vector2(-1.0f, 4f);
 
 
@@ -19,6 +19,7 @@ public class GameObjectControler : MonoBehaviour
     public GameObject truck;
     public GameObject itemPanel;
     public GameObject answerImage;
+    public GameObject imagin;
     
 
     float moveSpeed = 3.0f;
@@ -57,7 +58,8 @@ public class GameObjectControler : MonoBehaviour
     void SetBeforeStart()
     {
         startBtn.gameObject.SetActive(true);
-
+        imagin.SetActive(false);
+        answerImage.SetActive(false);
         for (int i = 0; i < clickBtns.Length; i++) {
             clickBtns[i].gameObject.SetActive(false);  
         }
@@ -81,14 +83,16 @@ public class GameObjectControler : MonoBehaviour
             for(int i = 0; i< ginius.Length-1; i++){
             ginius[i].transform.position = Vector2.Lerp(ginius[i].transform.position, giniusPos + new Vector2(i,0), t);
             }
-            answerImage.transform.position = Vector2.Lerp(answerImage.transform.position, playImagePanelPos, t);
+            //answerImage.transform.position = Vector2.Lerp(answerImage.transform.position, playImagePanelPos, t);
             truck.transform.position = Vector2.Lerp(truck.transform.position, playTruckPos, t);
-            itemPanel.transform.position = Vector2.Lerp(itemPanel.transform.position, playtPanelPos, t);
+            itemPanel.transform.position = Vector2.Lerp(itemPanel.transform.position, playtPenalPos, t);
 
-            if (Vector2.Distance(answerImage.transform.position, playImagePanelPos) < 0.1f &&
+            if (//Vector2.Distance(answerImage.transform.position, playImagePanelPos) < 0.1f &&
                 Vector2.Distance(truck.transform.position, playTruckPos) < 0.1f &&
-                Vector2.Distance(itemPanel.transform.position, playtPanelPos) < 0.1f)
+                Vector2.Distance(itemPanel.transform.position, playtPenalPos) < 0.1f)
             {
+                imagin.SetActive(true);
+                answerImage.SetActive(true);
                 isGameStarted = false; // 게임 시작 상태 종료
             }
         }
@@ -96,6 +100,7 @@ public class GameObjectControler : MonoBehaviour
             truck.transform.position = Vector2.Lerp(truck.transform.position, endTruckPos, Time.deltaTime * moveSpeed);
             if(Vector2.Distance(truck.transform.position, endTruckPos) < 0.1f){
             EndBtn.gameObject.SetActive(true);
+            
            // EndBtn.onClick.AddListener(()=> ); add next Scene
             }
         }
@@ -165,18 +170,19 @@ public class GameObjectControler : MonoBehaviour
         yield return new WaitForSeconds(delay);  // delay만큼 기다림
         panel.SetActive(false);  // 창 닫기
         if(isAnswerCount >= 3){
+            imagin.SetActive(false);
             for(int i = 0; i < clickBtns.Length;i++){
                 clickBtns[i].gameObject.SetActive(false);
                 targets[i].gameObject.SetActive(false);
-                answerImage.gameObject.SetActive(false);
             }
+            answerImage.gameObject.SetActive(false);
+            itemPanel.gameObject.SetActive(false);
 
             Invoke("EndGame",2.0f);
         }   
        
     }
     void EndGame(){
-      
         isGameEnd =true;
     }
     
