@@ -6,31 +6,34 @@ using UnityEngine.UI;
 
 public class GameObjectControler : MonoBehaviour
 {
-    // panel
-    Vector2 basePanelPos = new Vector2(0, -7.5f);
     Vector2 playtPanelPos = new Vector2(0, -3.5f);
-    
-    // truck Pos
-    Vector2 baseTruckPos = new Vector2(15, 0);
-    Vector2 playTruckPos = new Vector2(0, 0.5f);
-    Vector2 endTruckPos = new Vector2(-15, 0);
 
-    Vector2 playImagePanelPos = new Vector2(-6f, 3f);
+    Vector2 playTruckPos = new Vector2(0, 0.5f);
+    Vector2 endTruckPos = new Vector2(-20.0f, 0.5f);
+
+    Vector2 playImagePanelPos = new Vector2(-7f, 3.5f);
+    Vector2 giniusPos = new Vector2(-1.0f, 4f);
+
 
     public Button[] clickBtns = new Button[3];     
     public GameObject truck;
     public GameObject itemPanel;
-    public GameObject answerImagePanel;
+    public GameObject answerImage;
+    
 
     float moveSpeed = 3.0f;
     public Button startBtn;
+    public Button EndBtn;
     private bool isGameStarted = false; // 게임 시작 상태 체크
     private float moveTime = 0.0f; // 이동 시간 체크
     public GameObject[] imageList; // 오브젝트 목록
     public GameObject[] targets = new GameObject[3]; // 결정오브젝트 이동위치
     public GameObject[] popupPanel = new GameObject[2];// 1 success 2fail
+    public GameObject[] ginius = new GameObject[4];
+
+    public int isAnswerCount = 0;
     bool isAnswer;
-    private int[] randN = new int[3];
+    bool isGameEnd;
 
     GameObject[] selectedImageList = new GameObject[3]; //결정된 오브젝트 3개
     public GameObject answer; //정답 오브젝트
@@ -42,6 +45,13 @@ public class GameObjectControler : MonoBehaviour
     {
        
         SetGameObjectsPos();
+        if(isAnswer == true){
+            ++isAnswerCount;
+            isAnswer = false;
+            ResetImage();
+        }
+        
+      
         
     }
     void SetBeforeStart()
@@ -57,31 +67,40 @@ public class GameObjectControler : MonoBehaviour
     }
     void GameStart()
     {
-        ChangeImage();
+        ResetImage();
         startBtn.gameObject.SetActive(false);
-        ActiveclickBtns();
+        ActiveClickBtns();
         isGameStarted = true; // 게임 시작 상태 설정
         moveTime = 0.0f; // 이동 시간 초기화
     }  
     void SetGameObjectsPos(){
-         if (isGameStarted)
+        moveTime += Time.deltaTime; // 경과 시간 증가
+        float t = moveSpeed* Time.deltaTime;
+        if(isGameStarted)
         {
-         moveTime += Time.deltaTime; // 경과 시간 증가
-            float t = moveTime * moveSpeed* Time.deltaTime;
-
-            answerImagePanel.transform.position = Vector2.Lerp(answerImagePanel.transform.position, playImagePanelPos, t);
+            for(int i = 0; i< ginius.Length-1; i++){
+            ginius[i].transform.position = Vector2.Lerp(ginius[i].transform.position, giniusPos + new Vector2(i,0), t);
+            }
+            answerImage.transform.position = Vector2.Lerp(answerImage.transform.position, playImagePanelPos, t);
             truck.transform.position = Vector2.Lerp(truck.transform.position, playTruckPos, t);
             itemPanel.transform.position = Vector2.Lerp(itemPanel.transform.position, playtPanelPos, t);
 
-            if (Vector2.Distance(answerImagePanel.transform.position, playImagePanelPos) < 0.1f &&
+            if (Vector2.Distance(answerImage.transform.position, playImagePanelPos) < 0.1f &&
                 Vector2.Distance(truck.transform.position, playTruckPos) < 0.1f &&
                 Vector2.Distance(itemPanel.transform.position, playtPanelPos) < 0.1f)
             {
                 isGameStarted = false; // 게임 시작 상태 종료
             }
         }
+        else if(isGameEnd){
+            truck.transform.position = Vector2.Lerp(truck.transform.position, endTruckPos, Time.deltaTime * moveSpeed);
+            if(Vector2.Distance(truck.transform.position, endTruckPos) < 0.1f){
+            EndBtn.gameObject.SetActive(true);
+           // EndBtn.onClick.AddListener(()=> ); add next Scene
+            }
+        }
     }
-    void ActiveclickBtns()
+    void ActiveClickBtns()
     {
         for (int i = 0; i < selectedImageList.Length; i++)
         {
@@ -90,8 +109,9 @@ public class GameObjectControler : MonoBehaviour
             clickBtns[index].onClick.AddListener(() => CheckMatchImage(index));
         }
     }
-    void ChangeImage()
+    void ResetImage()
     {
+        int[] randN = new int[3];
         for (int i = 0; i < randN.Length; i++)
         {
             randN[i] = Random.Range(0, imageList.Length);
@@ -121,10 +141,11 @@ public class GameObjectControler : MonoBehaviour
         {
             isAnswer = true;
             PopupEvent(popupPanel[0]);
+            ginius[isAnswerCount].GetComponent<SpriteRenderer>().sprite = ginius[3].GetComponent<SpriteRenderer>().sprite;
         }
         else 
         {
-            isAnswer = false; 
+            isAnswer = false;
             PopupEvent(popupPanel[1]);
         }
         
@@ -137,12 +158,27 @@ public class GameObjectControler : MonoBehaviour
     }
     void PopupEvent(GameObject panel){
         panel.gameObject.SetActive(true);
-        StartCoroutine(ClosePopupAfterDelay(2.0f, panel));
+        StartCoroutine(AfterDelay(2.0f, panel));
     }
-    IEnumerator ClosePopupAfterDelay(float delay, GameObject panel)
+    IEnumerator AfterDelay(float delay, GameObject panel)
     {
         yield return new WaitForSeconds(delay);  // delay만큼 기다림
         panel.SetActive(false);  // 창 닫기
+        if(isAnswerCount >= 3){
+            for(int i = 0; i < clickBtns.Length;i++){
+                clickBtns[i].gameObject.SetActive(false);
+                targets[i].gameObject.SetActive(false);
+                answerImage.gameObject.SetActive(false);
+            }
+
+            Invoke("EndGame",2.0f);
+        }   
+       
     }
+    void EndGame(){
+      
+        isGameEnd =true;
+    }
+    
 
 }
