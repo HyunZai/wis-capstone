@@ -14,6 +14,6 @@ public class EndGameButtonHandler : MonoBehaviour
 
     void EndGameButtonClick() 
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("MapScene");
     }
 }

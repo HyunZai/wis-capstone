@@ -67,7 +67,7 @@ public class AnimalNextButtonHandler : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene("SampleScene");
+            SceneManager.LoadScene("MapScene");
         }
 
         ClearAllLines();

@@ -442,21 +442,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backgroundRenderer: {fileID: 1096910604}
   backgrounds:
-  - {fileID: 21300000, guid: 886f79dd8d269446f9a15b084e06c974, type: 3}
-  - {fileID: 21300000, guid: cf4fba5fbf25f4ea8b895d7e3c56bdba, type: 3}
-  - {fileID: 21300000, guid: 76b839fe135764e59b57e50911b0ad8b, type: 3}
-  - {fileID: 21300000, guid: 3f93dd2477f1e4393a82915d2b11ba83, type: 3}
-  - {fileID: 21300000, guid: 9306e9ee2d921469d90509170058f901, type: 3}
-  - {fileID: 21300000, guid: e71dc3b37451b43d4b4ef7409bfcfade, type: 3}
-  - {fileID: 21300000, guid: 7f56efc8a84bc42b39410a253a3c6b35, type: 3}
-  - {fileID: 21300000, guid: 4e05c86644e7648c8adb5d9a4336d548, type: 3}
-  - {fileID: 21300000, guid: d45a697c5b1844350b1fb60d3c6f84ad, type: 3}
-  - {fileID: 21300000, guid: d3d6b9756fcb84af79518546211d1084, type: 3}
-  - {fileID: 21300000, guid: a54f8f1c5de88411e9ebfb3981fb9797, type: 3}
-  - {fileID: 21300000, guid: 284056e17824849c69ab86a25f65b80d, type: 3}
-  - {fileID: 21300000, guid: 23fd2984ec48c45b2bf27c6703802a18, type: 3}
-  - {fileID: 21300000, guid: ec162da51479b401db1df596bde3d359, type: 3}
-  - {fileID: 21300000, guid: eae645e3bacef40c6b8eced9abedab6b, type: 3}
+  - {fileID: 21300000, guid: f7f25cd4f219841dfbdcfb7aa0694629, type: 3}
+  - {fileID: 21300000, guid: 87623d38b2cd64060946e7befb68638f, type: 3}
+  - {fileID: 21300000, guid: 510a34439dc834dd2842364b28cb7a77, type: 3}
+  - {fileID: 21300000, guid: 85912796d6d5b43ec9040f17bdb9e4bc, type: 3}
+  - {fileID: 21300000, guid: 3d2b566eec5274de7b98db7d0edce4b1, type: 3}
+  - {fileID: 21300000, guid: d622372a0a02f4b13906a78cdf4aac3c, type: 3}
+  - {fileID: 21300000, guid: 0d2b18a5e744b40bd9a32ceaf4e9338e, type: 3}
+  - {fileID: 21300000, guid: 6a1a1859f5283478c896fa946172dfe1, type: 3}
+  - {fileID: 21300000, guid: ce017554fa1cd4f96ae822d1520844e8, type: 3}
+  - {fileID: 21300000, guid: 8d9e9333648114228bc8568adb3ef2f9, type: 3}
+  - {fileID: 21300000, guid: ee6ec95e81cb44972b74b1bb05702fad, type: 3}
+  - {fileID: 21300000, guid: a829eddec7ac24afda0ab3b3faa8af36, type: 3}
+  - {fileID: 21300000, guid: 84fab375f3b9540489d241aa6e7fc361, type: 3}
+  - {fileID: 21300000, guid: 2e8175e6c6a124e8cb0c7e67d7885394, type: 3}
+  - {fileID: 21300000, guid: d05d5938bca9b4fc98b6a7aee60a92b6, type: 3}
 --- !u!212 &1096910604
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -498,7 +498,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 76b839fe135764e59b57e50911b0ad8b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 510a34439dc834dd2842364b28cb7a77, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
