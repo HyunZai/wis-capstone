@@ -125,7 +125,11 @@ public class Player : MonoBehaviour
 
             videoPlayer.Play();
         }
-
+        if (PlayerPrefs.HasKey(other.gameObject.name + "VisitCount"))
+            PlayerPrefs.SetInt(other.gameObject.name + "VisitCount", PlayerPrefs.GetInt(other.gameObject.name + "VisitCount") + 1);
+        else
+            PlayerPrefs.SetInt(other.gameObject.name + "VisitCount", 1);
+        
         PlayerPrefs.SetString("playerPosition", position);
     }
 
@@ -133,5 +137,9 @@ public class Player : MonoBehaviour
     {
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
         SceneManager.LoadScene("InformationScene");
+    }
+
+    void OnApplicationQuit() {
+        PlayerPrefs.DeleteAll();
     }
 }

@@ -56,12 +56,10 @@
         "temp/": true,
         "Temp/": true
     },
-<<<<<<< HEAD
-    "wis-test_source.sln=======dotnet.defaultSolution": "wis-dev_source.sln>>>>>>>7a7445eb14a01638c6ea3ed648d8c0873d6db27f",
+    "<<<<<<<HEADwis-test_source.sln=======dotnet.defaultSolution": "wis-dev_source.sln>>>>>>>7a7445eb14a01638c6ea3ed648d8c0873d6db27f",
     "<<<<<<<HEAD<<<<<<<HEADwis-dev_source.sln=======dotnet.defaultSolution": "wis-capstone.sln>>>>>>>origin/hyunjae",
     "wis-dev_source.sln=======dotnet.defaultSolution": "wis-test_source.sln>>>>>>>origin/test",
     "wis-dev_source.sln=======wis-dev_source.sln=======dotnet.defaultSolution": "wis-capstone.sln>>>>>>>origin/hyunjae>>>>>>>origin/dev",
-=======
->>>>>>> origin/youngsik
+    "=======>>>>>>>origin/youngsikdotnet.defaultSolution": "wis-capstone.sln",
     "dotnet.defaultSolution": "wis-capstone.sln"
 }
