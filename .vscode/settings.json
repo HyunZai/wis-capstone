@@ -56,9 +56,11 @@
         "temp/": true,
         "Temp/": true
     },
-    "wis-test_source.sln=======dotnet.defaultSolution": "wis-dev_source.sln>>>>>>>7a7445eb14a01638c6ea3ed648d8c0873d6db27f",
+    "<<<<<<<HEADwis-test_source.sln=======dotnet.defaultSolution": "wis-dev_source.sln>>>>>>>7a7445eb14a01638c6ea3ed648d8c0873d6db27f",
     "<<<<<<<HEAD<<<<<<<HEADwis-dev_source.sln=======dotnet.defaultSolution": "wis-capstone.sln>>>>>>>origin/hyunjae",
     "wis-dev_source.sln=======dotnet.defaultSolution": "wis-capstone.sln>>>>>>>origin/hyunjae",
     "wis-dev_source.sln=======wis-dev_source.sln=======dotnet.defaultSolution": "wis-capstone.sln>>>>>>>origin/hyunjae>>>>>>>origin/dev",
+    "wis-dev_source.sln==============>>>>>>>origin/youngsikdotnet.defaultSolution": "wis-capstone.sln",
+    "wis-capstone.sln>>>>>>>origin/hyunjae=======dotnet.defaultSolution": "wis-test_source.sln>>>>>>>f875590ca1031c8784f18d757c017ad7bc7022ad>>>>>>>dev",
     "dotnet.defaultSolution": "동아리.sln"
 }

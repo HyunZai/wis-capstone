@@ -44,6 +44,6 @@ public class ProgressbarHandler : MonoBehaviour
     void OnLoadingComplete()
     {
         slider.gameObject.SetActive(false);
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("MapScene");
     }
 }
