@@ -61,9 +61,13 @@
     "wis-dev_source.sln=======dotnet.defaultSolution": "wis-capstone.sln>>>>>>>origin/hyunjae",
     "wis-dev_source.sln=======wis-dev_source.sln=======dotnet.defaultSolution": "wis-capstone.sln>>>>>>>origin/hyunjae>>>>>>>origin/dev",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "dotnet.defaultSolution": "wis-dev_source.sln"
 =======
     "=======>>>>>>>origin/youngsikdotnet.defaultSolution": "wis-capstone.sln",
     "dotnet.defaultSolution": "wis-capstone.sln"
 >>>>>>> origin/hyunjae
+=======
+    "dotnet.defaultSolution": "wis-test_source.sln"
+>>>>>>> f875590ca1031c8784f18d757c017ad7bc7022ad
 }
