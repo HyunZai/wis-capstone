@@ -41,7 +41,6 @@ public class ScoreManager : MonoBehaviour
     // 게임 클리어 처리
     private void WinGame()
     {
-        Debug.Log("Game Won!");
         winPanel.SetActive(true);  // 승리 패널 활성화
         Time.timeScale = 0;        // 게임 일시정지
     }
