@@ -31,9 +31,17 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
         }
 
         int index = BuildingVisitCount - 1;
-        if (gameScenes.Count > 1 && BuildingVisitCount > gameScenes.Count)
-        {   
-            index = BuildingVisitCount % gameScenes.Count - 1;
+
+        if (gameScenes.Count > 1)
+        {
+            if (BuildingVisitCount > gameScenes.Count)
+            {
+                index = BuildingVisitCount % gameScenes.Count - 1;
+            }
+        }
+        else
+        {
+            index = 0;
         }
         
         if(Application.CanStreamedLevelBeLoaded(gameScenes[index])) //해당 게임 씬 존재하는지
