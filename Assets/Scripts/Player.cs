@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
 
     void Start()
     {   
+        if (Time.timeScale == 0) Time.timeScale = 1f; //일시정지가 되어있으면 재시작
+
         popup.SetActive(false);
 
         if (PlayerPrefs.HasKey("playerPosition")) //건물에서 나왔을 때
@@ -71,12 +73,6 @@ public class Player : MonoBehaviour
         anim.SetFloat("inputy",inputY);
         
         transform.Translate(new Vector2(inputX,inputY) * Time.deltaTime * moveSpeed);
-
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.1f);
-        if (colliders.Length > 0)
-        {
-            Debug.Log("Collision detected with: " + colliders[0].gameObject.name);
-        }
     }
 
     //캐릭터가 특정건물 앞에 도착했을 때
