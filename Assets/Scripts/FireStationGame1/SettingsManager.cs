@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+//--------------다른 게임에선 지워야 하는 행 15, 64~68, 79~83--------------
+//스크립트를 해당 게임 씬에서 원하시는 오브젝트에 넣으신 후에 inspector 창에 세팅,킵 플레잉, 스탑 플레잉 칸에 
+//이름이 똑같은 버튼을 GUI캔버스 안 판넬에서 찾아서 드래그 앤 드롭하면 됩니다. 판넬 칸엔 GUI캔버스 안 판넬을 넣으시면 됩니다.
+
 public class SettingsManager : MonoBehaviour
 {
     public Button settingsButton; // Settings 버튼 참조
