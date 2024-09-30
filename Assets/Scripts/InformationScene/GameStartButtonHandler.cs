@@ -1,5 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -17,14 +21,36 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
     void StartButtonClick()
     {        
         string buildingName = PlayerPrefs.GetString("BuildingName");
+        int BuildingVisitCount = PlayerPrefs.GetInt(buildingName + "VisitCount");
 
-        if(Application.CanStreamedLevelBeLoaded(buildingName + "GameScene")) //해당 게임 씬 존재하는지
+        List<string> gameScenes = new List<string>();
+        foreach(EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
         {
-            SceneManager.LoadScene(buildingName + "GameScene");
+            string sceneName = Path.GetFileNameWithoutExtension(scene.path);
+            if (sceneName.Contains("GameScene") && sceneName.Contains(buildingName)) gameScenes.Add(sceneName);
+        }
+
+        int index = BuildingVisitCount - 1;
+
+        if (gameScenes.Count > 1)
+        {
+            if (BuildingVisitCount > gameScenes.Count)
+            {
+                index = BuildingVisitCount % gameScenes.Count - 1;
+            }
         }
         else
         {
-            SceneManager.LoadScene("SampleScene");
+            index = 0;
+        }
+        
+        if(Application.CanStreamedLevelBeLoaded(gameScenes[index])) //해당 게임 씬 존재하는지
+        {
+            SceneManager.LoadScene(gameScenes[index]);
+        }
+        else
+        {
+            SceneManager.LoadScene("MapScene");
         }
     }
 
