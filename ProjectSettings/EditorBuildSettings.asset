@@ -29,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FireStationFireFightingGameScene.unity
     guid: 0593c7b350af8704b8ef33277b8ae245
+  - enabled: 1
+    path: Assets/Scenes/SchoolLendingThingsGameScene.unity
+    guid: 162987a88ca77db438b093e0bf1fcc75
   m_configObjects: {}
