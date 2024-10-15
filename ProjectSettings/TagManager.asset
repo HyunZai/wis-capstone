@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Text box
+  - Point
+  - Popup
+  - CrossPoint
+  - DistinationPoint
+  - SetDistinationBtn
   layers:
   - Default
   - TransparentFX
