@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Text box
+  - Point
+  - Popup
+  - Material
+  - Fire
+  - thief
   layers:
   - Default
   - TransparentFX
