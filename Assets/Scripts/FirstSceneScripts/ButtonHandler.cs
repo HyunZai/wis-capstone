@@ -28,10 +28,16 @@ public class ButtonHandler : MonoBehaviour
     {
         HideButtons();
 
-        login("continue");
+        User user = dbManager.login();
 
-        if (progressbarHandler != null) progressbarHandler.StartLoading();
-
+        if (user.name != null)
+        {
+            if (progressbarHandler != null) progressbarHandler.StartLoading();
+        }
+        else 
+        {
+            //DB에 등록되어 있는 사용자 정보가 없는 경우
+        }        
     }
 
     void NewStartButtonClick() 
@@ -45,23 +51,5 @@ public class ButtonHandler : MonoBehaviour
     {
         continueButton.gameObject.SetActive(false);
         newStartButton.gameObject.SetActive(false);
-    }
-
-    void login(string buttonType) {
-        dbManager = new DatabaseManager();
-        dbManager.Connect();
-
-
-        User user = null;
-        if (buttonType == "continue") 
-        {
-            string query = "SELECT * FROM USER WHERE user_id = (SELECT COUNT(user_id) FROM USER)";
-            user = dbManager.getUser(query);
-            Debug.Log("name : " + user.name);
-        }
-        else 
-        {
-
-        }
     }
 }

@@ -8,5 +8,5 @@ public class User
     public string parent_phone;
     public string address;
     public int gender;
-    public DateTime registered;
+    public string registered;
 }
