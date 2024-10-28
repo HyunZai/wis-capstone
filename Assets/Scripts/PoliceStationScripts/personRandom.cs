@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class personRandom : MonoBehaviour
 {
-     public Vector3[] windowPositions; // 창문 위치 좌표 배열
+    public Vector3[] windowPositions; // 창문 위치 좌표 배열
     public GameObject thiefPrefab;
     public GameObject bookPrefab;
     public GameObject coffeePrefab;
@@ -12,6 +12,8 @@ public class personRandom : MonoBehaviour
     private List<int> availableWindows;
     private GameObject currentThief;
     private List<GameObject> spawnedPrefabs; // 생성된 프리팹 리스트
+
+    private float thiefClickTimeout = 3.0f; // 도둑을 클릭하지 않았을 때의 타임아웃 시간
 
     void Start()
     {
@@ -25,13 +27,15 @@ public class personRandom : MonoBehaviour
             // 3개의 프리팹 생성
             SpawnPrefabs();
 
-            // 도둑이 클릭될 때까지 대기
-            while (currentThief != null)
+            // 도둑이 클릭되거나 타임아웃될 때까지 대기
+            float timer = 0f;
+            while (currentThief != null && timer < thiefClickTimeout)
             {
+                timer += Time.deltaTime;
                 yield return null;
             }
 
-            // 도둑이 사라진 후 모든 프리팹 제거
+            // 도둑이 클릭되었거나 타임아웃이 된 후 모든 프리팹 제거
             ClearAllPrefabs();
 
             // 다음 생성까지 대기 시간
@@ -72,6 +76,7 @@ public class personRandom : MonoBehaviour
             }
         }
         spawnedPrefabs.Clear();
+        currentThief = null;
     }
 
     void InitializeAvailableWindows()

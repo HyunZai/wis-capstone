@@ -6,26 +6,35 @@ using UnityEngine.UI;
 public class policeScore : MonoBehaviour
 {
     public int score = 0;               // 현재 점수
-    public int scoreToWin = 10;         // 게임 클리어에 필요한 점수
+    public int scoreToWin = 5;          // 게임 클리어에 필요한 점수
     public Text scoreText;              // 점수를 표시할 UI 텍스트
-    public GameObject clearGame;         // 게임 클리어 시 표시할 패널
+    public GameObject clearGame;        // 게임 클리어 시 표시할 패널
 
     private void Start()
     {
         UpdateScoreText();
-        clearGame.SetActive(false);  // 게임 시작 시 승리 패널 비활성화
+        clearGame.SetActive(false); // 게임 시작 시 승리 패널 비활성화
+
+        // ThiefClicked 이벤트를 구독하여 점수 증가 처리
+        thiefClick.OnThiefClicked += IncreaseScore;
     }
 
-    // 점수 추가 메서드
-    public void AddScore(int amount)
+    private void OnDestroy()
     {
-        score += amount;
+        // 이벤트 구독 해제
+        thiefClick.OnThiefClicked -= IncreaseScore;
+    }
+
+    // 점수를 1점 증가시키는 메서드
+    public void IncreaseScore()
+    {
+        score += 1; // 점수 1 증가
         UpdateScoreText();
 
         // 게임 클리어 조건 체크
         if (score >= scoreToWin)
         {
-            clearPliceGame();
+            ClearPoliceGame();
         }
     }
 
@@ -34,14 +43,14 @@ public class policeScore : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = "Score: " + score.ToString();
+            scoreText.text = "점수: " + score.ToString();
         }
     }
 
     // 게임 클리어 처리
-    private void clearPliceGame()
+    private void ClearPoliceGame()
     {
-        clearGame.SetActive(true);  // 승리 패널 활성화
-        Time.timeScale = 0;        // 게임 일시정지
+        clearGame.SetActive(true); // 승리 패널 활성화
+        Time.timeScale = 0; // 게임 일시정지
     }
 }
