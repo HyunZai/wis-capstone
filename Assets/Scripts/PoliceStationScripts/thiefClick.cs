@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class thiefClick: MonoBehaviour
 {
-  public delegate void ThiefClickedAction();
+   public delegate void ThiefClickedAction();
     public static event ThiefClickedAction OnThiefClicked;
 
     private void OnMouseDown()
