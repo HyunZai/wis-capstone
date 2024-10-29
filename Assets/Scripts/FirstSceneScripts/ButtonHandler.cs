@@ -22,6 +22,9 @@ public class ButtonHandler : MonoBehaviour
     {
         continueButton.onClick.AddListener(ContinueButtonClick);
         newStartButton.onClick.AddListener(NewStartButtonClick);
+
+        dbManager = new DatabaseManager();
+        dbManager.Connect();
     }
 
     void ContinueButtonClick() 
@@ -29,7 +32,7 @@ public class ButtonHandler : MonoBehaviour
         HideButtons();
 
         User user = dbManager.login();
-
+        dbManager.Disconnect();
         if (user.name != null)
         {
             if (progressbarHandler != null) progressbarHandler.StartLoading();
