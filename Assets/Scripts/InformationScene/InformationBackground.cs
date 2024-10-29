@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InformationBackground : MonoBehaviour
@@ -10,7 +12,12 @@ public class InformationBackground : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (backgroundRenderer == null) backgroundRenderer = GetComponent<SpriteRenderer>();
+
         string buildingName = PlayerPrefs.GetString("BuildingName");
+        backgrounds.Where(img => 
+            img.name.Contains(buildingName)
+            );
         switch(buildingName)
         {
             case "Cafe":
@@ -23,7 +30,6 @@ public class InformationBackground : MonoBehaviour
             //     ChangeBackground(0);
             //     break;
             case "FireStation":
-                Debug.Log("[InformationBackground.cs - buildingName: FireStation]");
                 ChangeBackground(3);
                 break;
             case "Hospital":
@@ -42,11 +48,6 @@ public class InformationBackground : MonoBehaviour
                 ChangeBackground(9);
                 break;
         }
-
-        if (backgroundRenderer == null)
-        {
-            backgroundRenderer = GetComponent<SpriteRenderer>();
-        }    
     }
 
     // // Update is called once per frame
