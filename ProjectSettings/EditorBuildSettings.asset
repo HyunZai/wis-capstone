@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/SchoolAnimalNameDrawingGameScene.unity
     guid: 2048433ceea8243a9a26cb39cdffbc17
   - enabled: 1
+    path: Assets/Scenes/SchoolLendingThingsGameScene.unity
+    guid: 162987a88ca77db438b093e0bf1fcc75
+  - enabled: 1
     path: Assets/Scenes/CafeFallingGameScene.unity
     guid: 1a46d27acb1d3264ba6594c53417f7f2
   - enabled: 1
