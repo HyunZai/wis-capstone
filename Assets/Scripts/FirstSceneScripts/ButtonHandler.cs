@@ -22,6 +22,9 @@ public class ButtonHandler : MonoBehaviour
     {
         continueButton.onClick.AddListener(ContinueButtonClick);
         newStartButton.onClick.AddListener(NewStartButtonClick);
+
+        dbManager = new DatabaseManager();
+        dbManager.Connect();
     }
 
     void ContinueButtonClick() 
