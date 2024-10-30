@@ -63,5 +63,5 @@
     "wis-dev_source.sln==============>>>>>>>origin/youngsikdotnet.defaultSolution": "wis-capstone.sln",
     "<<<<<<<HEADwis-capstone.sln>>>>>>>origin/hyunjae=======dotnet.defaultSolution": "wis-test_source.sln>>>>>>>f875590ca1031c8784f18d757c017ad7bc7022ad>>>>>>>dev",
     "wis-capstone.sln=======wis-capstone.sln>>>>>>>origin/hyunjae=======dotnet.defaultSolution": "wis-test_source.sln>>>>>>>f875590ca1031c8784f18d757c017ad7bc7022ad",
-    "dotnet.defaultSolution": "wis-dev_source.sln"
+    "dotnet.defaultSolution": "sangjin_source.sln"
 }
