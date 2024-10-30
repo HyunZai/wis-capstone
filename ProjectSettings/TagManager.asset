@@ -4,9 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Background
+  - Text box
   - Point
-  - VideoPlayer
+  - Popup
+  - Material
+  - Fire
+  - thief
   layers:
   - Default
   - TransparentFX
