@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Belevich.meta
 guid: 1128477ae55c64640aab2b8bb0e96204
+========
+guid: b90ca33cf8e294d4283262c334f0bbf8
+>>>>>>>> origin/dev:Assets/Belevich/Hyper casual mobile GUI/Original artwork.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

@@ -1,8 +1,16 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 This sample of beautiful emojis are provided by EmojiOne https://www.emojione.com/
 
 =======
 This sample of beautiful emojis are provided by EmojiOne https://www.emojione.com/
 
+=======
+This sample of beautiful emojis are provided by EmojiOne https://www.emojione.com/
+
+=======
+This sample of beautiful emojis are provided by EmojiOne https://www.emojione.com/
+
+>>>>>>> origin/dev
 >>>>>>> origin/youngsik
 Please visit their website to view the complete set of their emojis and review their licensing terms.
