@@ -145,8 +145,9 @@ public class CC : MonoBehaviour
             player.transform.position = Vector2.MoveTowards(pp,bp[destinationNum],moveSpeed* Time.deltaTime);
             yield return null;
         }
-        ShowPopup();
         beforeDestination = destinationNum;
+
+        ShowPopup();
         isMove = false;
     }
     void SetDestination(int gotoHere){
@@ -171,7 +172,9 @@ public class CC : MonoBehaviour
                 }else if(destinationNum == homeRoute1 && gotoHere != homeRoute2){
                     SetPopup($"{BuildingNameChanger(homeRoute2)}으로 이동해주세요!");
                 }else if(destinationNum == homeRoute2 && gotoHere != setHome){
-                    SetPopup($"{BuildingNameChanger(homeRoute2)}으로 이동해주세요!");
+                    SetPopup($"{BuildingNameChanger(setHome)}으로 이동해주세요!");
+                }else if(destinationNum == setHome){
+                    SetPopup("집에 도착했어요! 저장완료!");
                 }
 
                 
@@ -245,9 +248,9 @@ public class CC : MonoBehaviour
             }
         }
         else if(goHomeMode){
-             if(destinationNum !=homeRoute2 && destinationNum != homeRoute1){
+             if(destinationNum !=homeRoute2 && destinationNum != homeRoute1 && destinationNum != setHome){
                 SetPopup($"먼저 집으로 가기 위해서 {BuildingNameChanger(homeRoute1)}로 가볼까요?");
-            }else if(destinationNum ==homeRoute1){
+            }else if(destinationNum == homeRoute1){
                 SetPopup($"잘 도착했어요!\n이제 {BuildingNameChanger(homeRoute2)}로 이동한 뒤에 집으로 가볼까요?");
             }else if(destinationNum == homeRoute2){
                 SetPopup("집으로 가볼까요?");
