@@ -23,14 +23,65 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
         string buildingName = PlayerPrefs.GetString("BuildingName");
         int BuildingVisitCount = PlayerPrefs.GetInt(buildingName + "VisitCount");
 
-        List<string> gameScenes = new List<string>();
+        List<string> cafeGameScenes = new List<string>
+        {
+            "CafeFallingGameScene"
+        };
+        List<string> fireStationGameScenes = new List<string>
+        {
+            "FireStationFindSameGameScene",
+            "FireStationFireFightingGameScene"
+        };
+        List<string> policeGameScenes = new List<string>
+        {
+            "PoliceStationcatChingThievesGameScene"
+        };
+        List<string> schoolGameScenes = new List<string>
+        {
+            "SchoolAnimalNameDrawingGameScene",
+            "SchoolLendingThingsGameScene"
+        };
 
-        DirectoryInfo scenesDirPath = new DirectoryInfo(Application.dataPath + "/Scenes");
-        List<FileInfo> scenesFiles = scenesDirPath.GetFiles().ToList().FindAll(scene => !scene.Name.Contains(".meta") && scene.Name.Contains("GameScene") && scene.Name.Contains(buildingName));
+
+        // DirectoryInfo scenesDirPath = new DirectoryInfo(Application.dataPath + "/Scenes");
+        // List<FileInfo> scenesFiles = scenesDirPath.GetFiles().ToList().FindAll(scene => !scene.Name.Contains(".meta") && scene.Name.Contains("GameScene") && scene.Name.Contains(buildingName));
     
-        foreach(FileInfo file in scenesFiles) gameScenes.Add(file.Name.Split(".")[0]);
+        // foreach(FileInfo file in scenesFiles) gameScenes.Add(file.Name.Split(".")[0]);
 
         int index = BuildingVisitCount - 1;
+
+        List<string> gameScenes = new List<string>();
+
+        switch (buildingName)
+        {
+            case "School":
+                gameScenes = schoolGameScenes;
+                break;
+            case "FireStation":
+                gameScenes = fireStationGameScenes;
+                break;
+            case "Library":
+                
+                break;
+            case "Home":
+                
+                break;
+            case "Mart":
+                
+                break;
+            case "Police":
+                gameScenes = policeGameScenes;
+                break;
+            case "Bank":
+                
+                break;
+            case "Hospital":
+                
+                break;
+            case "Cafe":
+                gameScenes = cafeGameScenes;
+                break;
+        }
 
         if (gameScenes.Count > 1)
         {

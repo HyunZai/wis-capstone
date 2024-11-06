@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
+using Mono.Data.Sqlite;
 using TMPro;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
@@ -20,16 +23,20 @@ public class InputFormHandler : MonoBehaviour
     
     public ToggleGroup genderToggleGroup;
 
-    private DatabaseManager dbManager;
-
+    // private DatabaseManager dbManager;
+    private DbConnection dbConnection;
     // Start is called before the first frame update
     void Start()
     {
         inputForm.SetActive(false);
         saveAndStartButton.onClick.AddListener(SaveAndStartButtonClick);
 
-        dbManager = new DatabaseManager();
-        dbManager.Connect();
+        // dbManager = new DatabaseManager();
+        // dbManager.Connect();
+        
+        string connectionString = "URI=file:" + Application.streamingAssetsPath + "/user.db";
+        dbConnection = new SqliteConnection(connectionString);
+        dbConnection.Open();
     }
 
     public void ShowInputForm()
@@ -65,16 +72,17 @@ public class InputFormHandler : MonoBehaviour
             }
         }
 
-        User isOk = dbManager.register(user);
-        dbManager.Disconnect();
+        IDbCommand dbCommand = dbConnection.CreateCommand();
+        dbCommand.CommandText = $"INSERT INTO user (user_name, age, parent_phone, address, gender, registered) VALUES ('{user.name}', {user.age}, '{user.parent_phone}', '{user.address}', {user.gender}, '{user.registered}')";
+        dbCommand.ExecuteNonQuery();
+        dbCommand.Dispose();
+        dbConnection.Close();
+        //User isOk = dbManager.register(user);
+        //dbManager.Disconnect();
 
         if (!isAnyEmpty || user.gender == -1)
         {
             Debug.Log("잘못된 정보가 존재합니다. 다시 입력하세요!");
-        }
-        else if (isOk == null)
-        {
-            Debug.Log("등록에 실패했습니다. 다시 시도하십시오.");
         }
         else
         {
