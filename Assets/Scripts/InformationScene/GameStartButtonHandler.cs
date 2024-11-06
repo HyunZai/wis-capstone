@@ -1,9 +1,9 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -24,11 +24,11 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
         int BuildingVisitCount = PlayerPrefs.GetInt(buildingName + "VisitCount");
 
         List<string> gameScenes = new List<string>();
-        foreach(EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
-        {
-            string sceneName = Path.GetFileNameWithoutExtension(scene.path);
-            if (sceneName.Contains("GameScene") && sceneName.Contains(buildingName)) gameScenes.Add(sceneName);
-        }
+
+        DirectoryInfo scenesDirPath = new DirectoryInfo(Application.dataPath + "/Scenes");
+        List<FileInfo> scenesFiles = scenesDirPath.GetFiles().ToList().FindAll(scene => !scene.Name.Contains(".meta") && scene.Name.Contains("GameScene") && scene.Name.Contains(buildingName));
+    
+        foreach(FileInfo file in scenesFiles) gameScenes.Add(file.Name.Split(".")[0]);
 
         int index = BuildingVisitCount - 1;
 
