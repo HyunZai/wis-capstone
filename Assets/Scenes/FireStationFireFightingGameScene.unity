@@ -122,8 +122,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
-<<<<<<< HEAD
-=======
 --- !u!1 &11183680
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,7 +242,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 11183680}
   m_CullTransparentMesh: 1
->>>>>>> origin/dev
 --- !u!1 &32920585
 GameObject:
   m_ObjectHideFlags: 0
@@ -309,8 +306,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1155175349}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-=======
 --- !u!1 &143488750
 GameObject:
   m_ObjectHideFlags: 0
@@ -445,7 +440,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143488750}
   m_CullTransparentMesh: 1
->>>>>>> origin/dev
 --- !u!1 &145816607
 GameObject:
   m_ObjectHideFlags: 0
@@ -691,8 +685,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fixedY: -3.8
   moveSpeed: 50
-<<<<<<< HEAD
-=======
 --- !u!1 &322730509
 GameObject:
   m_ObjectHideFlags: 0
@@ -948,7 +940,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 401877695}
   m_CullTransparentMesh: 1
->>>>>>> origin/dev
 --- !u!1 &482601185
 GameObject:
   m_ObjectHideFlags: 0
@@ -1229,8 +1220,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 12, y: 12}
   m_EdgeRadius: 0
-<<<<<<< HEAD
-=======
 --- !u!1 &631966471
 GameObject:
   m_ObjectHideFlags: 0
@@ -1351,7 +1340,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 631966471}
   m_CullTransparentMesh: 1
->>>>>>> origin/dev
 --- !u!1 &659643516
 GameObject:
   m_ObjectHideFlags: 0
@@ -1595,8 +1583,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1155175349}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-=======
 --- !u!1 &767124190
 GameObject:
   m_ObjectHideFlags: 0
@@ -1717,7 +1703,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 767124190}
   m_CullTransparentMesh: 1
->>>>>>> origin/dev
 --- !u!1 &1008562426
 GameObject:
   m_ObjectHideFlags: 0
@@ -1951,8 +1936,6 @@ MonoBehaviour:
   scoreToWin: 5
   scoreText: {fileID: 1008562428}
   winPanel: {fileID: 1035054384}
-<<<<<<< HEAD
-=======
 --- !u!1 &1080391856
 GameObject:
   m_ObjectHideFlags: 0
@@ -2074,7 +2057,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1080391856}
   m_CullTransparentMesh: 1
->>>>>>> origin/dev
 --- !u!1 &1155175348
 GameObject:
   m_ObjectHideFlags: 0
@@ -2270,8 +2252,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1223630916}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-=======
 --- !u!1 &1314936826
 GameObject:
   m_ObjectHideFlags: 0
@@ -2392,7 +2372,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314936826}
   m_CullTransparentMesh: 1
->>>>>>> origin/dev
 --- !u!1 &1341617563
 GameObject:
   m_ObjectHideFlags: 0
@@ -2559,8 +2538,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1155175349}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-=======
 --- !u!1 &1571129718
 GameObject:
   m_ObjectHideFlags: 0
@@ -2762,7 +2739,6 @@ MonoBehaviour:
   stopPlayingButton: {fileID: 1080391858}
   guiPanel: {fileID: 1571129718}
   waterShooter: {fileID: 659643518}
->>>>>>> origin/dev
 --- !u!1 &1696117969
 GameObject:
   m_ObjectHideFlags: 0
@@ -3041,11 +3017,7 @@ GameObject:
   - component: {fileID: 1861875038}
   - component: {fileID: 1861875037}
   m_Layer: 5
-<<<<<<< HEAD
-  m_Name: Canvas
-=======
   m_Name: GameProgressionCanvas
->>>>>>> origin/dev
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3364,11 +3336,6 @@ SceneRoots:
   - {fileID: 2135178003}
   - {fileID: 32920586}
   - {fileID: 1223630916}
-<<<<<<< HEAD
-  - {fileID: 1861875040}
-  - {fileID: 2020605453}
-=======
   - {fileID: 2020605453}
   - {fileID: 1861875040}
   - {fileID: 1655379574}
->>>>>>> origin/dev

@@ -10,7 +10,9 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Video;
 using Random = UnityEngine.Random;
 
 public class CC : MonoBehaviour
@@ -19,53 +21,57 @@ public class CC : MonoBehaviour
     float moveSpeed = 4.0f;
     GameObject[] characterList, crossPoints ,destinationPoints ,buildingPoints;    //캐릭터 설정 리스트 ++++ 캐릭터 목록 추가점요
     Button[] setDistinationBtns;// 빌딩목록 넣기
-    public int destinationNum;  //목표빌딩 번호
-    public int beforeDestination =4; // 집
+    public int destinationNum ,beforeDestination; 
     Vector2 [] cp, dp, bp;
-    Vector2 pp;
-    bool isMove = false;
-    public Animator animator;
+    static Vector2 pp;
+    Animator anim;
     Vector2 beforePP;
     public Vector2 isMoved;
-    int homeRoute1, homeRoute2;
+    private int homeRoute1, homeRoute2;
     public GameObject popup;
-    private bool goHomeMode = false;
-    Button[] btns;
+    public float popupDelay = 2.0f;
     TextMeshProUGUI askText;
+    private bool goHomeMode, isMove = false;
+    
     public GameObject buildingBtns;
-    float popupDelay = 2.0f;
-    int setHome= 4;
     
-    
-    void Start(){
-        
+    public int setHome= 4;
+    public Button yBtn, nBtn, goHomeBtn;
+    public VideoClip[] videoClips;
+    private VideoPlayer videoPlayer;
+    void Awake(){
         SetBeforeStart();
+    }
+    void Start(){
+       
     }
     void Update(){
         pp = player.transform.position;  
         MoveAnimation();
     }
-    void SetBeforeStart(){ //이름 순서대로 할당해주고  캐릭터 포지션을 집으로 이동 및 클릭버튼 활성화>> 클릭버튼은  추후 실물판에서 값 받아와서 바꿔주는걸로
+    void SetBeforeStart(){ 
         popup.SetActive(true);
-        destinationNum = beforeDestination;
         characterList = GameObject.FindGameObjectsWithTag("Player").OrderBy(p => p.name).ToArray();
         crossPoints = GameObject.FindGameObjectsWithTag("CrossPoint").OrderBy(crossingPoint => crossingPoint.name).ToArray();
-        destinationPoints = GameObject.FindGameObjectsWithTag("DistinationPoint").OrderBy(distinationPoint => distinationPoint.name).ToArray(); 
-        buildingPoints = GameObject.FindGameObjectsWithTag("Building").OrderBy(building =>  building.name).ToArray();
+        destinationPoints = GameObject.FindGameObjectsWithTag("DestinationPoint").OrderBy(distinationPoint => distinationPoint.name).ToArray(); 
+        buildingPoints = GameObject.FindGameObjectsWithTag("BuildingPoint").OrderBy(building =>  building.name).ToArray();
         setDistinationBtns = buildingBtns.GetComponentsInChildren<Button>().OrderBy(btn => btn.name).ToArray();
-        btns = popup.GetComponentsInChildren<Button>().OrderBy(btnyns => btnyns.name).ToArray();
         askText = popup.GetComponentInChildren<TextMeshProUGUI>();
 
-        
-        btns[0].onClick.AddListener(()=> AskGOHomeMode());
-        btns[1].onClick.AddListener(() => popup.SetActive(false));
-        btns[2].onClick.AddListener(()=> ActivateGoHomeMode());
 
-        player.transform.position = destinationPoints[setHome].transform.position;
+        if (anim == null) anim = GetComponent<Animator>();  
+
+        if (videoPlayer == null) videoPlayer = FindObjectOfType<VideoPlayer>();
+        else if (videoPlayer != null) videoPlayer.loopPointReached += EndReached; // 중간에 검은 화면 추가 필요함
+
+        nBtn.onClick.AddListener(() => NoButtonClick());
+        yBtn.onClick.AddListener(()=> YesButtonClick());
+        goHomeBtn.onClick.AddListener(()=> GoHomeButtonClick());
 
         cp = new Vector2[crossPoints.Length];
         dp = new Vector2[destinationPoints.Length];
         bp = new Vector2[buildingPoints.Length];
+
         beforePP = pp;
 
         for(int i =0; i<destinationPoints.Length; i++){        //건물 클릭 시 반응
@@ -76,10 +82,29 @@ public class CC : MonoBehaviour
             setDistinationBtns[index].onClick.AddListener(()=>SetDestination(index));
             
         }
-        Debug.Log(
-          setDistinationBtns.Length  
-        );
+
+        int loadPosNum = PlayerPrefs.GetInt("DestinationPoinNum", setHome); // 씬 복원될떄 위치 번호 불러오기 없으면 setHome 위치 
+        destinationNum = loadPosNum;
+        beforeDestination = loadPosNum;
+        player.transform.position = bp[loadPosNum];
+
+
         popup.SetActive(false);
+        
+    }
+    void NoButtonClick(){
+        popup.SetActive(false);
+        ActivateBuildingBtns();
+    }
+    void YesButtonClick(){
+        AskGOHomeMode();
+        PlayerPrefs.SetInt("DestinationPoinNum", destinationNum);
+        PlayerPrefs.Save();
+        videoPlayer.Play();
+        }
+    void GoHomeButtonClick(){
+        ActivateGoHomeMode();
+        ActivateBuildingBtns(); 
     }
     (int numB, int numP) SetCrossPoint(){
         int numB = int.MaxValue;
@@ -114,7 +139,6 @@ public class CC : MonoBehaviour
         isMove = true;
         beforePP = pp;
         
-        // StartCoroutine(XYDebug());
         while(Vector2.Distance(pp,dp[beforeDestination])>0.1f){
             player.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
             yield return null;
@@ -146,16 +170,20 @@ public class CC : MonoBehaviour
             yield return null;
         }
         beforeDestination = destinationNum;
-
         ShowPopup();
         isMove = false;
     }
     void SetDestination(int gotoHere){
         if(destinationNum != gotoHere && isMove == false)
         {
-            if(!goHomeMode){
-                destinationNum = gotoHere;
-                StartCoroutine(GoDestination());
+            if(!goHomeMode)
+            {
+                if(gotoHere == setHome){
+                    SetPopup($"아직은 집으로 갈때가 아니에요!\n좀 더 동네를 탐험해볼까요?");
+                }else{
+                    destinationNum = gotoHere;
+                    StartCoroutine(GoDestination());
+                }
             }
             else if(goHomeMode){
                 if (homeRoute1 == gotoHere && destinationNum != homeRoute2 && destinationNum != setHome){
@@ -168,22 +196,20 @@ public class CC : MonoBehaviour
                     destinationNum = gotoHere;
                     StartCoroutine(GoDestination()); 
                 }else if(destinationNum != homeRoute1 && gotoHere != homeRoute1){
-                    SetPopup($"{BuildingNameChanger(homeRoute1)}으로 이동해주세요!");
+                    SetPopup($"{BuildingName(homeRoute1)}으로 이동해주세요!");
                 }else if(destinationNum == homeRoute1 && gotoHere != homeRoute2){
-                    SetPopup($"{BuildingNameChanger(homeRoute2)}으로 이동해주세요!");
+                    SetPopup($"{BuildingName(homeRoute2)}으로 이동해주세요!");
                 }else if(destinationNum == homeRoute2 && gotoHere != setHome){
-                    SetPopup($"{BuildingNameChanger(setHome)}으로 이동해주세요!");
+                    SetPopup($"{BuildingName(setHome)}으로 이동해주세요!");
                 }else if(destinationNum == setHome){
                     SetPopup("집에 도착했어요! 저장완료!");
-                }
-
-                
+                }                
             }
             
         }
         else if(destinationNum == gotoHere)
         {
-            SetPopup("다른 건물을 선택해주세요 :()");
+            SetPopup("다른 건물을 선택해주세요!");
         }
         else if(isMove == true)
         {
@@ -193,15 +219,15 @@ public class CC : MonoBehaviour
     void MoveAnimation(){
         if(isMove){
             isMoved = pp - beforePP;
-            // animator.SetFloat("MoveX", isMoved.x);
-            // animator.SetFloat("MoveY", isMoved.y);
+            anim.SetFloat("inputx", isMoved.x);
+            anim.SetFloat("inputy", isMoved.y);
             // 애니메이션 추가만 하면 끝난다잇
         }
-        
     }
     void AskGOHomeMode(){
-        btns[0].gameObject.SetActive(false);
-        btns[2].gameObject.SetActive(true);
+        nBtn.gameObject.SetActive(true);
+        yBtn.gameObject.SetActive(false);
+        goHomeBtn.gameObject.SetActive(true);
         askText.text = "집으로 돌아갈까요?";
         popup.SetActive(true);
     }
@@ -209,39 +235,39 @@ public class CC : MonoBehaviour
         goHomeMode = true;
         do {
             homeRoute1 = Random.Range(0, buildingPoints.Length);
-        } while (homeRoute1 == destinationNum && setHome == homeRoute1); 
+        } while (homeRoute1 == beforeDestination && setHome == homeRoute1); 
         
         do {
             homeRoute2 = Random.Range(0, buildingPoints.Length);
-        } while (homeRoute2 == destinationNum || homeRoute2 == homeRoute1 && setHome == homeRoute2);
+        } while (homeRoute2 == beforeDestination && homeRoute2 == homeRoute1 && setHome == homeRoute2);
         ShowPopup();
        
     }
-
-    string BuildingNameChanger(int a){
-        string playerLocation = "";
-        switch (a)
-            {
-                case 0: playerLocation = "학교"; break;
-                case 1: playerLocation = "카페"; break;
-                case 2: playerLocation = "소방서"; break;
-                case 3: playerLocation = "도서관"; break;
-                case 4: playerLocation = "집"; break;
-                case 5: playerLocation = "마켓"; break;
-                case 6: playerLocation = "경찰서"; break;
-                case 7: playerLocation = "은행"; break;
-                case 8: playerLocation = "병원"; break;
-                default: playerLocation = "알 수 없음"; break;
+    string BuildingName(int PointNum){
+        string stringName;
+        switch (PointNum){
+                case 0: stringName = "학교"; break;
+                case 1: stringName = "카페"; break;
+                case 2: stringName = "소방서"; break;
+                case 3: stringName = "도서관"; break;
+                case 4: stringName = "집"; break;
+                case 5: stringName = "마켓"; break;
+                case 6: stringName = "경찰서"; break;
+                case 7: stringName = "은행"; break;
+                case 8: stringName = "병원"; break;
+                default: stringName = "알 수 없음"; break;
             }
-        return playerLocation;
+        return stringName;
     }
     void ShowPopup(){
+        DeActivateBuildingBtns();
         popup.SetActive(true);
-        string playerLocation = BuildingNameChanger(destinationNum);
+        string playerLocation = BuildingName(destinationNum);
         if(!goHomeMode){
             if(Vector2.Distance(pp, bp[destinationNum]) < 0.1){
-                btns[2].gameObject.SetActive(false);
-                btns[0].gameObject.SetActive(true);
+                nBtn.gameObject.SetActive(true);
+                goHomeBtn.gameObject.SetActive(false);
+                yBtn.gameObject.SetActive(true);
                 askText.text = $"{playerLocation}에 들어갈까요?";
                 //go in buildinig
                 //out buildin
@@ -249,37 +275,88 @@ public class CC : MonoBehaviour
         }
         else if(goHomeMode){
              if(destinationNum !=homeRoute2 && destinationNum != homeRoute1 && destinationNum != setHome){
-                SetPopup($"먼저 집으로 가기 위해서 {BuildingNameChanger(homeRoute1)}로 가볼까요?");
+                SetPopup($"먼저 집으로 가기 위해서 {BuildingName(homeRoute1)}로 가볼까요?");
             }else if(destinationNum == homeRoute1){
-                SetPopup($"잘 도착했어요!\n이제 {BuildingNameChanger(homeRoute2)}로 이동한 뒤에 집으로 가볼까요?");
+                SetPopup($"잘 도착했어요!\n이제 {BuildingName(homeRoute2)}로 이동한 뒤에 집으로 가볼까요?");
             }else if(destinationNum == homeRoute2){
                 SetPopup("집으로 가볼까요?");
             }else if(destinationNum == setHome){
                 SetPopup("집에 도착했어요! 저장완료!");
         }
-        }
+        } 
+
         
     }
     void SetPopup(string a){
         askText.text = a;
-        for(int i = 0; i< btns.Length; i++){
+        yBtn.gameObject.SetActive(false);
+        nBtn.gameObject.SetActive(false);
+        goHomeBtn.gameObject.SetActive(false);
+        DeActivateBuildingBtns(); 
 
-            btns[i].gameObject.SetActive(false);   
-        }
         popup.SetActive(true);
-        StartCoroutine(AutoClosePopup(popupDelay));
-        
+        StartCoroutine(AutoClosePopup(popupDelay));  
     }
-
     IEnumerator AutoClosePopup(float closeTime){
         yield return new WaitForSeconds(closeTime);
         popup.SetActive(false);
+        ActivateBuildingBtns();
     }
-    void OnOffGameObjects(GameObject[] a ,bool b){
-        for(int i =0; i < a.Length; i++){
-            setDistinationBtns[i].gameObject.SetActive(b);
+    private void OnTriggerEnter2D(Collider2D other) {
+
+        if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null) 
+        {
+            string num = other.gameObject.name.Split(".")[0];
+            switch (other.gameObject.name)
+            {
+                case "0.School":
+                    videoPlayer.clip = videoClips[0];
+                    break;
+                case "1.Cafe":
+                    videoPlayer.clip = videoClips[1];
+                    break;
+                case "2.FireStation":
+                    videoPlayer.clip = videoClips[2];
+                    break;
+                case "3.Library":
+                    videoPlayer.clip = videoClips[3];
+                    break;
+                case "4.Home":
+                    videoPlayer.clip = videoClips[4];
+                    break;
+                case "5.Market":
+                    videoPlayer.clip = videoClips[5];
+                    break;
+                case "6.PoliceOffice":
+                    videoPlayer.clip = videoClips[6];
+                    break;
+                case "7.Bank":
+                    videoPlayer.clip = videoClips[7];
+                    break;
+                case "8.Hospital":
+                    videoPlayer.clip = videoClips[8];
+                    break;
+                
+            }
         }
     }
-
+    void EndReached(VideoPlayer vp)
+    {
+        PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
+        SceneManager.LoadScene("InformationScene");
+    }
+    void OnApplicationQuit() {
+        PlayerPrefs.DeleteAll();
+    }
+    void DeActivateBuildingBtns(){
+        for(int i = 0; i< setDistinationBtns.Length; i++){
+            setDistinationBtns[i].gameObject.SetActive(false);   
+        }
+       
+    }
+    void ActivateBuildingBtns(){
+        for(int i = 0; i< setDistinationBtns.Length; i++){
+            setDistinationBtns[i].gameObject.SetActive(true);   
+        }
+    }
 }
-

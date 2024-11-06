@@ -7,16 +7,12 @@ TagManager:
   - Text box
   - Point
   - Popup
-<<<<<<< HEAD
-  - CrossPoint
-  - DistinationPoint
-  - SetDistinationBtn
-  - Building
-=======
   - Material
   - Fire
   - thief
->>>>>>> origin/dev
+  - DestinationPoint
+  - CrossPoint
+  - BuildingPoint
   layers:
   - Default
   - TransparentFX
