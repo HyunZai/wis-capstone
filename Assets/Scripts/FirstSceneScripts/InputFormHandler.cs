@@ -1,15 +1,5 @@
 using System;
-<<<<<<< HEAD
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
 using System.Linq;
-using System.Threading;
-using Mono.Data.Sqlite;
-=======
-using System.Linq;
->>>>>>> origin/hyunjae
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,20 +15,15 @@ public class InputFormHandler : MonoBehaviour
     
     public ToggleGroup genderToggleGroup;
 
-    // private DatabaseManager dbManager;
-    private DbConnection dbConnection;
-    // Start is called before the first frame update
+    private DatabaseManager dbManager;
+
     void Start()
     {
         inputForm.SetActive(false);
         saveAndStartButton.onClick.AddListener(SaveAndStartButtonClick);
 
-        // dbManager = new DatabaseManager();
-        // dbManager.Connect();
-        
-        string connectionString = "URI=file:" + Application.streamingAssetsPath + "/user.db";
-        dbConnection = new SqliteConnection(connectionString);
-        dbConnection.Open();
+        dbManager = new DatabaseManager();
+        dbManager.Connect();
     }
 
     public void ShowInputForm()
@@ -74,17 +59,7 @@ public class InputFormHandler : MonoBehaviour
             }
         }
 
-<<<<<<< HEAD
-        IDbCommand dbCommand = dbConnection.CreateCommand();
-        dbCommand.CommandText = $"INSERT INTO user (user_name, age, parent_phone, address, gender, registered) VALUES ('{user.name}', {user.age}, '{user.parent_phone}', '{user.address}', {user.gender}, '{user.registered}')";
-        dbCommand.ExecuteNonQuery();
-        dbCommand.Dispose();
-        dbConnection.Close();
-        //User isOk = dbManager.register(user);
-=======
         bool isOk = dbManager.register(user);
->>>>>>> origin/hyunjae
-        //dbManager.Disconnect();
 
         if (!isAnyEmpty || user.gender == -1)
         {
