@@ -13,6 +13,7 @@ TagManager:
   - DestinationPoint
   - CrossPoint
   - BuildingPoint
+  - VideoPlayer
   layers:
   - Default
   - TransparentFX

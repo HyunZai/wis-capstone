@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TMPro;
 using Unity.Collections;
@@ -13,6 +14,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using UnityEngine.Windows;
 using Random = UnityEngine.Random;
 
 public class CC : MonoBehaviour
@@ -27,7 +29,7 @@ public class CC : MonoBehaviour
     Animator anim;
     Vector2 beforePP;
     public Vector2 isMoved;
-    private int homeRoute1, homeRoute2;
+    public int homeRoute1, homeRoute2;
     public GameObject popup;
     public float popupDelay = 2.0f;
     TextMeshProUGUI askText;
@@ -46,8 +48,9 @@ public class CC : MonoBehaviour
        
     }
     void Update(){
-        pp = player.transform.position;  
+         
         MoveAnimation();
+        pp = player.transform.position; 
     }
     void SetBeforeStart(){ 
         popup.SetActive(true);
@@ -57,13 +60,9 @@ public class CC : MonoBehaviour
         buildingPoints = GameObject.FindGameObjectsWithTag("BuildingPoint").OrderBy(building =>  building.name).ToArray();
         setDistinationBtns = buildingBtns.GetComponentsInChildren<Button>().OrderBy(btn => btn.name).ToArray();
         askText = popup.GetComponentInChildren<TextMeshProUGUI>();
+        videoPlayer = FindObjectOfType<VideoPlayer>();
 
-
-        if (anim == null) anim = GetComponent<Animator>();  
-
-        if (videoPlayer == null) videoPlayer = FindObjectOfType<VideoPlayer>();
-        else if (videoPlayer != null) videoPlayer.loopPointReached += EndReached; // 중간에 검은 화면 추가 필요함
-
+       
         nBtn.onClick.AddListener(() => NoButtonClick());
         yBtn.onClick.AddListener(()=> YesButtonClick());
         goHomeBtn.onClick.AddListener(()=> GoHomeButtonClick());
@@ -71,8 +70,6 @@ public class CC : MonoBehaviour
         cp = new Vector2[crossPoints.Length];
         dp = new Vector2[destinationPoints.Length];
         bp = new Vector2[buildingPoints.Length];
-
-        beforePP = pp;
 
         for(int i =0; i<destinationPoints.Length; i++){        //건물 클릭 시 반응
             if(i<crossPoints.Length)cp[i] = crossPoints[i].transform.position;
@@ -88,9 +85,11 @@ public class CC : MonoBehaviour
         beforeDestination = loadPosNum;
         player.transform.position = bp[loadPosNum];
 
-
+        if (anim == null) anim = GetComponent<Animator>();  
+        if (videoPlayer != null) videoPlayer.loopPointReached += EndReached; 
         popup.SetActive(false);
-        
+
+        if(destinationNum != setHome) AskGOHomeMode();
     }
     void NoButtonClick(){
         popup.SetActive(false);
@@ -137,41 +136,45 @@ public class CC : MonoBehaviour
     }
     IEnumerator GoDestination(){ 
         isMove = true;
-        beforePP = pp;
-        
+
         while(Vector2.Distance(pp,dp[beforeDestination])>0.1f){
             player.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
             yield return null;
         }
+        beforePP = pp;
+
         var (numB, numP) =SetCrossPoint();
-        isMove = true;
-       
+
         if(!(Mathf.Abs(pp.x - dp[destinationNum].x) < 0.1f || Mathf.Abs(pp.y-dp[destinationNum].y)<0.1f)){
-            beforePP = pp;
             while(Vector2.Distance(pp,cp[numP])>0.1f){
                 player.transform.position = Vector2.MoveTowards(pp,cp[numP],moveSpeed* Time.deltaTime);
                 yield return null;
             }
             beforePP = pp;
+
             while(Vector2.Distance(pp,cp[numB])>0.1f){
                 player.transform.position = Vector2.MoveTowards(pp,cp[numB],moveSpeed* Time.deltaTime);
                 if(Vector2.Distance(pp,dp[destinationNum])<0.1f)yield break;
                 yield return null;
             }
+            beforePP = pp;
         }
-        beforePP = pp;
+
         while(Vector2.Distance(pp,dp[destinationNum])>0.1f){
             player.transform.position = Vector2.MoveTowards(pp,dp[destinationNum],moveSpeed* Time.deltaTime);
             yield return null;
         }
         beforePP = pp;
+
         while(Vector2.Distance(pp,bp[destinationNum])>0.1f){
             player.transform.position = Vector2.MoveTowards(pp,bp[destinationNum],moveSpeed* Time.deltaTime);
             yield return null;
         }
+        beforePP = pp;
+
         beforeDestination = destinationNum;
-        ShowPopup();
         isMove = false;
+        ShowPopup();
     }
     void SetDestination(int gotoHere){
         if(destinationNum != gotoHere && isMove == false)
@@ -218,13 +221,25 @@ public class CC : MonoBehaviour
     }
     void MoveAnimation(){
         if(isMove){
-            isMoved = pp - beforePP;
-            anim.SetFloat("inputx", isMoved.x);
-            anim.SetFloat("inputy", isMoved.y);
-            // 애니메이션 추가만 하면 끝난다잇
+            anim.SetBool("ismove", true);
+            isMoved.x = pp.x - beforePP.x;
+            isMoved.y = pp.y - beforePP.y;
+            if(MathF.Abs(isMoved.x) > MathF.Abs(isMoved.y)){
+                anim.SetFloat("inputx", isMoved.x > 0 ? 1.0f : -1.0f);
+                anim.SetFloat("inputy", 0.0f);
+            }else if(MathF.Abs(isMoved.x) < MathF.Abs(isMoved.y)){
+                anim.SetFloat("inputx", 0.0f);
+                anim.SetFloat("inputy", isMoved.y > 0 ? 1.0f : -1.0f);
+            }
+        }else if(!isMove){
+            anim.SetBool("ismove", false);
+            anim.SetFloat("inputx", 0);
+            anim.SetFloat("inputy", 0);
         }
+
     }
     void AskGOHomeMode(){
+        DeActivateBuildingBtns();
         nBtn.gameObject.SetActive(true);
         yBtn.gameObject.SetActive(false);
         goHomeBtn.gameObject.SetActive(true);
@@ -233,13 +248,34 @@ public class CC : MonoBehaviour
     }
     void ActivateGoHomeMode(){
         goHomeMode = true;
-        do {
-            homeRoute1 = Random.Range(0, buildingPoints.Length);
-        } while (homeRoute1 == beforeDestination && setHome == homeRoute1); 
+
+        int cpPoint = 0;
+        float shortCPNum = float.MaxValue;
+
+        float shortCPNum2 = float.MaxValue;
+        float shortCPNum3 = float.MaxValue;
+
+        for(int i = 0; i < cp.Length; i++){
+            if(Vector2.Distance(bp[destinationNum],cp[i])< shortCPNum){
+                shortCPNum = Vector2.Distance(bp[destinationNum],cp[i]);
+                cpPoint = i;
+            }
+        }
         
-        do {
-            homeRoute2 = Random.Range(0, buildingPoints.Length);
-        } while (homeRoute2 == beforeDestination && homeRoute2 == homeRoute1 && setHome == homeRoute2);
+            for(int i= 0; i< bp.Length; i++){
+                if(destinationNum == i||setHome == i)continue;
+                if(Vector2.Distance(cp[cpPoint], dp[i]) < shortCPNum2){
+                    if(Vector2.Distance(cp[cpPoint], dp[i]) < shortCPNum3){
+                        shortCPNum3 = Vector2.Distance(cp[cpPoint], dp[i]);
+                        homeRoute1 = i;
+                        continue;
+                    }
+                    shortCPNum2 = Vector2.Distance(cp[cpPoint], dp[i]);
+                    homeRoute2 =i;
+                }
+            }
+
+        
         ShowPopup();
        
     }
@@ -282,7 +318,8 @@ public class CC : MonoBehaviour
                 SetPopup("집으로 가볼까요?");
             }else if(destinationNum == setHome){
                 SetPopup("집에 도착했어요! 저장완료!");
-        }
+                goHomeMode = false;
+            }
         } 
 
         
@@ -306,7 +343,6 @@ public class CC : MonoBehaviour
 
         if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null) 
         {
-            string num = other.gameObject.name.Split(".")[0];
             switch (other.gameObject.name)
             {
                 case "0.School":
@@ -336,13 +372,13 @@ public class CC : MonoBehaviour
                 case "8.Hospital":
                     videoPlayer.clip = videoClips[8];
                     break;
-                
-            }
+            }    
         }
     }
     void EndReached(VideoPlayer vp)
     {
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
+        PlayerPrefs.Save();
         SceneManager.LoadScene("InformationScene");
     }
     void OnApplicationQuit() {
@@ -359,4 +395,5 @@ public class CC : MonoBehaviour
             setDistinationBtns[i].gameObject.SetActive(true);   
         }
     }
+
 }
