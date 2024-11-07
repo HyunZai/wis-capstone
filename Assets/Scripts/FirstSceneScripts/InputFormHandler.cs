@@ -1,4 +1,5 @@
 using System;
+<<<<<<< HEAD
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -6,9 +7,10 @@ using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using Mono.Data.Sqlite;
+=======
+using System.Linq;
+>>>>>>> origin/hyunjae
 using TMPro;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -72,12 +74,16 @@ public class InputFormHandler : MonoBehaviour
             }
         }
 
+<<<<<<< HEAD
         IDbCommand dbCommand = dbConnection.CreateCommand();
         dbCommand.CommandText = $"INSERT INTO user (user_name, age, parent_phone, address, gender, registered) VALUES ('{user.name}', {user.age}, '{user.parent_phone}', '{user.address}', {user.gender}, '{user.registered}')";
         dbCommand.ExecuteNonQuery();
         dbCommand.Dispose();
         dbConnection.Close();
         //User isOk = dbManager.register(user);
+=======
+        bool isOk = dbManager.register(user);
+>>>>>>> origin/hyunjae
         //dbManager.Disconnect();
 
         if (!isAnyEmpty || user.gender == -1)
@@ -100,7 +106,6 @@ public class InputFormHandler : MonoBehaviour
         if (selectedToggle != null)
         {
             return (selectedToggle.GetComponentInChildren<Text>().text == "남자") ? 0 : 1;
-            //return selectedToggle.GetComponentInChildren<Text>().text;  // Toggle의 텍스트를 가져옴
         }
 
         return -1;  // 선택된 값이 없을 경우

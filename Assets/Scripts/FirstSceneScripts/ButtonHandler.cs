@@ -22,8 +22,13 @@ public class ButtonHandler : MonoBehaviour
 
     public TextMeshProUGUI title;
 
+<<<<<<< HEAD
     private DbConnection dbConnection;
     //private DatabaseManager dbManager;
+=======
+    private DatabaseManager dbManager;
+    
+>>>>>>> origin/hyunjae
     void Start()
     {
         continueButton.onClick.AddListener(ContinueButtonClick);
@@ -40,6 +45,7 @@ public class ButtonHandler : MonoBehaviour
     {
         HideButtons();
 
+<<<<<<< HEAD
         IDbCommand dbCommand = dbConnection.CreateCommand();
         dbCommand.CommandText = "SELECT * FROM user WHERE user_id = (SELECT COUNT(user_id) FROM user)";
         IDataReader dataReader = dbCommand.ExecuteReader();
@@ -55,6 +61,9 @@ public class ButtonHandler : MonoBehaviour
         }
         // User user = dbManager.login();
         // dbManager.Disconnect();
+=======
+        User user = dbManager.login();
+>>>>>>> origin/hyunjae
         if (user.name != null)
         {
             if (progressbarHandler != null) progressbarHandler.StartLoading();
