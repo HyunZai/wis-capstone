@@ -1,46 +1,99 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO.Ports;
+using System.Threading;
 using UnityEngine;
 
 public class SerialReader : MonoBehaviour
 {
     SerialPort serialPort;
-    public string portNum = "포트넘버";
-    public int baudRate = 19200;
+    public string portName = "COM3"; // 사용 중인 포트 이름으로 변경
+    public int baudRate = 9600;
 
-    // Start is called before the first frame update
+    Thread serialThread;
+    private bool isRunning = false;
+    private ConcurrentQueue<string> dataQueue = new ConcurrentQueue<string>();
+
     void Start()
     {
-        serialPort = new SerialPort(portNum, baudRate);
-        try 
+        Debug.Log("Serial port read on!");
+        serialPort = new SerialPort(portName, baudRate);
+        serialPort.ReadTimeout = 1000;
+
+        try
         {
             serialPort.Open();
+            isRunning = true;
+            // 시리얼 포트 데이터를 별도의 스레드에서 읽기 시작
+            serialThread = new Thread(ReadSerialData);
+            serialThread.Start();
         }
-        catch(Exception ex) 
+        catch (System.Exception e)
         {
-            Debug.LogError("Serial port open error : " + ex.Message);
+            Debug.LogError("Serial port could not be opened: " + e.Message);
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (serialPort != null && serialPort.IsOpen) 
+        // 시리얼 포트에서 받은 데이터를 메인 스레드에서 처리
+        if (dataQueue.TryDequeue(out string sensorData))
         {
-            try
-            {
-                string buildingNum = serialPort.ReadLine();
-                Debug.Log("Data received: " + buildingNum);
-            }
-            catch(TimeoutException){}
+            ProcessSensorData(sensorData);
         }
     }
 
-    private void OnDestory() {
-        if (serialPort != null && serialPort.IsOpen) {
-            serialPort.Close();
+    private void ReadSerialData()
+    {
+        while (isRunning)
+        {
+            if (serialPort.IsOpen)
+            {
+                try
+                {
+                    string sensorData = serialPort.ReadLine();
+                    dataQueue.Enqueue(sensorData); // 읽은 데이터를 큐에 추가
+                }
+                catch (System.TimeoutException)
+                {
+                    // 타임아웃 예외 처리 (데이터가 없으면 무시)
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError("Error reading from serial port: " + e.Message);
+                }
+            }
+        }
+    }
+
+    void ProcessSensorData(string data)
+    {
+        Debug.Log(data);
+        // 받은 센서 ID에 따라 Unity에서 특정 동작을 실행
+        // switch (data.Trim())
+        // {
+        //     case "1":
+        //         Debug.Log("Sensor 1 activated");
+        //         break;
+        //     case "2":
+        //         Debug.Log("Sensor 2 activated");
+        //         break;
+        //     default:
+        //         Debug.LogWarning("Unknown sensor data: " + data);
+        //         break;
+        // }
+    }
+
+    void OnApplicationQuit()
+    {
+        isRunning = false; // 스레드 종료를 위한 플래그 설정
+        if (serialThread != null && serialThread.IsAlive)
+        {
+            serialThread.Join(); // 스레드 종료 대기
+        }
+        if (serialPort != null && serialPort.IsOpen)
+        {
+            serialPort.Close();  // 시리얼 포트 닫기
         }
     }
 }
