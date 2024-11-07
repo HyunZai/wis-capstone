@@ -1,14 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
 using System.Linq;
-using System.Threading;
-using Mono.Data.Sqlite;
 using TMPro;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,20 +15,16 @@ public class InputFormHandler : MonoBehaviour
     
     public ToggleGroup genderToggleGroup;
 
-    // private DatabaseManager dbManager;
-    private DbConnection dbConnection;
+    private DatabaseManager dbManager;
+
     // Start is called before the first frame update
     void Start()
     {
         inputForm.SetActive(false);
         saveAndStartButton.onClick.AddListener(SaveAndStartButtonClick);
 
-        // dbManager = new DatabaseManager();
-        // dbManager.Connect();
-        
-        string connectionString = "URI=file:" + Application.streamingAssetsPath + "/user.db";
-        dbConnection = new SqliteConnection(connectionString);
-        dbConnection.Open();
+        dbManager = new DatabaseManager();
+        dbManager.Connect();
     }
 
     public void ShowInputForm()
@@ -72,12 +60,7 @@ public class InputFormHandler : MonoBehaviour
             }
         }
 
-        IDbCommand dbCommand = dbConnection.CreateCommand();
-        dbCommand.CommandText = $"INSERT INTO user (user_name, age, parent_phone, address, gender, registered) VALUES ('{user.name}', {user.age}, '{user.parent_phone}', '{user.address}', {user.gender}, '{user.registered}')";
-        dbCommand.ExecuteNonQuery();
-        dbCommand.Dispose();
-        dbConnection.Close();
-        //User isOk = dbManager.register(user);
+        bool isOk = dbManager.register(user);
         //dbManager.Disconnect();
 
         if (!isAnyEmpty || user.gender == -1)
@@ -100,7 +83,6 @@ public class InputFormHandler : MonoBehaviour
         if (selectedToggle != null)
         {
             return (selectedToggle.GetComponentInChildren<Text>().text == "남자") ? 0 : 1;
-            //return selectedToggle.GetComponentInChildren<Text>().text;  // Toggle의 텍스트를 가져옴
         }
 
         return -1;  // 선택된 값이 없을 경우
