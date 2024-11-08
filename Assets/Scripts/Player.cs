@@ -129,7 +129,7 @@ public class Player : MonoBehaviour
         PlayerPrefs.SetString("playerPosition", position);
     }
 
-    void EndReached(VideoPlayer vp)
+    void EndReached(VideoPlayer vp) // 영상 끝나면 타는 메서드
     {
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
         SceneManager.LoadScene("InformationScene");
