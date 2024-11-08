@@ -1618,7 +1618,6 @@ GameObject:
   - component: {fileID: 1010290226}
   - component: {fileID: 1010290227}
   - component: {fileID: 1010290228}
-  - component: {fileID: 1010290229}
   m_Layer: 0
   m_Name: g_Player
   m_TagString: Player
@@ -1816,24 +1815,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1010290229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1010290222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa631d7acf1f50549b5f1fb68a3703c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  portName: COM3
-  baudRate: 115200
-  character: {fileID: 1010290224}
-  schoolPosition: {x: -5, y: 0, z: 0}
-  cafePosition: {x: 0, y: 5, z: 0}
-  fireStationPosition: {x: 5, y: -5, z: 0}
 --- !u!1 &1017524838
 GameObject:
   m_ObjectHideFlags: 0

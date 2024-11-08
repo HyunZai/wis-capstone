@@ -7,6 +7,7 @@ using UnityEngine;
 public class CharacterMover : MonoBehaviour
 {
     public string portName = "COM3"; // 시리얼 포트 이름
+    // public string portName = "/dev/tty.usbmodem21301";
     public int baudRate = 115200;      // 시리얼 통신 속도
 
     private SerialPort serialPort;
