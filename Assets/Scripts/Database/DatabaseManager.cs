@@ -1,7 +1,7 @@
+using System;
 using System.Data;
 using System.Data.Common;
 using Mono.Data.Sqlite;
-using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 
 public class DatabaseManager
@@ -35,7 +35,7 @@ public class DatabaseManager
                 user.registered = dataReader.GetString(6);
             }
         }
-        catch (SQLiteException ex) 
+        catch (Exception ex) 
         {
             Debug.LogError("로그인 실패 : " + ex);
         }
@@ -56,7 +56,7 @@ public class DatabaseManager
         {
             dbCommand.ExecuteNonQuery();
         }
-        catch (SQLiteException ex) 
+        catch (Exception ex) 
         {
             Debug.LogError("사용자 정보 등록 실패 : " + ex);  // 프리팹이 할당되지 않았을 경우 오류 메시지
         }
