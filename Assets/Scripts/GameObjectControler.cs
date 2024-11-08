@@ -69,8 +69,7 @@ public class GameObjectControler : MonoBehaviour
         endBtn.onClick.AddListener(endBtnClick);
         SetPopup();
     }
-    void GameStart()
-    {
+    void GameStart(){
         ResetImage();
         startBtn.gameObject.SetActive(false);
         ActiveClickBtns();
@@ -80,26 +79,17 @@ public class GameObjectControler : MonoBehaviour
     void SetGameObjectsPos(){
         moveTime += Time.deltaTime; // 경과 시간 증가
         float t = moveSpeed* Time.deltaTime;
-        if(isGameStarted)
-        {
-            for(int i = 0; i< ginius.Length-1; i++){
-            ginius[i].transform.position = Vector2.Lerp(ginius[i].transform.position, giniusPos + new Vector2(i,0), t);
-            }
-            //answerImage.transform.position = Vector2.Lerp(answerImage.transform.position, playImagePanelPos, t);
-            truck.transform.position = Vector2.Lerp(truck.transform.position, playTruckPos, t);
-            itemPanel.transform.position = Vector2.Lerp(itemPanel.transform.position, playtPenalPos, t);
-
-            if (//Vector2.Distance(answerImage.transform.position, playImagePanelPos) < 0.1f &&
-                Vector2.Distance(truck.transform.position, playTruckPos) < 0.1f &&
-                Vector2.Distance(itemPanel.transform.position, playtPenalPos) < 0.1f)
-            {
+        if(isGameStarted){
+            truck.transform.position = Vector2.Lerp(truck.transform.position, playTruckPos, t); 
+            if (Vector2.Distance(truck.transform.position, playTruckPos) < 0.1f &&
+                Vector2.Distance(itemPanel.transform.position, playtPenalPos) < 0.1f){
                 imagin.SetActive(true);
                 answerImage.SetActive(true);
                 isGameStarted = false; // 게임 시작 상태 종료
             }
         }
         else if(isGameEnd){
-            truck.transform.position = Vector2.Lerp(truck.transform.position, endTruckPos, Time.deltaTime * moveSpeed);
+            truck.transform.position = Vector2.MoveTowards(truck.transform.position, endTruckPos, Time.deltaTime * moveSpeed);
             if(Vector2.Distance(truck.transform.position, endTruckPos) < 0.1f){
             endBtn.gameObject.SetActive(true);
             
@@ -107,43 +97,34 @@ public class GameObjectControler : MonoBehaviour
             }
         }
     }
-    void ActiveClickBtns()
-    {
-        for (int i = 0; i < selectedImageList.Length; i++)
-        {
+    void ActiveClickBtns(){
+        for (int i = 0; i < selectedImageList.Length; i++){
             clickBtns[i].gameObject.SetActive(true);
             int index = i;  // 지역 변수로 저장
             clickBtns[index].onClick.AddListener(() => CheckMatchImage(index));
         }
     }
-    void ResetImage()
-    {
+    void ResetImage(){
         int[] randN = new int[3];
-        for (int i = 0; i < randN.Length; i++)
-        {
+        for (int i = 0; i < randN.Length; i++){
             randN[i] = Random.Range(0, imageList.Length);
-            for (int j = 0; j < i; j++) // j는 i보다 작아야 중복 검사 가능
-            {
-                if (randN[i] == randN[j])
-                {
+            for (int j = 0; j < i; j++) {
+                if (randN[i] == randN[j]){
                     i--; // 중복 발생 시 다시 뽑기
                     break;
                 }
             }
         }
-        for (int i = 0; i < targets.Length; i++)
-        {
+        for (int i = 0; i < targets.Length; i++){
             targets[i].gameObject.GetComponent<SpriteRenderer>().sprite = imageList[randN[i]].gameObject.GetComponent<SpriteRenderer>().sprite;
         }
         SetAnswer();
     }
-    void SetAnswer()
-    {
+    void SetAnswer(){
         int randAnswer = Random.Range(0, selectedImageList.Length);
         answer.GetComponent<SpriteRenderer>().sprite = targets[randAnswer].GetComponent<SpriteRenderer>().sprite;
     }
-    void CheckMatchImage(int i)
-    {
+    void CheckMatchImage(int i){
         if (targets[i].GetComponent<SpriteRenderer>().sprite.name == answer.GetComponent<SpriteRenderer>().sprite.name)
         {
             isAnswer = true;
@@ -167,8 +148,7 @@ public class GameObjectControler : MonoBehaviour
         panel.gameObject.SetActive(true);
         StartCoroutine(AfterDelay(2.0f, panel));
     }
-    IEnumerator AfterDelay(float delay, GameObject panel)
-    {
+    IEnumerator AfterDelay(float delay, GameObject panel){
         yield return new WaitForSeconds(delay);  // delay만큼 기다림
         panel.SetActive(false);  // 창 닫기
         if(isAnswerCount >= 3){
@@ -187,7 +167,6 @@ public class GameObjectControler : MonoBehaviour
     void EndGame(){
         isGameEnd =true;
     }
-    
     void endBtnClick() {
         SceneManager.LoadScene("MapScene");
     }

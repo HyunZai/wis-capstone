@@ -99,6 +99,7 @@ public class CC : MonoBehaviour
         AskGOHomeMode();
         PlayerPrefs.SetInt("DestinationPoinNum", destinationNum);
         PlayerPrefs.Save();
+        
         videoPlayer.Play();
         }
     void GoHomeButtonClick(){
@@ -137,6 +138,8 @@ public class CC : MonoBehaviour
     IEnumerator GoDestination(){ 
         isMove = true;
 
+        beforePP = pp;
+        
         while(Vector2.Distance(pp,dp[beforeDestination])>0.1f){
             player.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
             yield return null;
@@ -340,39 +343,56 @@ public class CC : MonoBehaviour
         ActivateBuildingBtns();
     }
     private void OnTriggerEnter2D(Collider2D other) {
-
+        string a="";
         if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null) 
         {
             switch (other.gameObject.name)
             {
                 case "0.School":
                     videoPlayer.clip = videoClips[0];
+                    a = "School";
                     break;
                 case "1.Cafe":
                     videoPlayer.clip = videoClips[1];
+                    a ="Cafe";
                     break;
                 case "2.FireStation":
                     videoPlayer.clip = videoClips[2];
+                    a = "FireStation";
                     break;
                 case "3.Library":
                     videoPlayer.clip = videoClips[3];
+                    a= "Library";
                     break;
                 case "4.Home":
                     videoPlayer.clip = videoClips[4];
+                    a= "Home";
                     break;
                 case "5.Market":
                     videoPlayer.clip = videoClips[5];
+                    a= "Mart";
                     break;
                 case "6.PoliceOffice":
                     videoPlayer.clip = videoClips[6];
+                    a= "Police";
                     break;
                 case "7.Bank":
                     videoPlayer.clip = videoClips[7];
+                    a="Bank";
                     break;
                 case "8.Hospital":
                     videoPlayer.clip = videoClips[8];
+                    a="Hospital";
                     break;
             }    
+        }
+
+        if (PlayerPrefs.HasKey(a + "VisitCount") && a != null)
+            PlayerPrefs.SetInt(a + "VisitCount", PlayerPrefs.GetInt(other.gameObject.name + "VisitCount") + 1);
+        else if(a!= null)
+            PlayerPrefs.SetInt(a+ "VisitCount", 1);
+        else if(a== null){
+            Debug.Log("String is NUll");
         }
     }
     void EndReached(VideoPlayer vp)
