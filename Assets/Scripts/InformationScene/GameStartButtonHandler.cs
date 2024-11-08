@@ -41,13 +41,7 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
             "SchoolAnimalNameDrawingGameScene",
             "SchoolLendingThingsGameScene"
         };
-
-
-        // DirectoryInfo scenesDirPath = new DirectoryInfo(Application.dataPath + "/Scenes");
-        // List<FileInfo> scenesFiles = scenesDirPath.GetFiles().ToList().FindAll(scene => !scene.Name.Contains(".meta") && scene.Name.Contains("GameScene") && scene.Name.Contains(buildingName));
-    
-        // foreach(FileInfo file in scenesFiles) gameScenes.Add(file.Name.Split(".")[0]);
-
+        
         int index = BuildingVisitCount - 1;
 
         List<string> gameScenes = new List<string>();

@@ -14,6 +14,10 @@ public class GameExitButton : MonoBehaviour
 
     void ExitGameButtonClick() 
     {
+        //들어오면서 카운팅 된 VisitCount - 1
+        string buildingName = PlayerPrefs.GetString("BuildingName");
+        PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") - 1);
+
         SceneManager.LoadScene("MapScene");
     }
 }
