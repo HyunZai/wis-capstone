@@ -343,55 +343,55 @@ public class CC : MonoBehaviour
         ActivateBuildingBtns();
     }
     private void OnTriggerEnter2D(Collider2D other) {
-        string a="";
+        string buildingName = "";
         if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null) 
         {
             switch (other.gameObject.name)
             {
                 case "0.School":
                     videoPlayer.clip = videoClips[0];
-                    a = "School";
+                    buildingName = "School";
                     break;
                 case "1.Cafe":
                     videoPlayer.clip = videoClips[1];
-                    a ="Cafe";
+                    buildingName ="Cafe";
                     break;
                 case "2.FireStation":
                     videoPlayer.clip = videoClips[2];
-                    a = "FireStation";
+                    buildingName = "FireStation";
                     break;
                 case "3.Library":
                     videoPlayer.clip = videoClips[3];
-                    a= "Library";
+                    buildingName = "Library";
                     break;
                 case "4.Home":
                     videoPlayer.clip = videoClips[4];
-                    a= "Home";
+                    buildingName = "Home";
                     break;
                 case "5.Market":
                     videoPlayer.clip = videoClips[5];
-                    a= "Mart";
+                    buildingName = "Mart";
                     break;
                 case "6.PoliceOffice":
                     videoPlayer.clip = videoClips[6];
-                    a= "Police";
+                    buildingName = "Police";
                     break;
                 case "7.Bank":
                     videoPlayer.clip = videoClips[7];
-                    a="Bank";
+                    buildingName ="Bank";
                     break;
                 case "8.Hospital":
                     videoPlayer.clip = videoClips[8];
-                    a="Hospital";
+                    buildingName ="Hospital";
                     break;
             }    
         }
 
-        if (PlayerPrefs.HasKey(a + "VisitCount") && a != null)
-            PlayerPrefs.SetInt(a + "VisitCount", PlayerPrefs.GetInt(other.gameObject.name + "VisitCount") + 1);
-        else if(a!= null)
-            PlayerPrefs.SetInt(a+ "VisitCount", 1);
-        else if(a== null){
+        if (PlayerPrefs.HasKey(buildingName + "VisitCount") && buildingName != null)
+            PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
+        else if(buildingName != null)
+            PlayerPrefs.SetInt(buildingName + "VisitCount", 1);
+        else if(buildingName == null){
             Debug.Log("String is NUll");
         }
     }
