@@ -823,52 +823,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.6394682, y: 0.5451908}
   m_EdgeRadius: 0
---- !u!1 &340240934
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 340240936}
-  - component: {fileID: 340240935}
-  m_Layer: 0
-  m_Name: SerialTest
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &340240935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 340240934}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca1924f1df8084d559fc052d9a9a8019, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  portNum: COM3
-  baudRate: 19200
---- !u!4 &340240936
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 340240934}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &366702085
 GameObject:
   m_ObjectHideFlags: 0
@@ -1664,6 +1618,7 @@ GameObject:
   - component: {fileID: 1010290226}
   - component: {fileID: 1010290227}
   - component: {fileID: 1010290228}
+  - component: {fileID: 1010290229}
   m_Layer: 0
   m_Name: g_Player
   m_TagString: Player
@@ -1861,6 +1816,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1010290229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1010290222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa631d7acf1f50549b5f1fb68a3703c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portName: COM3
+  baudRate: 115200
+  character: {fileID: 1010290224}
+  schoolPosition: {x: -5, y: 0, z: 0}
+  cafePosition: {x: 0, y: 5, z: 0}
+  fireStationPosition: {x: 5, y: -5, z: 0}
 --- !u!1 &1017524838
 GameObject:
   m_ObjectHideFlags: 0
@@ -4447,4 +4420,3 @@ SceneRoots:
   - {fileID: 1444099217}
   - {fileID: 682062731}
   - {fileID: 2072985129}
-  - {fileID: 340240936}

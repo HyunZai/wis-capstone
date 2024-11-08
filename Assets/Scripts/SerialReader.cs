@@ -8,7 +8,7 @@ public class SerialReader : MonoBehaviour
 {
     SerialPort serialPort;
     public string portName = "COM3"; // 사용 중인 포트 이름으로 변경
-    public int baudRate = 9600;
+    public int baudRate = 115200;
 
     Thread serialThread;
     private bool isRunning = false;
@@ -95,5 +95,14 @@ public class SerialReader : MonoBehaviour
         {
             serialPort.Close();  // 시리얼 포트 닫기
         }
+
+        // 스레드 종료 대기 - 최대 1초로 설정하여 무기한 대기 방지
+        // if (serialThread != null && serialThread.IsAlive)
+        // {
+        //     if (!serialThread.Join(1000))  // 1초 대기
+        //     {
+        //         Debug.LogWarning("Serial thread did not terminate in time.");
+        //     }
+        // }
     }
 }
