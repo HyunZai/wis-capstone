@@ -59,6 +59,7 @@ public class CC : MonoBehaviour
     }
     ///////////For BeforeStart    
     void SetBeforeStart(){ 
+        Time.timeScale = 1f;
         characterList = GameObject.FindGameObjectsWithTag("Player").OrderBy(p => p.name).ToArray();
         crossPoints = GameObject.FindGameObjectsWithTag("CrossPoint").OrderBy(crossingPoint => crossingPoint.name).ToArray();
         destinationPoints = GameObject.FindGameObjectsWithTag("DestinationPoint").OrderBy(distinationPoint => distinationPoint.name).ToArray(); 
@@ -147,7 +148,6 @@ public class CC : MonoBehaviour
                 }else{
                     destinationNum = gotoHere;
                     StartCoroutine(GoSetDestination());
-                    Debug.Log("Setasdfasdfalskdf");
                 }
             }
             else if(goHomeMode){
@@ -174,18 +174,15 @@ public class CC : MonoBehaviour
         }
     }
     IEnumerator GoSetDestination(){ 
-        Debug.Log("intoGosetDestination1");
         isMoveNow = true;
         beforePP = pp;
 
         if(beforeDestination != destinationNum || beforeDestination == setHome || goHomeMode){
-            Debug.Log("intoGosetDestination2");
             while(Vector2.Distance(pp,dp[beforeDestination])>=0.01f){
                 player.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
                 yield return null;
             }
             beforePP = pp;
-            Debug.Log("in1");
 
             var (numB, numP) = SetCrossPoint();
 
@@ -195,8 +192,6 @@ public class CC : MonoBehaviour
                     yield return null;
                 }
                 beforePP = pp;
-                
-                Debug.Log("in2");
 
                 while(Vector2.Distance(pp,cp[numB])>0.01f){
                     player.transform.position = Vector2.MoveTowards(pp,cp[numB],moveSpeed* Time.deltaTime);
@@ -204,7 +199,6 @@ public class CC : MonoBehaviour
                     yield return null;
                 }
                 beforePP = pp;
-                Debug.Log("in3");
             }
 
             while(Vector2.Distance(pp,dp[destinationNum])>0.01f){
@@ -212,9 +206,7 @@ public class CC : MonoBehaviour
                 yield return null;
             }
             beforePP = pp;
-            Debug.Log("in4");
         }
-        Debug.Log("intoGosetDestination3");
         while(Vector2.Distance(pp,bp[destinationNum])>=0.001f){
             player.transform.position = Vector2.MoveTowards(pp,bp[destinationNum],moveSpeed* Time.deltaTime);
             yield return null;
@@ -224,9 +216,7 @@ public class CC : MonoBehaviour
       
         PlayerPrefs.SetInt("DestinationPoinNum", destinationNum);
         PlayerPrefs.Save();
-
-        Debug.Log("asdfasdf");
-
+        
         beforeDestination = destinationNum;
         if(goHomeMode){ 
             if(destinationNum == setHome) {
