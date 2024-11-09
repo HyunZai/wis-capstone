@@ -33,7 +33,7 @@ public class CC : MonoBehaviour
     public GameObject popup;
     public float popupDelay = 2.0f;
     TextMeshProUGUI askText;
-    public bool goHomeMode, isMove = false;
+    public bool goHomeMode, isMoveNow = false;
     
     public GameObject buildingBtns;
     
@@ -90,12 +90,11 @@ public class CC : MonoBehaviour
         if(!goHomeMode)player.transform.position = (dp[loadPosNum] + bp[loadPosNum])/2;
 
         if (anim == null) anim = GetComponent<Animator>();  
-        if (videoPlayer != null) videoPlayer.loopPointReached += EndReached;
+        
+        videoPlayer.loopPointReached += EndReached;
         if(destinationNum != setHome) {
-            DeActivateBuildingBtns();
             AskGoHomePopup();
         }
-        isMove  = false; 
     }
     
     ///////////For Popup Button
@@ -140,7 +139,7 @@ public class CC : MonoBehaviour
         return (numB,  numP);
     }
     void SetDestination(int gotoHere){
-        if(isMove == false){
+        if(isMoveNow == false){
             if(!goHomeMode)
             {
                 if(gotoHere == setHome){
@@ -148,6 +147,7 @@ public class CC : MonoBehaviour
                 }else{
                     destinationNum = gotoHere;
                     StartCoroutine(GoSetDestination());
+                    Debug.Log("Setasdfasdfalskdf");
                 }
             }
             else if(goHomeMode){
@@ -169,21 +169,23 @@ public class CC : MonoBehaviour
                 }         
             }
             
-        }else if(isMove == true){
+        }else if(isMoveNow == true){
             ShowPopup("캐릭터가 이동 중 입니다!");
         }
     }
     IEnumerator GoSetDestination(){ 
-        isMove = true;
+        Debug.Log("intoGosetDestination1");
+        isMoveNow = true;
         beforePP = pp;
 
-        if(beforeDestination != destinationNum || beforeDestination == setHome){
-            while(Vector2.Distance(pp,dp[beforeDestination])>0.01f){
+        if(beforeDestination != destinationNum || beforeDestination == setHome || goHomeMode){
+            Debug.Log("intoGosetDestination2");
+            while(Vector2.Distance(pp,dp[beforeDestination])>=0.01f){
                 player.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
                 yield return null;
             }
             beforePP = pp;
-
+            Debug.Log("in1");
 
             var (numB, numP) = SetCrossPoint();
 
@@ -193,6 +195,8 @@ public class CC : MonoBehaviour
                     yield return null;
                 }
                 beforePP = pp;
+                
+                Debug.Log("in2");
 
                 while(Vector2.Distance(pp,cp[numB])>0.01f){
                     player.transform.position = Vector2.MoveTowards(pp,cp[numB],moveSpeed* Time.deltaTime);
@@ -200,6 +204,7 @@ public class CC : MonoBehaviour
                     yield return null;
                 }
                 beforePP = pp;
+                Debug.Log("in3");
             }
 
             while(Vector2.Distance(pp,dp[destinationNum])>0.01f){
@@ -207,39 +212,36 @@ public class CC : MonoBehaviour
                 yield return null;
             }
             beforePP = pp;
+            Debug.Log("in4");
         }
-
+        Debug.Log("intoGosetDestination3");
         while(Vector2.Distance(pp,bp[destinationNum])>=0.001f){
             player.transform.position = Vector2.MoveTowards(pp,bp[destinationNum],moveSpeed* Time.deltaTime);
             yield return null;
         }
         beforePP = pp;
-        isMove = false;
+        isMoveNow = false;
       
         PlayerPrefs.SetInt("DestinationPoinNum", destinationNum);
         PlayerPrefs.Save();
 
         Debug.Log("asdfasdf");
 
-        if(goHomeMode){  
-            if(beforeDestination != homeRoute1 && beforeDestination != homeRoute2 && destinationNum != homeRoute1 && destinationNum!= setHome){
-                ShowPopup($"먼저 {BuildingName(homeRoute1)}으로 이동해주세요!");
-            }else if(beforeDestination == homeRoute1 && destinationNum != homeRoute2 ){
-                ShowPopup($"{BuildingName(homeRoute2)}으로 이동해주세요!");
-            }else if(beforeDestination == homeRoute2 && destinationNum != setHome){
-                ShowPopup($"{BuildingName(setHome)}으로 이동해주세요!");
-            }else if(goHomeMode && destinationNum == setHome) {
+        beforeDestination = destinationNum;
+        if(goHomeMode){ 
+            if(destinationNum == setHome) {
                 ShowPopup("집에 도착했어요! 저장완료!");
                 goHomeMode = false;
+            }else {
+                SetDestination(-1);
             }
         }    
         
-        beforeDestination = destinationNum;
     }
     
     ///////////// For Animation
     void MoveAnimation(){
-        if(isMove){
+        if(isMoveNow){
             anim.SetBool("ismove", true);
             isMoved.x = pp.x - beforePP.x;
             isMoved.y = pp.y - beforePP.y;
@@ -250,7 +252,7 @@ public class CC : MonoBehaviour
                 anim.SetFloat("inputx", 0.0f);
                 anim.SetFloat("inputy", isMoved.y > 0 ? 1.0f : -1.0f);
             }
-        }else if(!isMove){
+        }else if(!isMoveNow){
             anim.SetBool("ismove", false);
             anim.SetFloat("inputx", 0);
             anim.SetFloat("inputy", 0);
@@ -260,10 +262,12 @@ public class CC : MonoBehaviour
     
     //////////// For Popup To Return Home
     void AskGoHomePopup(){
+
+
+        askText.text = "집으로 돌아갈까요?";
         DeActivateBuildingBtns();
         nBtn.gameObject.SetActive(true);
         goHomeBtn.gameObject.SetActive(true);
-        askText.text = "집으로 돌아갈까요?";
         popup.SetActive(true);
     }
     void SetHomeRoute(){
@@ -367,8 +371,7 @@ public class CC : MonoBehaviour
           
 
            PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
-        //Debug.Log(buildingName+"VisitCount : "+PlayerPrefs.GetInt(buildingName + "VisitCount") );
-        
+     
         videoPlayer.Play();
         }
     }
