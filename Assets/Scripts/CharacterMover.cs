@@ -9,18 +9,10 @@ public class CharacterMover : MonoBehaviour
     public string portName = "COM3"; // 시리얼 포트 이름
     // public string portName = "/dev/tty.usbmodem21301";
     public int baudRate = 115200;      // 시리얼 통신 속도
-
     private SerialPort serialPort;
     private Thread serialThread;
     private bool isRunning = false;
     private ConcurrentQueue<string> dataQueue = new ConcurrentQueue<string>();
-
-    public Transform character;      // 움직일 캐릭터의 Transform
-
-    // 목표 위치 설정
-    public Vector3 schoolPosition = new Vector3(-5, 0, 0); // 학교 위치 예시
-    public Vector3 cafePosition = new Vector3(0, 5, 0);    // 카페 위치 예시
-    public Vector3 fireStationPosition = new Vector3(5, -5, 0); // 소방서 위치 예시
 
     // 시리얼 포트 통신 테스트용
     private LogManager logManager;
