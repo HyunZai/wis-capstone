@@ -33,7 +33,7 @@ public class CC : MonoBehaviour
     public GameObject popup;
     public float popupDelay = 2.0f;
     TextMeshProUGUI askText;
-    private bool goHomeMode, isMove = false;
+    public bool goHomeMode, isMove = false;
     
     public GameObject buildingBtns;
     
@@ -95,7 +95,7 @@ public class CC : MonoBehaviour
             DeActivateBuildingBtns();
             AskGoHomePopup();
         }
-            
+        isMove  = false; 
     }
     
     ///////////For Popup Button
@@ -114,8 +114,8 @@ public class CC : MonoBehaviour
         int numB = int.MaxValue;
         float minB= float.MaxValue;
         for(int i =0; i < crossPoints.Length; i++){
-            if(Mathf.Abs(dp[destinationNum].x - cp[i].x) < 0.1f 
-            || Mathf.Abs(dp[destinationNum].y-cp[i].y) < 0.1f)
+            if(Mathf.Abs(dp[destinationNum].x - cp[i].x) < 0.01f 
+            || Mathf.Abs(dp[destinationNum].y-cp[i].y) < 0.01f)
             {
                 if(minB > Vector2.Distance(pp ,cp[i])){
                     minB = Vector2.Distance(pp ,cp[i]);
@@ -126,10 +126,10 @@ public class CC : MonoBehaviour
         int numP = numB;
         for(int i =0; i< crossPoints.Length; i++){
           
-            if ((Mathf.Abs(cp[i].x - cp[numB].x) < 0.1f 
-                || Mathf.Abs(cp[i].y-cp[numB].y) < 0.1f) 
-                && (Mathf.Abs(pp.x - cp[i].x) < 0.1f 
-                || Mathf.Abs(pp.y - cp[i].y) < 0.1f)) {
+            if ((Mathf.Abs(cp[i].x - cp[numB].x) < 0.01f 
+                || Mathf.Abs(cp[i].y-cp[numB].y) < 0.01f) 
+                && (Mathf.Abs(pp.x - cp[i].x) < 0.01f 
+                || Mathf.Abs(pp.y - cp[i].y) < 0.01f)) {
                 if (numB ==i) {
                     numP =i;
                     break;
@@ -177,60 +177,53 @@ public class CC : MonoBehaviour
         isMove = true;
         beforePP = pp;
 
-        var (numB, numP) =SetCrossPoint();
-
-        if(beforeDestination != destinationNum){
-            while(Vector2.Distance(pp,dp[beforeDestination])>0.1f){
+        if(beforeDestination != destinationNum || beforeDestination == setHome){
+            while(Vector2.Distance(pp,dp[beforeDestination])>0.01f){
                 player.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
                 yield return null;
             }
             beforePP = pp;
 
 
-            if(!(Mathf.Abs(pp.x - dp[destinationNum].x) < 0.1f || Mathf.Abs(pp.y-dp[destinationNum].y)<0.1f)){
-                while(Vector2.Distance(pp,cp[numP])>0.1f){
+            var (numB, numP) = SetCrossPoint();
+
+            if(!(Mathf.Abs(pp.x - dp[destinationNum].x) < 0.01f || Mathf.Abs(pp.y-dp[destinationNum].y)<0.01f)){
+                while(Vector2.Distance(pp,cp[numP])>0.01f){
                     player.transform.position = Vector2.MoveTowards(pp,cp[numP],moveSpeed* Time.deltaTime);
                     yield return null;
                 }
                 beforePP = pp;
 
-                while(Vector2.Distance(pp,cp[numB])>0.1f){
+                while(Vector2.Distance(pp,cp[numB])>0.01f){
                     player.transform.position = Vector2.MoveTowards(pp,cp[numB],moveSpeed* Time.deltaTime);
-                    if(Vector2.Distance(pp,dp[destinationNum])<0.1f)yield break;
+                    if(Vector2.Distance(pp,dp[destinationNum])<0.01f)yield break;
                     yield return null;
                 }
                 beforePP = pp;
             }
 
-            while(Vector2.Distance(pp,dp[destinationNum])>0.1f){
+            while(Vector2.Distance(pp,dp[destinationNum])>0.01f){
                 player.transform.position = Vector2.MoveTowards(pp,dp[destinationNum],moveSpeed* Time.deltaTime);
                 yield return null;
             }
             beforePP = pp;
         }
 
-        while(Vector2.Distance(pp,bp[destinationNum])>0.1f){
+        while(Vector2.Distance(pp,bp[destinationNum])>=0.001f){
             player.transform.position = Vector2.MoveTowards(pp,bp[destinationNum],moveSpeed* Time.deltaTime);
             yield return null;
         }
         beforePP = pp;
-
+        isMove = false;
       
         PlayerPrefs.SetInt("DestinationPoinNum", destinationNum);
         PlayerPrefs.Save();
 
-        isMove = false;
-        // if(goHomeMode && destinationNum != setHome)SetDestination(-1);
-        // else if(goHomeMode && destinationNum == setHome) {
-        //     ShowPopup("집에 도착했어요! 저장완료!");
-        //     goHomeMode = false;
-        // }
+        Debug.Log("asdfasdf");
 
-
-        beforeDestination = destinationNum;
         if(goHomeMode){  
             if(beforeDestination != homeRoute1 && beforeDestination != homeRoute2 && destinationNum != homeRoute1 && destinationNum!= setHome){
-                        ShowPopup($"먼저 {BuildingName(homeRoute1)}으로 이동해주세요!");
+                ShowPopup($"먼저 {BuildingName(homeRoute1)}으로 이동해주세요!");
             }else if(beforeDestination == homeRoute1 && destinationNum != homeRoute2 ){
                 ShowPopup($"{BuildingName(homeRoute2)}으로 이동해주세요!");
             }else if(beforeDestination == homeRoute2 && destinationNum != setHome){
@@ -239,9 +232,9 @@ public class CC : MonoBehaviour
                 ShowPopup("집에 도착했어요! 저장완료!");
                 goHomeMode = false;
             }
-        }      
-
+        }    
         
+        beforeDestination = destinationNum;
     }
     
     ///////////// For Animation
@@ -338,7 +331,7 @@ public class CC : MonoBehaviour
     
     /////////For Move Scenes
     private void OnTriggerEnter2D(Collider2D other) { 
-        if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null&& !goHomeMode) 
+        if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null && !goHomeMode) 
         {
             buildingName = other.gameObject.name.Split(".")[1];
             switch (buildingName)
@@ -358,13 +351,11 @@ public class CC : MonoBehaviour
                 case "Home":
                     videoPlayer.clip = videoClips[4];
                     break;
-                case "Market":
+                case "Mart":
                     videoPlayer.clip = videoClips[5];
-                    buildingName = "Mart";
                     break;
-                case "PoliceOffice":
+                case "Police":
                     videoPlayer.clip = videoClips[6];
-                    buildingName = "Police";
                     break;
                 case "Bank":
                     videoPlayer.clip = videoClips[7];
@@ -376,13 +367,10 @@ public class CC : MonoBehaviour
           
 
            PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
-        Debug.Log(buildingName+"VisitCount : "+PlayerPrefs.GetInt(buildingName + "VisitCount") );
+        //Debug.Log(buildingName+"VisitCount : "+PlayerPrefs.GetInt(buildingName + "VisitCount") );
         
         videoPlayer.Play();
         }
-
-
-         
     }
     void EndReached(VideoPlayer vp)
     {
