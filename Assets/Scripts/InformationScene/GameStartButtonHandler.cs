@@ -34,7 +34,8 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
         };
         List<string> policeGameScenes = new List<string>
         {
-            "PoliceStationcatChingThievesGameScene"
+            "PoliceStationcatChingThievesGameScene",
+            "PoliceStationCardMatchGameScene"
         };
         List<string> schoolGameScenes = new List<string>
         {
