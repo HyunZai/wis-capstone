@@ -87,7 +87,7 @@ public class CC : MonoBehaviour
     
         destinationNum = loadPosNum;
         beforeDestination = loadPosNum;
-        player.transform.position = (dp[loadPosNum] + bp[loadPosNum])/2;
+        if(!goHomeMode)player.transform.position = (dp[loadPosNum] + bp[loadPosNum])/2;
 
         if (anim == null) anim = GetComponent<Animator>();  
         if (videoPlayer != null) videoPlayer.loopPointReached += EndReached;
@@ -105,6 +105,7 @@ public class CC : MonoBehaviour
     }
     void GoHomeButtonClick(){
         SetHomeRoute();
+        SetDestination(-1);
         ActivateBuildingBtns(); 
     }
    
@@ -139,8 +140,7 @@ public class CC : MonoBehaviour
         return (numB,  numP);
     }
     void SetDestination(int gotoHere){
-        if(destinationNum != gotoHere && isMove == false)
-        {
+        if(isMove == false){
             if(!goHomeMode)
             {
                 if(gotoHere == setHome){
@@ -151,33 +151,25 @@ public class CC : MonoBehaviour
                 }
             }
             else if(goHomeMode){
-                if (homeRoute1 == gotoHere && destinationNum != homeRoute2 && destinationNum != setHome){
+                if (homeRoute1 == gotoHere && destinationNum != homeRoute2 && destinationNum != homeRoute1 && destinationNum != setHome){
                     destinationNum = gotoHere;
                     StartCoroutine(GoSetDestination());
-                }else if(destinationNum == homeRoute1 && gotoHere == homeRoute2){
+                }else if(beforeDestination == homeRoute1 && gotoHere == homeRoute2 ){
                     destinationNum = gotoHere;
                     StartCoroutine(GoSetDestination()); 
-                }else if(destinationNum == homeRoute2 && gotoHere == setHome){
+                }else if(beforeDestination == homeRoute2 && gotoHere == setHome){
                     destinationNum = gotoHere;
                     StartCoroutine(GoSetDestination()); 
-                }else if(destinationNum != homeRoute1 && gotoHere != homeRoute1){
+                }else if(beforeDestination != homeRoute1 && beforeDestination != homeRoute2 && gotoHere != homeRoute1 && gotoHere!= setHome){
                     ShowPopup($"먼저 {BuildingName(homeRoute1)}으로 이동해주세요!");
-                }else if(destinationNum == homeRoute1 && gotoHere != homeRoute2){
+                }else if(beforeDestination == homeRoute1 && gotoHere != homeRoute2 ){
                     ShowPopup($"{BuildingName(homeRoute2)}으로 이동해주세요!");
-                }else if(destinationNum == homeRoute2 && gotoHere != setHome){
+                }else if(beforeDestination == homeRoute2 && gotoHere != setHome){
                     ShowPopup($"{BuildingName(setHome)}으로 이동해주세요!");
-                }else if(destinationNum == setHome){
-                    ShowPopup("집에 도착했어요! 저장완료!");
-                }                
+                }         
             }
             
-        }
-        else if(destinationNum == gotoHere)
-        {
-            ShowPopup("다른 건물을 선택해주세요!");
-        }
-        else if(isMove == true)
-        {
+        }else if(isMove == true){
             ShowPopup("캐릭터가 이동 중 입니다!");
         }
     }
@@ -185,34 +177,37 @@ public class CC : MonoBehaviour
         isMove = true;
         beforePP = pp;
 
-        while(Vector2.Distance(pp,dp[beforeDestination])>0.1f){
-            player.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
-            yield return null;
-        }
-        beforePP = pp;
-
         var (numB, numP) =SetCrossPoint();
 
-        if(!(Mathf.Abs(pp.x - dp[destinationNum].x) < 0.1f || Mathf.Abs(pp.y-dp[destinationNum].y)<0.1f)){
-            while(Vector2.Distance(pp,cp[numP])>0.1f){
-                player.transform.position = Vector2.MoveTowards(pp,cp[numP],moveSpeed* Time.deltaTime);
+        if(beforeDestination != destinationNum){
+            while(Vector2.Distance(pp,dp[beforeDestination])>0.1f){
+                player.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
                 yield return null;
             }
             beforePP = pp;
 
-            while(Vector2.Distance(pp,cp[numB])>0.1f){
-                player.transform.position = Vector2.MoveTowards(pp,cp[numB],moveSpeed* Time.deltaTime);
-                if(Vector2.Distance(pp,dp[destinationNum])<0.1f)yield break;
+
+            if(!(Mathf.Abs(pp.x - dp[destinationNum].x) < 0.1f || Mathf.Abs(pp.y-dp[destinationNum].y)<0.1f)){
+                while(Vector2.Distance(pp,cp[numP])>0.1f){
+                    player.transform.position = Vector2.MoveTowards(pp,cp[numP],moveSpeed* Time.deltaTime);
+                    yield return null;
+                }
+                beforePP = pp;
+
+                while(Vector2.Distance(pp,cp[numB])>0.1f){
+                    player.transform.position = Vector2.MoveTowards(pp,cp[numB],moveSpeed* Time.deltaTime);
+                    if(Vector2.Distance(pp,dp[destinationNum])<0.1f)yield break;
+                    yield return null;
+                }
+                beforePP = pp;
+            }
+
+            while(Vector2.Distance(pp,dp[destinationNum])>0.1f){
+                player.transform.position = Vector2.MoveTowards(pp,dp[destinationNum],moveSpeed* Time.deltaTime);
                 yield return null;
             }
             beforePP = pp;
         }
-
-        while(Vector2.Distance(pp,dp[destinationNum])>0.1f){
-            player.transform.position = Vector2.MoveTowards(pp,dp[destinationNum],moveSpeed* Time.deltaTime);
-            yield return null;
-        }
-        beforePP = pp;
 
         while(Vector2.Distance(pp,bp[destinationNum])>0.1f){
             player.transform.position = Vector2.MoveTowards(pp,bp[destinationNum],moveSpeed* Time.deltaTime);
@@ -220,10 +215,33 @@ public class CC : MonoBehaviour
         }
         beforePP = pp;
 
-        beforeDestination = destinationNum;
-        isMove = false;
+      
         PlayerPrefs.SetInt("DestinationPoinNum", destinationNum);
         PlayerPrefs.Save();
+
+        isMove = false;
+        // if(goHomeMode && destinationNum != setHome)SetDestination(-1);
+        // else if(goHomeMode && destinationNum == setHome) {
+        //     ShowPopup("집에 도착했어요! 저장완료!");
+        //     goHomeMode = false;
+        // }
+
+
+        beforeDestination = destinationNum;
+        if(goHomeMode){  
+            if(beforeDestination != homeRoute1 && beforeDestination != homeRoute2 && destinationNum != homeRoute1 && destinationNum!= setHome){
+                        ShowPopup($"먼저 {BuildingName(homeRoute1)}으로 이동해주세요!");
+            }else if(beforeDestination == homeRoute1 && destinationNum != homeRoute2 ){
+                ShowPopup($"{BuildingName(homeRoute2)}으로 이동해주세요!");
+            }else if(beforeDestination == homeRoute2 && destinationNum != setHome){
+                ShowPopup($"{BuildingName(setHome)}으로 이동해주세요!");
+            }else if(goHomeMode && destinationNum == setHome) {
+                ShowPopup("집에 도착했어요! 저장완료!");
+                goHomeMode = false;
+            }
+        }      
+
+        
     }
     
     ///////////// For Animation
@@ -284,7 +302,6 @@ public class CC : MonoBehaviour
                 homeRoute2 =i;
             }
         }
-        SetDestination(setHome); // 집가는 안내 띄우려고 만든거
     }
     string BuildingName(int PointNum){
         string stringName;
@@ -321,7 +338,7 @@ public class CC : MonoBehaviour
     
     /////////For Move Scenes
     private void OnTriggerEnter2D(Collider2D other) { 
-        if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null) 
+        if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null&& !goHomeMode) 
         {
             buildingName = other.gameObject.name.Split(".")[1];
             switch (buildingName)
@@ -360,9 +377,10 @@ public class CC : MonoBehaviour
 
            PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
         Debug.Log(buildingName+"VisitCount : "+PlayerPrefs.GetInt(buildingName + "VisitCount") );
+        
+        videoPlayer.Play();
         }
 
-        videoPlayer.Play();
 
          
     }
