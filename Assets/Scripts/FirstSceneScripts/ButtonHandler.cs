@@ -1,10 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using MySql.Data.MySqlClient;
 using TMPro;
 using UnityEngine;
-using UnityEngine.U2D.IK;
 using UnityEngine.UI;
 
 public class ButtonHandler : MonoBehaviour
@@ -18,6 +13,7 @@ public class ButtonHandler : MonoBehaviour
     public TextMeshProUGUI title;
 
     private DatabaseManager dbManager;
+    
     void Start()
     {
         continueButton.onClick.AddListener(ContinueButtonClick);
@@ -32,7 +28,6 @@ public class ButtonHandler : MonoBehaviour
         HideButtons();
 
         User user = dbManager.login();
-        dbManager.Disconnect();
         if (user.name != null)
         {
             if (progressbarHandler != null) progressbarHandler.StartLoading();
