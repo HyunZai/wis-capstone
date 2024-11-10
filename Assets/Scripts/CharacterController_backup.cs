@@ -1,23 +1,13 @@
-
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using TMPro;
-using Unity.Collections;
-using Unity.Mathematics;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
-using UnityEngine.Windows;
-using Random = UnityEngine.Random;
 
-public class CC : MonoBehaviour
+public class CharacterSensorController : MonoBehaviour
 {   
     public GameObject player;    //메인 캐릭터 지정
     float moveSpeed = 4.0f;
@@ -42,9 +32,6 @@ public class CC : MonoBehaviour
     public VideoClip[] videoClips;
     private VideoPlayer videoPlayer;
     string buildingName;
-
-
-
 
     ///////////Codes
     void Awake(){
@@ -139,7 +126,7 @@ public class CC : MonoBehaviour
         }
         return (numB,  numP);
     }
-    public void SetDestination(int gotoHere){
+    void SetDestination(int gotoHere){
         if(isMoveNow == false){
             if(!goHomeMode)
             {

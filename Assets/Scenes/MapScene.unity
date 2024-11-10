@@ -2094,6 +2094,7 @@ GameObject:
   - component: {fileID: 1010290226}
   - component: {fileID: 1010290227}
   - component: {fileID: 1010290228}
+  - component: {fileID: 1010290230}
   m_Layer: 0
   m_Name: g_Player
   m_TagString: Player
@@ -2306,6 +2307,20 @@ MonoBehaviour:
   - {fileID: 32900000, guid: 97031b993e8b94d7c91cef002090355d, type: 3}
   - {fileID: 32900000, guid: 2016a70de9ee240f19d327135bb593d7, type: 3}
   - {fileID: 32900000, guid: 3c6ac7f871566408394bed5e1f18813f, type: 3}
+--- !u!114 &1010290230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1010290222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa631d7acf1f50549b5f1fb68a3703c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portName: COM3
+  baudRate: 115200
 --- !u!1 &1040270215
 GameObject:
   m_ObjectHideFlags: 0

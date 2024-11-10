@@ -14,6 +14,8 @@ public class CharacterMover : MonoBehaviour
     private bool isRunning = false;
     private ConcurrentQueue<string> dataQueue = new ConcurrentQueue<string>();
 
+    private CC characterController = new CC();
+
     // 시리얼 포트 통신 테스트용
     private LogManager logManager;
 
@@ -71,6 +73,7 @@ public class CharacterMover : MonoBehaviour
     {
         logManager.Log($"시리얼 포트로부터 받은 데이터: {data}", "", LogType.Log);
         Debug.Log($"받은 데이터: {data}");
+        characterController.SetDestination(data.Trim().ToCharArray()[1]);
         // switch (data.Trim())
         // {
         //     case "01":
