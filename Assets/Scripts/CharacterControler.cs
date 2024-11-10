@@ -33,7 +33,7 @@ public class CC : MonoBehaviour
     public GameObject popup;
     public float popupDelay = 2.0f;
     TextMeshProUGUI askText;
-    private bool goHomeMode, isMove = false;
+    public bool goHomeMode, isMoveNow = false;
     
     public GameObject buildingBtns;
     
@@ -59,6 +59,7 @@ public class CC : MonoBehaviour
     }
     ///////////For BeforeStart    
     void SetBeforeStart(){ 
+        Time.timeScale = 1f;
         characterList = GameObject.FindGameObjectsWithTag("Player").OrderBy(p => p.name).ToArray();
         crossPoints = GameObject.FindGameObjectsWithTag("CrossPoint").OrderBy(crossingPoint => crossingPoint.name).ToArray();
         destinationPoints = GameObject.FindGameObjectsWithTag("DestinationPoint").OrderBy(distinationPoint => distinationPoint.name).ToArray(); 
@@ -87,15 +88,14 @@ public class CC : MonoBehaviour
     
         destinationNum = loadPosNum;
         beforeDestination = loadPosNum;
-        player.transform.position = (dp[loadPosNum] + bp[loadPosNum])/2;
+        if(!goHomeMode)player.transform.position = (dp[loadPosNum] + bp[loadPosNum])/2;
 
         if (anim == null) anim = GetComponent<Animator>();  
-        if (videoPlayer != null) videoPlayer.loopPointReached += EndReached;
+        
+        videoPlayer.loopPointReached += EndReached;
         if(destinationNum != setHome) {
-            DeActivateBuildingBtns();
             AskGoHomePopup();
         }
-            
     }
     
     ///////////For Popup Button
@@ -105,6 +105,7 @@ public class CC : MonoBehaviour
     }
     void GoHomeButtonClick(){
         SetHomeRoute();
+        SetDestination(-1);
         ActivateBuildingBtns(); 
     }
    
@@ -113,8 +114,8 @@ public class CC : MonoBehaviour
         int numB = int.MaxValue;
         float minB= float.MaxValue;
         for(int i =0; i < crossPoints.Length; i++){
-            if(Mathf.Abs(dp[destinationNum].x - cp[i].x) < 0.1f 
-            || Mathf.Abs(dp[destinationNum].y-cp[i].y) < 0.1f)
+            if(Mathf.Abs(dp[destinationNum].x - cp[i].x) < 0.01f 
+            || Mathf.Abs(dp[destinationNum].y-cp[i].y) < 0.01f)
             {
                 if(minB > Vector2.Distance(pp ,cp[i])){
                     minB = Vector2.Distance(pp ,cp[i]);
@@ -125,10 +126,10 @@ public class CC : MonoBehaviour
         int numP = numB;
         for(int i =0; i< crossPoints.Length; i++){
           
-            if ((Mathf.Abs(cp[i].x - cp[numB].x) < 0.1f 
-                || Mathf.Abs(cp[i].y-cp[numB].y) < 0.1f) 
-                && (Mathf.Abs(pp.x - cp[i].x) < 0.1f 
-                || Mathf.Abs(pp.y - cp[i].y) < 0.1f)) {
+            if ((Mathf.Abs(cp[i].x - cp[numB].x) < 0.01f 
+                || Mathf.Abs(cp[i].y-cp[numB].y) < 0.01f) 
+                && (Mathf.Abs(pp.x - cp[i].x) < 0.01f 
+                || Mathf.Abs(pp.y - cp[i].y) < 0.01f)) {
                 if (numB ==i) {
                     numP =i;
                     break;
@@ -139,8 +140,7 @@ public class CC : MonoBehaviour
         return (numB,  numP);
     }
     void SetDestination(int gotoHere){
-        if(destinationNum != gotoHere && isMove == false)
-        {
+        if(isMoveNow == false){
             if(!goHomeMode)
             {
                 if(gotoHere == setHome){
@@ -151,84 +151,87 @@ public class CC : MonoBehaviour
                 }
             }
             else if(goHomeMode){
-                if (homeRoute1 == gotoHere && destinationNum != homeRoute2 && destinationNum != setHome){
+                if (homeRoute1 == gotoHere && destinationNum != homeRoute2 && destinationNum != homeRoute1 && destinationNum != setHome){
                     destinationNum = gotoHere;
                     StartCoroutine(GoSetDestination());
-                }else if(destinationNum == homeRoute1 && gotoHere == homeRoute2){
+                }else if(beforeDestination == homeRoute1 && gotoHere == homeRoute2 ){
                     destinationNum = gotoHere;
                     StartCoroutine(GoSetDestination()); 
-                }else if(destinationNum == homeRoute2 && gotoHere == setHome){
+                }else if(beforeDestination == homeRoute2 && gotoHere == setHome){
                     destinationNum = gotoHere;
                     StartCoroutine(GoSetDestination()); 
-                }else if(destinationNum != homeRoute1 && gotoHere != homeRoute1){
+                }else if(beforeDestination != homeRoute1 && beforeDestination != homeRoute2 && gotoHere != homeRoute1 && gotoHere!= setHome){
                     ShowPopup($"먼저 {BuildingName(homeRoute1)}으로 이동해주세요!");
-                }else if(destinationNum == homeRoute1 && gotoHere != homeRoute2){
+                }else if(beforeDestination == homeRoute1 && gotoHere != homeRoute2 ){
                     ShowPopup($"{BuildingName(homeRoute2)}으로 이동해주세요!");
-                }else if(destinationNum == homeRoute2 && gotoHere != setHome){
+                }else if(beforeDestination == homeRoute2 && gotoHere != setHome){
                     ShowPopup($"{BuildingName(setHome)}으로 이동해주세요!");
-                }else if(destinationNum == setHome){
-                    ShowPopup("집에 도착했어요! 저장완료!");
-                }                
+                }         
             }
             
-        }
-        else if(destinationNum == gotoHere)
-        {
-            ShowPopup("다른 건물을 선택해주세요!");
-        }
-        else if(isMove == true)
-        {
+        }else if(isMoveNow == true){
             ShowPopup("캐릭터가 이동 중 입니다!");
         }
     }
     IEnumerator GoSetDestination(){ 
-        isMove = true;
+        isMoveNow = true;
         beforePP = pp;
 
-        while(Vector2.Distance(pp,dp[beforeDestination])>0.1f){
-            player.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
-            yield return null;
-        }
-        beforePP = pp;
-
-        var (numB, numP) =SetCrossPoint();
-
-        if(!(Mathf.Abs(pp.x - dp[destinationNum].x) < 0.1f || Mathf.Abs(pp.y-dp[destinationNum].y)<0.1f)){
-            while(Vector2.Distance(pp,cp[numP])>0.1f){
-                player.transform.position = Vector2.MoveTowards(pp,cp[numP],moveSpeed* Time.deltaTime);
+        if(beforeDestination != destinationNum || beforeDestination == setHome || goHomeMode){
+            while(Vector2.Distance(pp,dp[beforeDestination])>=0.01f){
+                player.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
                 yield return null;
             }
             beforePP = pp;
 
-            while(Vector2.Distance(pp,cp[numB])>0.1f){
-                player.transform.position = Vector2.MoveTowards(pp,cp[numB],moveSpeed* Time.deltaTime);
-                if(Vector2.Distance(pp,dp[destinationNum])<0.1f)yield break;
+            var (numB, numP) = SetCrossPoint();
+
+            if(!(Mathf.Abs(pp.x - dp[destinationNum].x) < 0.01f || Mathf.Abs(pp.y-dp[destinationNum].y)<0.01f)){
+                while(Vector2.Distance(pp,cp[numP])>0.01f){
+                    player.transform.position = Vector2.MoveTowards(pp,cp[numP],moveSpeed* Time.deltaTime);
+                    yield return null;
+                }
+                beforePP = pp;
+
+                while(Vector2.Distance(pp,cp[numB])>0.01f){
+                    player.transform.position = Vector2.MoveTowards(pp,cp[numB],moveSpeed* Time.deltaTime);
+                    if(Vector2.Distance(pp,dp[destinationNum])<0.01f)yield break;
+                    yield return null;
+                }
+                beforePP = pp;
+            }
+
+            while(Vector2.Distance(pp,dp[destinationNum])>0.01f){
+                player.transform.position = Vector2.MoveTowards(pp,dp[destinationNum],moveSpeed* Time.deltaTime);
                 yield return null;
             }
             beforePP = pp;
         }
-
-        while(Vector2.Distance(pp,dp[destinationNum])>0.1f){
-            player.transform.position = Vector2.MoveTowards(pp,dp[destinationNum],moveSpeed* Time.deltaTime);
-            yield return null;
-        }
-        beforePP = pp;
-
-        while(Vector2.Distance(pp,bp[destinationNum])>0.1f){
+        while(Vector2.Distance(pp,bp[destinationNum])>=0.001f){
             player.transform.position = Vector2.MoveTowards(pp,bp[destinationNum],moveSpeed* Time.deltaTime);
             yield return null;
         }
         beforePP = pp;
-
-        beforeDestination = destinationNum;
-        isMove = false;
+        isMoveNow = false;
+      
         PlayerPrefs.SetInt("DestinationPoinNum", destinationNum);
         PlayerPrefs.Save();
+        
+        beforeDestination = destinationNum;
+        if(goHomeMode){ 
+            if(destinationNum == setHome) {
+                ShowPopup("집에 도착했어요! 저장완료!");
+                goHomeMode = false;
+            }else {
+                SetDestination(-1);
+            }
+        }    
+        
     }
     
     ///////////// For Animation
     void MoveAnimation(){
-        if(isMove){
+        if(isMoveNow){
             anim.SetBool("ismove", true);
             isMoved.x = pp.x - beforePP.x;
             isMoved.y = pp.y - beforePP.y;
@@ -239,7 +242,7 @@ public class CC : MonoBehaviour
                 anim.SetFloat("inputx", 0.0f);
                 anim.SetFloat("inputy", isMoved.y > 0 ? 1.0f : -1.0f);
             }
-        }else if(!isMove){
+        }else if(!isMoveNow){
             anim.SetBool("ismove", false);
             anim.SetFloat("inputx", 0);
             anim.SetFloat("inputy", 0);
@@ -249,10 +252,12 @@ public class CC : MonoBehaviour
     
     //////////// For Popup To Return Home
     void AskGoHomePopup(){
+
+
+        askText.text = "집으로 돌아갈까요?";
         DeActivateBuildingBtns();
         nBtn.gameObject.SetActive(true);
         goHomeBtn.gameObject.SetActive(true);
-        askText.text = "집으로 돌아갈까요?";
         popup.SetActive(true);
     }
     void SetHomeRoute(){
@@ -284,7 +289,6 @@ public class CC : MonoBehaviour
                 homeRoute2 =i;
             }
         }
-        SetDestination(setHome); // 집가는 안내 띄우려고 만든거
     }
     string BuildingName(int PointNum){
         string stringName;
@@ -321,7 +325,7 @@ public class CC : MonoBehaviour
     
     /////////For Move Scenes
     private void OnTriggerEnter2D(Collider2D other) { 
-        if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null) 
+        if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null && !goHomeMode) 
         {
             buildingName = other.gameObject.name.Split(".")[1];
             switch (buildingName)
@@ -341,13 +345,11 @@ public class CC : MonoBehaviour
                 case "Home":
                     videoPlayer.clip = videoClips[4];
                     break;
-                case "Market":
+                case "Mart":
                     videoPlayer.clip = videoClips[5];
-                    buildingName = "Mart";
                     break;
-                case "PoliceOffice":
+                case "Police":
                     videoPlayer.clip = videoClips[6];
-                    buildingName = "Police";
                     break;
                 case "Bank":
                     videoPlayer.clip = videoClips[7];
@@ -359,12 +361,9 @@ public class CC : MonoBehaviour
           
 
            PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
-        Debug.Log(buildingName+"VisitCount : "+PlayerPrefs.GetInt(buildingName + "VisitCount") );
-        }
-
+     
         videoPlayer.Play();
-
-         
+        }
     }
     void EndReached(VideoPlayer vp)
     {
