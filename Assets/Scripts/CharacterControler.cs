@@ -1,21 +1,15 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+using System.Collections.Concurrent;
+using System.IO.Ports;
 using System.Linq;
+using System.Threading;
 using TMPro;
-using Unity.Collections;
-using Unity.Mathematics;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
-using UnityEngine.Windows;
-using Random = UnityEngine.Random;
 
 public class CC : MonoBehaviour
 {   
@@ -43,17 +37,46 @@ public class CC : MonoBehaviour
     private VideoPlayer videoPlayer;
     string buildingName;
 
+    //시리얼 포트 통신 코드 추가
+    public string portName = "COM3"; // 시리얼 포트 이름
+    public int baudRate = 115200;      // 시리얼 통신 속도
+    private SerialPort serialPort;
+    private Thread serialThread;
+    private bool isRunning = false;
+    private ConcurrentQueue<string> dataQueue = new ConcurrentQueue<string>();
 
+    // 시리얼 포트 통신 테스트용
+    private LogManager logManager;
 
 
     ///////////Codes
     void Awake(){
         SetBeforeStart();
     }
-    void Start(){
+    void Start()
+    {
+        //시리얼 포트 통신 코드 추가
+        logManager = new LogManager();
+        serialPort = new SerialPort(portName, baudRate);
+        serialPort.ReadTimeout = 1000;
+
+        try
+        {
+            serialPort.Open();
+            isRunning = true;
+            serialThread = new Thread(ReadSerialData);
+            serialThread.Start();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Serial port could not be opened: " + e.Message);
+        }
     }
-    void Update(){
-         
+    void Update()
+    {
+        //시리얼 포트 통신 코드 추가
+        if (dataQueue.TryDequeue(out string sensorData)) MoveCharacter(sensorData);
+
         MoveAnimation();
         pp = player.transform.position; 
     }
@@ -372,6 +395,12 @@ public class CC : MonoBehaviour
         SceneManager.LoadScene("InformationScene");
     }
     void OnApplicationQuit() {
+        //시리얼 포트 통신 코드 추가
+        isRunning = false;
+        if (serialPort != null && serialPort.IsOpen) serialPort.Close();
+        if (serialThread != null && serialThread.IsAlive) serialThread.Join();
+
+
         PlayerPrefs.DeleteAll();
     }
 
@@ -384,6 +413,46 @@ public class CC : MonoBehaviour
     void ActivateBuildingBtns(){
         for(int i = 0; i< setDistinationBtns.Length; i++){
             setDistinationBtns[i].gameObject.SetActive(true);   
+        }
+    }
+
+    //시리얼 포트 통신 코드 추가
+    private void ReadSerialData()
+    {
+        while (isRunning)
+        {
+            if (serialPort.IsOpen)
+            {
+                try
+                {
+                    string sensorData = serialPort.ReadLine();
+                    dataQueue.Enqueue(sensorData.Trim()); // 읽은 데이터를 큐에 추가
+                }
+                catch (System.TimeoutException)
+                {
+                    // 데이터가 없으면 무시
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError("Error reading from serial port: " + e.Message);
+                }
+            }
+        }
+    }
+
+    private string previousData;
+    void MoveCharacter(string data)
+    {
+        //logManager.Log($"시리얼 포트로부터 받은 데이터: {data}", "", LogType.Log);
+        Debug.Log($"받은 데이터: {data}");
+        if (string.IsNullOrEmpty(previousData))
+        {
+            previousData = data;
+        }
+        else if (previousData != data)
+        {
+            SetDestination(data.Trim().ToCharArray()[1] - 1);
+            previousData = data;
         }
     }
 
