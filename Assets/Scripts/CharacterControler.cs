@@ -38,8 +38,8 @@ public class CC : MonoBehaviour
     string buildingName;
 
     //시리얼 포트 통신 코드 추가
-    public string portName = "COM3"; // 시리얼 포트 이름
-    public int baudRate = 115200;      // 시리얼 통신 속도
+    private string portName = "COM3"; // 시리얼 포트 이름
+    private int baudRate = 115200;      // 시리얼 통신 속도
     private SerialPort serialPort;
     private Thread serialThread;
     private bool isRunning = false;
@@ -55,11 +55,10 @@ public class CC : MonoBehaviour
     }
     void Start()
     {
-        //시리얼 포트 통신 코드 추가
+        //시리얼 포트 연결 및 세팅
         logManager = new LogManager();
         serialPort = new SerialPort(portName, baudRate);
         serialPort.ReadTimeout = 1000;
-
         try
         {
             serialPort.Open();
@@ -71,7 +70,9 @@ public class CC : MonoBehaviour
         {
             Debug.LogError("Serial port could not be opened: " + e.Message);
         }
+
     }
+
     void Update()
     {
         //시리얼 포트 통신 코드 추가
@@ -80,6 +81,7 @@ public class CC : MonoBehaviour
         MoveAnimation();
         pp = player.transform.position; 
     }
+
     ///////////For BeforeStart    
     void SetBeforeStart(){ 
         Time.timeScale = 1f;
@@ -163,6 +165,8 @@ public class CC : MonoBehaviour
         return (numB,  numP);
     }
     public void SetDestination(int gotoHere){
+        SerialPortDisconnect();
+
         if(isMoveNow == false){
             if(!goHomeMode)
             {
@@ -192,9 +196,10 @@ public class CC : MonoBehaviour
                 }         
             }
             
-        }else if(isMoveNow == true){
-            ShowPopup("캐릭터가 이동 중 입니다!");
         }
+        // else if(isMoveNow == true){
+        //     ShowPopup("캐릭터가 이동 중 입니다!");
+        // }
     }
     IEnumerator GoSetDestination(){ 
         isMoveNow = true;
@@ -275,8 +280,6 @@ public class CC : MonoBehaviour
     
     //////////// For Popup To Return Home
     void AskGoHomePopup(){
-
-
         askText.text = "집으로 돌아갈까요?";
         DeActivateBuildingBtns();
         nBtn.gameObject.SetActive(true);
@@ -313,6 +316,7 @@ public class CC : MonoBehaviour
             }
         }
     }
+
     string BuildingName(int PointNum){
         string stringName;
         switch (PointNum){
@@ -329,6 +333,7 @@ public class CC : MonoBehaviour
             }
         return stringName;
     }
+
     void ShowPopup(string showMessage){
         askText.text = showMessage;
 
@@ -390,16 +395,15 @@ public class CC : MonoBehaviour
     }
     void EndReached(VideoPlayer vp)
     {
+        SerialPortDisconnect();
+
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
         PlayerPrefs.Save();
         SceneManager.LoadScene("InformationScene");
     }
-    void OnApplicationQuit() {
-        //시리얼 포트 통신 코드 추가
-        isRunning = false;
-        if (serialPort != null && serialPort.IsOpen) serialPort.Close();
-        if (serialThread != null && serialThread.IsAlive) serialThread.Join();
-
+    void OnApplicationQuit() 
+    {
+        SerialPortDisconnect();
 
         PlayerPrefs.DeleteAll();
     }
@@ -428,11 +432,11 @@ public class CC : MonoBehaviour
                     string sensorData = serialPort.ReadLine();
                     dataQueue.Enqueue(sensorData.Trim()); // 읽은 데이터를 큐에 추가
                 }
-                catch (System.TimeoutException)
+                catch (TimeoutException)
                 {
                     // 데이터가 없으면 무시
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
                     Debug.LogError("Error reading from serial port: " + e.Message);
                 }
@@ -440,20 +444,28 @@ public class CC : MonoBehaviour
         }
     }
 
-    private string previousData;
+    private string previousData; //센서값 변동 체크하기 위한 변수
     void MoveCharacter(string data)
     {
-        //logManager.Log($"시리얼 포트로부터 받은 데이터: {data}", "", LogType.Log);
-        Debug.Log($"받은 데이터: {data}");
+        logManager.Log($"시리얼 포트로부터 받은 데이터: {data}", "", LogType.Log);
+        //Debug.Log($"받은 데이터: {data}");
+
         if (string.IsNullOrEmpty(previousData))
         {
             previousData = data;
         }
-        else if (previousData != data)
+        else if (previousData != data && !isMoveNow)
         {
-            SetDestination(data.Trim().ToCharArray()[1] - 1);
+            SetDestination(Int32.Parse(data.Trim()) - 1);
             previousData = data;
         }
+    }
+
+    //시리얼 포트 연결 해제
+    void SerialPortDisconnect () {
+        isRunning = false;
+        if (serialPort != null && serialPort.IsOpen) serialPort.Close();
+        if (serialThread != null && serialThread.IsAlive) serialThread.Join();
     }
 
 }
