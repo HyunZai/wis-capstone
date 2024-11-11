@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using Mono.Data.Sqlite;
@@ -67,5 +68,53 @@ public class DatabaseManager
         } 
 
         return true;
+    }
+
+    //귀가 경로 가져오는 코드
+    public List<HomeRoute> getGoHomeRoute(int buildingId) {
+        List<HomeRoute> homeRoutes = new List<HomeRoute>();
+
+        IDbCommand dbCommand = dbConnection.CreateCommand();
+
+        string query = @$"WITH RECURSIVE route_path AS (
+                                SELECT building_id, next_building
+                                FROM home_route
+                                WHERE building_id = {buildingId}
+
+                                UNION ALL
+
+                                SELECT t.building_id, t.next_building
+                                FROM home_route t
+                                INNER JOIN route_path rp ON rp.next_building = t.building_id
+                                WHERE t.next_building != 6
+                          )
+                          SELECT rp.building_id, rp.next_building, b.x, b.y
+                          FROM route_path rp
+                          JOIN building b ON rp.next_building = b.building_id;";
+
+        dbCommand.CommandText = query;
+
+        try
+        {
+            IDataReader dataReader = dbCommand.ExecuteReader();
+            while (dataReader.Read()) 
+            {
+                homeRoutes.Add(new HomeRoute {
+                    building_id = dataReader.GetInt32(0),
+                    next_building = dataReader.GetInt32(1)
+                });
+            }
+        }
+        catch (Exception ex) 
+        {
+            Debug.LogError("경로 검색 실패 : " + ex);
+        }
+        finally 
+        {
+            dbCommand.Dispose(); 
+            dbConnection.Close();
+        }
+
+        return homeRoutes;
     }
 }
