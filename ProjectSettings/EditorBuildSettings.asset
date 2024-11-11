@@ -37,5 +37,5 @@ EditorBuildSettings:
     guid: f21884912e196db41a5dd67be8d4b22c
   - enabled: 1
     path: Assets/Scenes/PoliceStationCardMatchGameScene.unity
-    guid: 80ebf25307a47c440818fe011278276b
+    guid: 6df278d9282ae401484060d8622909ff
   m_configObjects: {}

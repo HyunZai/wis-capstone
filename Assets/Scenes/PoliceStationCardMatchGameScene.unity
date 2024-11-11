@@ -180,7 +180,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 8513eee14ee4ce242bdec883c385831d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2840c39e805614630bf0ea88e4dc33d5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -552,15 +552,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1144973973}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7afa0f0b6a806b4449d823720c6f20d8, type: 3}
+  m_Script: {fileID: 11500000, guid: 146069e62f7364b05af2d98bf56aad88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardPrefab: {fileID: 2684949432816014582, guid: 42a20835ecfe4b44aa703e0b3ea8c7a9, type: 3}
+  cardPrefab: {fileID: 2684949432816014582, guid: 3245c8b48e6f143829d02a7a72581aa7, type: 3}
   cardFaces:
-  - {fileID: 21300000, guid: 3605563b454b02649850e72b4029593c, type: 3}
-  - {fileID: 21300000, guid: 8c76ff065f9b5d646bea57992872051d, type: 3}
-  - {fileID: 21300000, guid: 483a6b2c1b9fea6489e08e6e1c727969, type: 3}
-  cardBack: {fileID: 21300000, guid: a35a68506c2f5a543ad7c99004d1d7ee, type: 3}
+  - {fileID: 21300000, guid: 7182bcf6d22564b598efc15de7dc650a, type: 3}
+  - {fileID: 21300000, guid: fcaec84bc359e412381e4b65e6e4ae7b, type: 3}
+  - {fileID: 21300000, guid: e45fb32ccdc6c45039fd743dbe02fd91, type: 3}
+  cardBack: {fileID: 21300000, guid: db26a2df6cb2e44068dac9fa6eb89a2e, type: 3}
   scoreText: {fileID: 0}
   endPanel: {fileID: 222638690}
 --- !u!4 &1144973975

@@ -1,11 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using TMPro;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,7 +17,6 @@ public class InputFormHandler : MonoBehaviour
 
     private DatabaseManager dbManager;
 
-    // Start is called before the first frame update
     void Start()
     {
         inputForm.SetActive(false);
@@ -65,16 +59,11 @@ public class InputFormHandler : MonoBehaviour
             }
         }
 
-        User isOk = dbManager.register(user);
-        dbManager.Disconnect();
+        bool isOk = dbManager.register(user);
 
         if (!isAnyEmpty || user.gender == -1)
         {
             Debug.Log("잘못된 정보가 존재합니다. 다시 입력하세요!");
-        }
-        else if (isOk == null)
-        {
-            Debug.Log("등록에 실패했습니다. 다시 시도하십시오.");
         }
         else
         {
@@ -92,7 +81,6 @@ public class InputFormHandler : MonoBehaviour
         if (selectedToggle != null)
         {
             return (selectedToggle.GetComponentInChildren<Text>().text == "남자") ? 0 : 1;
-            //return selectedToggle.GetComponentInChildren<Text>().text;  // Toggle의 텍스트를 가져옴
         }
 
         return -1;  // 선택된 값이 없을 경우
