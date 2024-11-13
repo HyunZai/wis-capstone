@@ -33,6 +33,9 @@ public class CharacterSensorController : MonoBehaviour
     private VideoPlayer videoPlayer;
     string buildingName;
 
+    public AudioSource audioSource; //오디오 파일 컨트롤
+    public AudioClip[] audioClips; //오디오 클립 배열(리스트)
+
     ///////////Codes
     void Awake(){
         SetBeforeStart();
@@ -239,13 +242,15 @@ public class CharacterSensorController : MonoBehaviour
     
     //////////// For Popup To Return Home
     void AskGoHomePopup(){
-
-
         askText.text = "집으로 돌아갈까요?";
         DeActivateBuildingBtns();
         nBtn.gameObject.SetActive(true);
         goHomeBtn.gameObject.SetActive(true);
         popup.SetActive(true);
+
+        //재생시킬 오디오 파일 선택
+        audioSource.clip = audioClips[0];
+        audioSource.Play(); //오디오 파일 재생
     }
     void SetHomeRoute(){
         popup.SetActive(false);
