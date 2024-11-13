@@ -4,15 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-//스크립트를 해당 게임 씬에서 원하시는 오브젝트에 넣은 후에 inspector 창에 세팅,킵 플레잉, 스탑 플레잉 칸에 
-//이름이 똑같은 버튼을 GUI캔버스 안 판넬에서 찾아서 드래그 앤 드롭하면 된다. 판넬 칸엔 GUI캔버스 안 판넬을 넣으면 된다.
-
-public class SettingsManager_MiniGame : MonoBehaviour
+public class SettingsManager_MapScene : MonoBehaviour
 {
     public Button settingsButton; // Settings 버튼 참조
-    public Button keepPlayingButton; // KeepPlaying 버튼 참조
-    public Button stopPlayingButton; // 그만 놀기 버튼 참조
+    public Button keepPlayingButton; // 계속하기 버튼 참조
+    public Button stopPlayingButton; // 그만하기 버튼 참조
     public GameObject guiPanel;   // GUI 패널 참조
+
+    private bool isPaused = false; // 게임 일시 정지 여부를 추적
 
     void Start()
     {
@@ -45,7 +44,7 @@ public class SettingsManager_MiniGame : MonoBehaviour
         // StopPlaying 버튼에 OnClick 이벤트 추가
         if (stopPlayingButton != null)
         {
-            stopPlayingButton.onClick.AddListener(GoToMapScene);
+            stopPlayingButton.onClick.AddListener(QuitGame);
         }
         else
         {
@@ -60,7 +59,30 @@ public class SettingsManager_MiniGame : MonoBehaviour
         {
             bool isPanelActive = guiPanel.activeSelf;
             guiPanel.SetActive(!isPanelActive);
+
+            if (isPanelActive)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
+            }
         }
+    }
+
+    // 게임을 일시 정지
+    void PauseGame()
+    {
+        Time.timeScale = 0; // 게임 일시 정지
+        isPaused = true;
+    }
+
+    // 게임을 재개
+    void ResumeGame()
+    {
+        Time.timeScale = 1; // 게임 재개
+        isPaused = false;
     }
 
     // KeepPlaying 버튼을 누르면 패널을 닫고 게임을 다시 재개
@@ -70,11 +92,16 @@ public class SettingsManager_MiniGame : MonoBehaviour
         {
             guiPanel.SetActive(false);
         }
+        ResumeGame();
     }
 
-    // StopPlaying 버튼을 누르면 MapScene으로 이동
-    void GoToMapScene()
+    // StopPlaying 버튼을 누르면 게임 종료
+    void QuitGame()
     {
-        SceneManager.LoadScene("MapScene");
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false; // 에디터에서 실행 중지
+        #else
+            Application.Quit(); // 빌드된 게임 종료
+        #endif
     }
 }

@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class SettingsManager : MonoBehaviour
+public class SettingsManager_MiniGame : MonoBehaviour
 {
     public Button settingsButton; // Settings 버튼 참조
     public Button keepPlayingButton; // KeepPlaying 버튼 참조
     public Button stopPlayingButton; // 그만 놀기 버튼 참조
     public GameObject guiPanel;   // GUI 패널 참조
-    public WaterShooter waterShooter; // 소방 호스 스크립트 참조
+
+    private bool isPaused = false; // 게임 일시 정지 상태를 추적
 
     void Start()
     {
@@ -51,7 +52,7 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
-    // 패널 활성화/비활성화 및 타임 슬립 토글 함수
+    // 패널 활성화/비활성화 및 타임 슬립 제어 함수
     void TogglePanel()
     {
         if (guiPanel != null)
@@ -59,46 +60,44 @@ public class SettingsManager : MonoBehaviour
             bool isPanelActive = guiPanel.activeSelf;
             guiPanel.SetActive(!isPanelActive);
 
-            // 패널이 활성화되면 게임 일시정지, 비활성화되면 재개
-            if (guiPanel.activeSelf)
+            if (isPanelActive)
             {
-                Time.timeScale = 0; // 게임 일시정지
-                if (waterShooter != null)
-                {
-                    waterShooter.enabled = false; // 물 발사 비활성화
-                }
+                ResumeGame(); // 패널이 닫힐 때 게임 재개
             }
             else
             {
-                Time.timeScale = 1; // 게임 재개
-                if (waterShooter != null)
-                {
-                    waterShooter.enabled = true; // 물 발사 활성화
-                }
+                PauseGame(); // 패널이 열릴 때 게임 일시 정지
             }
         }
     }
 
-    // KeepPlaying 버튼을 누르면 패널을 닫고 게임을 다시 재개
+    // 게임 일시 정지
+    void PauseGame()
+    {
+        Time.timeScale = 0; // 게임 정지
+        isPaused = true;
+    }
+
+    // 게임 재개
+    void ResumeGame()
+    {
+        Time.timeScale = 1; // 게임 재개
+        isPaused = false;
+    }
+
+    // KeepPlaying 버튼을 누르면 패널을 닫고 게임 재개
     void ClosePanelAndResume()
     {
         if (guiPanel != null)
         {
             guiPanel.SetActive(false);
-            Time.timeScale = 1; // 게임 재개
-
-            // WaterShooter 스크립트 다시 활성화
-            if (waterShooter != null)
-            {
-                waterShooter.enabled = true;
-            }
         }
+        ResumeGame();
     }
 
     // StopPlaying 버튼을 누르면 MapScene으로 이동
     void GoToMapScene()
     {
-        Time.timeScale = 1; // 씬 전환 전 시간 재개
         SceneManager.LoadScene("MapScene");
     }
 }
