@@ -82,7 +82,7 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
         {
             if (BuildingVisitCount > gameScenes.Count)
             {
-                index = BuildingVisitCount % gameScenes.Count - 1;
+                index = (BuildingVisitCount - 1) % gameScenes.Count;
             }
         }
         else
