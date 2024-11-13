@@ -5,63 +5,63 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject cardPrefab;  // Ä«µå ÇÁ¸®ÆÕ ¿ÀºêÁ§Æ®
-    public Sprite[] cardFaces;     // Ä«µå ¾Õ¸é ÀÌ¹ÌÁö ¹è¿­
-    public Sprite cardBack;        // Ä«µå µÞ¸é ÀÌ¹ÌÁö
+    public GameObject cardPrefab;  // Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    public Sprite[] cardFaces;     // Ä«ï¿½ï¿½ ï¿½Õ¸ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½è¿­
+    public Sprite cardBack;        // Ä«ï¿½ï¿½ ï¿½Þ¸ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½
 
-    // UI °ü·Ã º¯¼ö
-    public TextMeshProUGUI scoreText;  // Á¡¼ö Ç¥½Ã ÅØ½ºÆ®
-    public GameObject endPanel;        // °ÔÀÓ Á¾·á ½Ã Ç¥½ÃÇÒ ÆÐ³Î
+    // UI ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    public TextMeshProUGUI scoreText;  // ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½Ø½ï¿½Æ®
+    public GameObject endPanel;        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½
 
-    // °ÔÀÓ »óÅÂ °ü·Ã º¯¼ö
-    private List<GameObject> cards = new List<GameObject>();  // »ý¼ºµÈ Ä«µå ¿ÀºêÁ§Æ® ¸®½ºÆ®
-    private bool firstCardFlipped = false;  // Ã¹ ¹øÂ° Ä«µå°¡ µÚÁýÇû´ÂÁö ¿©ºÎ
-    private GameObject firstCard;           // Ã¹ ¹øÂ°·Î ¼±ÅÃµÈ Ä«µå
-    private GameObject secondCard;          // µÎ ¹øÂ°·Î ¼±ÅÃµÈ Ä«µå
-    private int score = 0;                  // ÇöÀç Á¡¼ö
-    private int remainingPairs;             // ³²Àº Ä«µå ½ÖÀÇ ¼ö
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    private List<GameObject> cards = new List<GameObject>();  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½Æ®
+    private bool firstCardFlipped = false;  // Ã¹ ï¿½ï¿½Â° Ä«ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    private GameObject firstCard;           // Ã¹ ï¿½ï¿½Â°ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ Ä«ï¿½ï¿½
+    private GameObject secondCard;          // ï¿½ï¿½ ï¿½ï¿½Â°ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ Ä«ï¿½ï¿½
+    private int score = 0;                  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    private int remainingPairs;             // ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 
-    // °ÔÀÓ ½ÃÀÛ ½Ã È£ÃâµÇ´Â ¸Þ¼­µå
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½Ç´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     void Start()
     {
         InitializeGame();
         if (endPanel != null)
         {
-            endPanel.SetActive(false);  // °ÔÀÓ ½ÃÀÛ ½Ã Á¾·á ÆÐ³Î ºñÈ°¼ºÈ­
+            endPanel.SetActive(false);  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
         }
     }
 
-    // °ÔÀÓ ÃÊ±âÈ­ ¸Þ¼­µå
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½Þ¼ï¿½ï¿½ï¿½
     void InitializeGame()
     {
-        List<int> cardValues = new List<int> { 0, 0, 1, 1, 2, 2 };  // 3½ÖÀÇ Ä«µå °ª »ý¼º
-        ShuffleList(cardValues);  // Ä«µå °ª ¼¯±â
+        List<int> cardValues = new List<int> { 0, 0, 1, 1, 2, 2 };  // 3ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        ShuffleList(cardValues);  // Ä«ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-        remainingPairs = cardValues.Count / 2;  // ³²Àº ½Ö ¼ö ÃÊ±âÈ­
+        remainingPairs = cardValues.Count / 2;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ê±ï¿½È­
 
-        // Ä«µå ¹èÄ¡¸¦ À§ÇÑ º¯¼ö
+        // Ä«ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         float xOffset = 3.5f;
         float yOffset = 4f;
         float startX = -3.5f;
         float startY = 2f;
 
-        // Ä«µå »ý¼º ¹× ¹èÄ¡
+        // Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡
         for (int i = 0; i < cardValues.Count; i++)
         {
-            float x = startX + (i % 3) * xOffset;  // 3¿­·Î ¹èÄ¡
+            float x = startX + (i % 3) * xOffset;  // 3ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
             float y = startY - (i / 3) * yOffset;
 
             GameObject card = Instantiate(cardPrefab, new Vector3(x, y, 0), Quaternion.identity);
-            card.transform.localScale = new Vector3(0.25f, 0.25f, 1f);  // Ä«µå Å©±â Á¶Á¤ °ÇµéÁö¸¶½Ã¿Ë..¤Ð¤Ð
+            card.transform.localScale = new Vector3(0.25f, 0.25f, 1f);  // Ä«ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½..ï¿½Ð¤ï¿½
             CardController cardController = card.GetComponent<CardController>();
             cardController.SetupCard(cardValues[i], cardFaces[cardValues[i]], cardBack);
             cards.Add(card);
         }
 
-        //UpdateScoreText();  // ÃÊ±â Á¡¼ö Ç¥½Ã ¾÷µ¥ÀÌÆ®
+        //UpdateScoreText();  // ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
     }
 
-    // ¸®½ºÆ®ÀÇ ¿ä¼Ò¸¦ ¹«ÀÛÀ§·Î ¼¯´Â ¸Þ¼­µå
+    // ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     void ShuffleList<T>(List<T> list)
     {
         for (int i = 0; i < list.Count; i++)
@@ -73,12 +73,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Ä«µå Å¬¸¯ ½Ã È£ÃâµÇ´Â ¸Þ¼­µå
+    // Ä«ï¿½ï¿½ Å¬ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½Ç´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     public void CardClicked(GameObject card)
     {
         if (firstCard != null && secondCard != null)
         {
-            return;  // ÀÌ¹Ì µÎ Ä«µå°¡ ¼±ÅÃµÈ »óÅÂ¸é Ãß°¡ ¼±ÅÃ ¹«½Ã
+            return;  // ï¿½Ì¹ï¿½ ï¿½ï¿½ Ä«ï¿½å°¡ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
 
         CardController cardController = card.GetComponent<CardController>();
@@ -93,21 +93,21 @@ public class GameManager : MonoBehaviour
         {
             secondCard = card;
             cardController.FlipCard();
-            StartCoroutine(CheckMatch());  // ¸ÅÄ¡ È®ÀÎ ·çÆ¾ ½ÃÀÛ
+            StartCoroutine(CheckMatch());  // ï¿½ï¿½Ä¡ È®ï¿½ï¿½ ï¿½ï¿½Æ¾ ï¿½ï¿½ï¿½ï¿½
         }
     }
 
-    // ¼±ÅÃµÈ µÎ Ä«µåÀÇ ¸ÅÄ¡¸¦ È®ÀÎÇÏ´Â ·çÆ¾
+    // ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Æ¾
     IEnumerator CheckMatch()
     {
-        yield return new WaitForSeconds(1f);  // 1ÃÊ ´ë±â
+        yield return new WaitForSeconds(1f);  // 1ï¿½ï¿½ ï¿½ï¿½ï¿½
 
         CardController firstCardController = firstCard.GetComponent<CardController>();
         CardController secondCardController = secondCard.GetComponent<CardController>();
 
         if (firstCardController.cardValue == secondCardController.cardValue)
         {
-            // Ä«µå°¡ ÀÏÄ¡ÇÏ´Â °æ¿ì
+            // Ä«ï¿½å°¡ ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½
             score++;
             remainingPairs--;
             firstCard.SetActive(false);
@@ -115,24 +115,24 @@ public class GameManager : MonoBehaviour
 
             if (CheckAllCardsMatched())
             {
-                ClearPoliceGame();  // ¸ðµç Ä«µå°¡ ¸ÅÄ¡µÇ¸é °ÔÀÓ Å¬¸®¾î
+                ClearPoliceGame();  // ï¿½ï¿½ï¿½ Ä«ï¿½å°¡ ï¿½ï¿½Ä¡ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½
             }
         }
         else
         {
-            // Ä«µå°¡ ÀÏÄ¡ÇÏÁö ¾Ê´Â °æ¿ì
+            // Ä«ï¿½å°¡ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½
             firstCardController.FlipCard();
             secondCardController.FlipCard();
         }
 
-        // ¼±ÅÃ »óÅÂ ÃÊ±âÈ­
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
         firstCardFlipped = false;
         firstCard = null;
         secondCard = null;
-        //UpdateScoreText();  // Á¡¼ö Ç¥½Ã ¾÷µ¥ÀÌÆ®
+        //UpdateScoreText();  // ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
     }
 
-    //// Á¡¼ö ÅØ½ºÆ® ¾÷µ¥ÀÌÆ® ¸Þ¼­µå
+    //// ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Þ¼ï¿½ï¿½ï¿½
     //void UpdateScoreText()
     //{
     //    if (scoreText != null)
@@ -145,20 +145,20 @@ public class GameManager : MonoBehaviour
     //    }
     //}
 
-    // ¸ðµç Ä«µå°¡ ¸ÅÄ¡µÇ¾ú´ÂÁö È®ÀÎÇÏ´Â ¸Þ¼­µå
+    // ï¿½ï¿½ï¿½ Ä«ï¿½å°¡ ï¿½ï¿½Ä¡ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
 
     bool CheckAllCardsMatched()
     {
         return remainingPairs == 0;
     }
 
-    // °ÔÀÓ Å¬¸®¾î ½Ã È£ÃâµÇ´Â ¸Þ¼­µå
+    // ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½Ç´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     private void ClearPoliceGame()
     {
         if (endPanel != null)
         {
-            endPanel.SetActive(true);  // Á¾·á ÆÐ³Î È°¼ºÈ­
-            Time.timeScale = 0;  // °ÔÀÓ ÀÏ½Ã Á¤Áö
+            endPanel.SetActive(true);  // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ È°ï¿½ï¿½È­
+            Time.timeScale = 0;  // ï¿½ï¿½ï¿½ï¿½ ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½
             Debug.Log("Game cleared");
         }
         else

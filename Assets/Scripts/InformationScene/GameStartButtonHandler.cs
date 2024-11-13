@@ -90,7 +90,7 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
             index = 0;
         }
         
-        if (gameScenes.Count > 0 && Application.CanStreamedLevelBeLoaded(gameScenes[index]))
+        if(Application.CanStreamedLevelBeLoaded(gameScenes[index])) //해당 게임 씬 존재하는지
         {
             SceneManager.LoadScene(gameScenes[index]);
         }
