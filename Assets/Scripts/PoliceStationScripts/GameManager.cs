@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.UI;
+using System.Net;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -160,6 +163,10 @@ public class GameManager : MonoBehaviour
             endPanel.SetActive(true);  // ���� �г� Ȱ��ȭ
             Time.timeScale = 0;  // ���� �Ͻ� ����
             Debug.Log("Game cleared");
+
+            //게임 종료 버튼
+            Button quitBtn = endPanel.GetComponentInChildren<Button>();
+            quitBtn.onClick.AddListener(() => SceneManager.LoadScene("MapScene"));     
         }
         else
         {

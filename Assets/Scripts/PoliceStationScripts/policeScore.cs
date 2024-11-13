@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class policeScore : MonoBehaviour
@@ -51,6 +52,10 @@ public class policeScore : MonoBehaviour
     private void ClearPoliceGame()
     {
         clearGame.SetActive(true); // 승리 패널 활성화
+        
+        Button quitBtn = clearGame.GetComponentInChildren<Button>();
+        quitBtn.onClick.AddListener(() => SceneManager.LoadScene("MapScene"));
+
         Time.timeScale = 0; // 게임 일시정지
     }
 }
