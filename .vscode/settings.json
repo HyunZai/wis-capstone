@@ -66,5 +66,6 @@
     "<<<<<<<HEAD<<<<<<<HEAD<<<<<<<HEAD<<<<<<<HEADwis-capstone.sln=======dotnet.defaultSolution": "동아리.sln>>>>>>>origin/sangjin2",
     "wis-dev_source.sln=======wis-capstone.sln=======dotnet.defaultSolution": "동아리.sln>>>>>>>origin/sangjin2",
     "wis-dev_source.sln=======<<<<<<<HEADwis-capstone.sln=======dotnet.defaultSolution": "동아리.sln>>>>>>>origin/sangjin2",
-    "dotnet.defaultSolution": "wis-capstone.sln"
+    "wis-capstone.sln=======dotnet.defaultSolution": "동아리.sln>>>>>>>origin/sangjin2",
+    "dotnet.defaultSolution": "wis-dev_source.sln"
 }
