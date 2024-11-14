@@ -36,6 +36,8 @@ public class CharacterSensorController : MonoBehaviour
     public AudioSource audioSource; //오디오 파일 컨트롤
     public AudioClip[] audioClips; //오디오 클립 배열(리스트)
 
+    public GameObject smartPhone;
+
     ///////////Codes
     void Awake(){
         SetBeforeStart();
@@ -94,6 +96,13 @@ public class CharacterSensorController : MonoBehaviour
         ActivateBuildingBtns();
     }
     void GoHomeButtonClick(){
+        //smartPhone.transform.Translate(new Vector3(smartPhone.transform.position.x, 0, 0) * moveSpeed * Time.deltaTime);
+        smartPhone.SetActive(true);
+        
+        //재생시킬 오디오 파일 선택
+        audioSource.clip = audioClips[1];
+        audioSource.Play(); //오디오 파일 재생
+
         SetHomeRoute();
         SetDestination(-1);
         ActivateBuildingBtns(); 
