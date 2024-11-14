@@ -53,6 +53,8 @@ public class CC : MonoBehaviour
     // 시리얼 포트 통신 테스트용
     private LogManager logManager;
 
+    public GameObject smartPhone;
+
 
     ///////////Codes
     void Awake(){
@@ -141,6 +143,13 @@ public class CC : MonoBehaviour
         ActivateBuildingBtns();
     }
     void GoHomeButtonClick(){
+        //smartPhone.transform.Translate(new Vector3(smartPhone.transform.position.x, 0, 0) * moveSpeed * Time.deltaTime);
+        smartPhone.SetActive(true);
+        
+        //재생시킬 오디오 파일 선택
+        audioSource.clip = audioClips[1];
+        audioSource.Play(); //오디오 파일 재생
+
         SetHomeRoute();
         SetDestination(-1);
         ActivateBuildingBtns(); 

@@ -71,7 +71,8 @@ public class DatabaseManager
     }
 
     //귀가 경로 가져오는 코드
-    public List<HomeRoute> getGoHomeRoute(int buildingId) {
+    public List<HomeRoute> getGoHomeRoute(int buildingId) 
+    {
         List<HomeRoute> homeRoutes = new List<HomeRoute>();
 
         IDbCommand dbCommand = dbConnection.CreateCommand();
@@ -116,5 +117,34 @@ public class DatabaseManager
         }
 
         return homeRoutes;
+    }
+
+    public string getParentPhoneNumber(int userId)
+    {
+        string phoneNumber = "";
+
+        IDbCommand dbCommand = dbConnection.CreateCommand();
+        dbCommand.CommandText = $"SELECT parent_phone FROM user WHERE user_id = {userId};";
+        
+        try
+        {
+            IDataReader dataReader = dbCommand.ExecuteReader();
+            while (dataReader.Read()) 
+            {
+                phoneNumber = dataReader.GetString(0);
+                return phoneNumber;
+            }
+        }
+        catch (Exception ex) 
+        {
+            Debug.LogError("SELECT ERROR : " + ex);
+        }
+        finally 
+        {
+            dbCommand.Dispose(); 
+            dbConnection.Close();
+        }
+
+        return null;
     }
 }
