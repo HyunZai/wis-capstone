@@ -96,7 +96,6 @@ public class CharacterSensorController : MonoBehaviour
         ActivateBuildingBtns();
     }
     void GoHomeButtonClick(){
-        //smartPhone.transform.Translate(new Vector3(smartPhone.transform.position.x, 0, 0) * moveSpeed * Time.deltaTime);
         smartPhone.SetActive(true);
         
         //재생시킬 오디오 파일 선택
