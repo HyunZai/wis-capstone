@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -32,6 +33,9 @@ public class CharacterSensorController : MonoBehaviour
     public VideoClip[] videoClips;
     private VideoPlayer videoPlayer;
     string buildingName;
+    DatabaseManager dbManager;
+    List<int> homeRouteList;
+    int routeCheckCount;
 
     public AudioSource audioSource; //오디오 파일 컨트롤
     public AudioClip[] audioClips; //오디오 클립 배열(리스트)
@@ -140,8 +144,7 @@ public class CharacterSensorController : MonoBehaviour
     }
     void SetDestination(int gotoHere){
         if(isMoveNow == false){
-            if(!goHomeMode)
-            {
+            if(!goHomeMode){
                 if(gotoHere == setHome){
                     ShowPopup($"아직은 집으로 갈때가 아니에요!\n좀 더 동네를 탐험해볼까요?");
                 }else{
@@ -150,24 +153,16 @@ public class CharacterSensorController : MonoBehaviour
                 }
             }
             else if(goHomeMode){
-                if (homeRoute1 == gotoHere && destinationNum != homeRoute2 && destinationNum != homeRoute1 && destinationNum != setHome){
-                    destinationNum = gotoHere;
-                    StartCoroutine(GoSetDestination());
-                }else if(beforeDestination == homeRoute1 && gotoHere == homeRoute2 ){
-                    destinationNum = gotoHere;
-                    StartCoroutine(GoSetDestination()); 
-                }else if(beforeDestination == homeRoute2 && gotoHere == setHome){
-                    destinationNum = gotoHere;
-                    StartCoroutine(GoSetDestination()); 
-                }else if(beforeDestination != homeRoute1 && beforeDestination != homeRoute2 && gotoHere != homeRoute1 && gotoHere!= setHome){
-                    ShowPopup($"먼저 {BuildingName(homeRoute1)}으로 이동해주세요!");
-                }else if(beforeDestination == homeRoute1 && gotoHere != homeRoute2 ){
-                    ShowPopup($"{BuildingName(homeRoute2)}으로 이동해주세요!");
-                }else if(beforeDestination == homeRoute2 && gotoHere != setHome){
-                    ShowPopup($"{BuildingName(setHome)}으로 이동해주세요!");
-                }         
-            }
-            
+                if(routeCheckCount < homeRouteList.Count){
+                    if(gotoHere==homeRouteList[routeCheckCount]){
+                        destinationNum = gotoHere;
+                        routeCheckCount++;
+                        StartCoroutine(GoSetDestination());
+                    }else{
+                        ShowPopup($"{BuildingName(homeRouteList[routeCheckCount])}으로 이동해주세요!!");
+                    }
+                }
+            }  
         }else if(isMoveNow == true){
             ShowPopup("캐릭터가 이동 중 입니다!");
         }
@@ -265,31 +260,14 @@ public class CharacterSensorController : MonoBehaviour
         popup.SetActive(false);
         goHomeMode = true;
 
-        int cpPoint = 0;
-        float shortCPNum = float.MaxValue;
+        dbManager = new DatabaseManager();
+        dbManager.Connect();
 
-        float shortCPNum2 = float.MaxValue;
-        float shortCPNum3 = float.MaxValue;
-
-        for(int i = 0; i < cp.Length; i++){
-            if(Vector2.Distance(bp[destinationNum],cp[i])< shortCPNum){
-                shortCPNum = Vector2.Distance(bp[destinationNum],cp[i]);
-                cpPoint = i;
-            }
-        }
+       
+        List<HomeRoute> homeRoute = dbManager.getGoHomeRoute(destinationNum + 1);
+        homeRouteList = homeRoute.Select(hr => hr.next_building-1).ToList();
+//        Debug.Log(homeRouteList.Count+" Route"+BuildingName(destinationNum) +" : "+ string.Join(", ", homeRouteList));
         
-        for(int i= 0; i< bp.Length; i++){
-            if(destinationNum == i||setHome == i)continue;
-            if(Vector2.Distance(cp[cpPoint], dp[i]) < shortCPNum2){
-                if(Vector2.Distance(cp[cpPoint], dp[i]) < shortCPNum3){
-                    shortCPNum3 = Vector2.Distance(cp[cpPoint], dp[i]);
-                    homeRoute1 = i;
-                    continue;
-                }
-                shortCPNum2 = Vector2.Distance(cp[cpPoint], dp[i]);
-                homeRoute2 =i;
-            }
-        }
     }
     string BuildingName(int PointNum){
         string stringName;
@@ -387,5 +365,18 @@ public class CharacterSensorController : MonoBehaviour
             setDistinationBtns[i].gameObject.SetActive(true);   
         }
     }
+    void ForCheckHomeRoute(){ //루트경로 체크하고 싶을 때 start에 넣으세용
+        for (int i = 0; i < buildingPoints.Length; i++){
+            dbManager = new DatabaseManager();
+            dbManager.Connect();
 
+            List<HomeRoute> homeRoute = dbManager.getGoHomeRoute(i+1);
+            
+            // homeRouteList는 int 타입을 저장하는 리스트로 초기화
+            List<int> homeRouteList = homeRoute.Select(hr => hr.next_building).ToList();
+            
+            // List<int>를 string.Join으로 출력
+            Debug.Log(homeRouteList.Count+" Route"+BuildingName(i) +" : "+ string.Join(", ", homeRouteList));
+        }
+    }
 }
