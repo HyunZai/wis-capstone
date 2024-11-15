@@ -142,9 +142,11 @@ public class CC : MonoBehaviour
         popup.SetActive(false);
         ActivateBuildingBtns();
     }
+
+    Vector3 vel = Vector3.zero;
     void GoHomeButtonClick(){
-        //smartPhone.transform.Translate(new Vector3(smartPhone.transform.position.x, 0, 0) * moveSpeed * Time.deltaTime);
-        smartPhone.SetActive(true);
+        //smartPhone.SetActive(true);
+        smartPhone.transform.position = Vector3.Lerp(smartPhone.transform.position, new Vector3(12, 0, 0), 1f);
         
         //재생시킬 오디오 파일 선택
         audioSource.clip = audioClips[1];
