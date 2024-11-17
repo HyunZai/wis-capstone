@@ -23,60 +23,72 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
         string buildingName = PlayerPrefs.GetString("BuildingName");
         int BuildingVisitCount = PlayerPrefs.GetInt(buildingName + "VisitCount");
 
-        List<string> cafeGameScenes = new List<string>
+        List<string> scenes = new List<string>();
+
+        int sceneCount = SceneManager.sceneCountInBuildSettings;
+        for (int i = 0; i < sceneCount; i++)
         {
-            "CafeFallingGameScene"
-        };
-        List<string> fireStationGameScenes = new List<string>
-        {
-            "FireStationFindSameGameScene",
-            "FireStationFireFightingGameScene"
-        };
-        List<string> policeGameScenes = new List<string>
-        {
-            "PoliceStationcatChingThievesGameScene",
-            "PoliceStationCardMatchGameScene"
-        };
-        List<string> schoolGameScenes = new List<string>
-        {
-            "SchoolAnimalNameDrawingGameScene",
-            "SchoolLendingThingsGameScene"
-        };
+            string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+            string sceneName = Path.GetFileNameWithoutExtension(scenePath);
+            scenes.Add(sceneName);
+        }
+
+        List<string> gameScenes = scenes.Where(scene => scene.Contains(buildingName) && scene.Contains("GameScene")).ToList();
+
+        // List<string> cafeGameScenes = new List<string>
+        // {
+        //     "CafeFallingGameScene"
+        // };
+        // List<string> fireStationGameScenes = new List<string>
+        // {
+        //     "FireStationFindSameGameScene",
+        //     "FireStationFireFightingGameScene"
+        // };
+        // List<string> policeGameScenes = new List<string>
+        // {
+        //     "PoliceStationcatChingThievesGameScene",
+        //     "PoliceStationCardMatchGameScene"
+        // };
+        // List<string> schoolGameScenes = new List<string>
+        // {
+        //     "SchoolAnimalNameDrawingGameScene",
+        //     "SchoolLendingThingsGameScene"
+        // };
         
         int index = BuildingVisitCount - 1;
 
-        List<string> gameScenes = new List<string>();
+        //List<string> gameScenes = new List<string>();
 
-        switch (buildingName)
-        {
-            case "School":
-                gameScenes = schoolGameScenes;
-                break;
-            case "FireStation":
-                gameScenes = fireStationGameScenes;
-                break;
-            case "Library":
+        // switch (buildingName)
+        // {
+        //     case "School":
+        //         gameScenes = schoolGameScenes;
+        //         break;
+        //     case "FireStation":
+        //         gameScenes = fireStationGameScenes;
+        //         break;
+        //     case "Library":
                 
-                break;
-            case "Home":
+        //         break;
+        //     case "Home":
                 
-                break;
-            case "Mart":
+        //         break;
+        //     case "Mart":
                 
-                break;
-            case "Police":
-                gameScenes = policeGameScenes;
-                break;
-            case "Bank":
+        //         break;
+        //     case "Police":
+        //         gameScenes = policeGameScenes;
+        //         break;
+        //     case "Bank":
                 
-                break;
-            case "Hospital":
+        //         break;
+        //     case "Hospital":
                 
-                break;
-            case "Cafe":
-                gameScenes = cafeGameScenes;
-                break;
-        }
+        //         break;
+        //     case "Cafe":
+        //         gameScenes = cafeGameScenes;
+        //         break;
+        // }
 
         if (gameScenes.Count > 1)
         {
