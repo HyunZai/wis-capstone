@@ -60,7 +60,7 @@ public class InputFormHandler : MonoBehaviour
             }
         }
 
-        bool isOk = dbManager.register(user);
+        dbManager.register(user);
 
         if (!isAnyEmpty || user.gender == -1)
         {
