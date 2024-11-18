@@ -441,6 +441,10 @@ MonoBehaviour:
   title: {fileID: 1137231897}
   progressbarHandler: {fileID: 1478557057}
   genderToggleGroup: {fileID: 1844577727}
+  inputFields:
+  - {fileID: 1485213533}
+  - {fileID: 1943129327}
+  - {fileID: 1662778344}
 --- !u!1 &375242355
 GameObject:
   m_ObjectHideFlags: 0
