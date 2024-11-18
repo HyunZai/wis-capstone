@@ -16,12 +16,15 @@ public class GameObjectControler : MonoBehaviour
     Vector2 giniusPos = new Vector2(-1.0f, 4f);
 
 
-    public Button[] clickBtns = new Button[3];     
+    public Button[] clickBtns = new Button[3];
     public GameObject truck;
     public GameObject itemPanel;
     public GameObject answerImage;
     public GameObject imagin;
-    
+
+    public GameObject endPanel; // 끝내기 패널
+    public Button endPanelButton; // 끝내기 패널 안의 버튼
+
 
     float moveSpeed = 3.0f;
     public Button startBtn;
@@ -45,129 +48,174 @@ public class GameObjectControler : MonoBehaviour
     }
     void Update()
     {
-       
+
         SetGameObjectsPos();
-        if(isAnswer == true){
+        if (isAnswer == true)
+        {
             ++isAnswerCount;
             isAnswer = false;
             ResetImage();
         }
-        
-      
-        
+
+
+
     }
     void SetBeforeStart()
     {
         startBtn.gameObject.SetActive(true);
         imagin.SetActive(false);
         answerImage.SetActive(false);
-        for (int i = 0; i < clickBtns.Length; i++) {
-            clickBtns[i].gameObject.SetActive(false);  
+        for (int i = 0; i < clickBtns.Length; i++)
+        {
+            clickBtns[i].gameObject.SetActive(false);
         }
 
         startBtn.onClick.AddListener(GameStart);
-        endBtn.onClick.AddListener(endBtnClick);
+        // endPanel 초기 비활성화
+        if (endPanel != null)
+        {
+            endPanel.SetActive(false);
+        }
+
+        if (endPanelButton != null)
+        {
+            endPanelButton.onClick.AddListener(GoToMapScene);
+        }
+
         SetPopup();
     }
-    void GameStart(){
+    void GameStart()
+    {
         ResetImage();
         startBtn.gameObject.SetActive(false);
         ActiveClickBtns();
         isGameStarted = true; // 게임 시작 상태 설정
         moveTime = 0.0f; // 이동 시간 초기화
-    }  
-    void SetGameObjectsPos(){
+    }
+    void SetGameObjectsPos()
+    {
         moveTime += Time.deltaTime; // 경과 시간 증가
-        float t = moveSpeed* Time.deltaTime;
-        if(isGameStarted){
-            truck.transform.position = Vector2.Lerp(truck.transform.position, playTruckPos, t); 
+        float t = moveSpeed * Time.deltaTime;
+        if (isGameStarted)
+        {
+            truck.transform.position = Vector2.Lerp(truck.transform.position, playTruckPos, t);
             if (Vector2.Distance(truck.transform.position, playTruckPos) < 0.1f &&
-                Vector2.Distance(itemPanel.transform.position, playtPenalPos) < 0.1f){
+                Vector2.Distance(itemPanel.transform.position, playtPenalPos) < 0.1f)
+            {
                 imagin.SetActive(true);
                 answerImage.SetActive(true);
                 isGameStarted = false; // 게임 시작 상태 종료
             }
         }
-        else if(isGameEnd){
+        else if (isGameEnd)
+        {
             truck.transform.position = Vector2.MoveTowards(truck.transform.position, endTruckPos, Time.deltaTime * moveSpeed);
-            if(Vector2.Distance(truck.transform.position, endTruckPos) < 0.1f){
-            endBtn.gameObject.SetActive(true);
-            
-           // EndBtn.onClick.AddListener(()=> ); add next Scene
+            if (Vector2.Distance(truck.transform.position, endTruckPos) < 0.1f)
+            {
+                endBtn.gameObject.SetActive(true);
+
+                // EndBtn.onClick.AddListener(()=> ); add next Scene
             }
         }
     }
-    void ActiveClickBtns(){
-        for (int i = 0; i < selectedImageList.Length; i++){
+    void ActiveClickBtns()
+    {
+        for (int i = 0; i < selectedImageList.Length; i++)
+        {
             clickBtns[i].gameObject.SetActive(true);
             int index = i;  // 지역 변수로 저장
             clickBtns[index].onClick.AddListener(() => CheckMatchImage(index));
         }
     }
-    void ResetImage(){
+    void ResetImage()
+    {
         int[] randN = new int[3];
-        for (int i = 0; i < randN.Length; i++){
+        for (int i = 0; i < randN.Length; i++)
+        {
             randN[i] = Random.Range(0, imageList.Length);
-            for (int j = 0; j < i; j++) {
-                if (randN[i] == randN[j]){
+            for (int j = 0; j < i; j++)
+            {
+                if (randN[i] == randN[j])
+                {
                     i--; // 중복 발생 시 다시 뽑기
                     break;
                 }
             }
         }
-        for (int i = 0; i < targets.Length; i++){
+        for (int i = 0; i < targets.Length; i++)
+        {
             targets[i].gameObject.GetComponent<SpriteRenderer>().sprite = imageList[randN[i]].gameObject.GetComponent<SpriteRenderer>().sprite;
         }
         SetAnswer();
     }
-    void SetAnswer(){
+    void SetAnswer()
+    {
         int randAnswer = Random.Range(0, selectedImageList.Length);
         answer.GetComponent<SpriteRenderer>().sprite = targets[randAnswer].GetComponent<SpriteRenderer>().sprite;
     }
-    void CheckMatchImage(int i){
+    void CheckMatchImage(int i)
+    {
         if (targets[i].GetComponent<SpriteRenderer>().sprite.name == answer.GetComponent<SpriteRenderer>().sprite.name)
         {
             isAnswer = true;
             PopupEvent(popupPanel[0]);
             ginius[isAnswerCount].GetComponent<SpriteRenderer>().sprite = ginius[3].GetComponent<SpriteRenderer>().sprite;
         }
-        else 
+        else
         {
             isAnswer = false;
             PopupEvent(popupPanel[1]);
         }
-        
+
     }
-    void SetPopup(){
+    void SetPopup()
+    {
         //disable popup
-        for(int i= 0; i< popupPanel.Length; i++){
+        for (int i = 0; i < popupPanel.Length; i++)
+        {
             popupPanel[i].gameObject.SetActive(false);
         }
     }
-    void PopupEvent(GameObject panel){
+    void PopupEvent(GameObject panel)
+    {
         panel.gameObject.SetActive(true);
         StartCoroutine(AfterDelay(2.0f, panel));
     }
-    IEnumerator AfterDelay(float delay, GameObject panel){
+    IEnumerator AfterDelay(float delay, GameObject panel)
+    {
         yield return new WaitForSeconds(delay);  // delay만큼 기다림
         panel.SetActive(false);  // 창 닫기
-        if(isAnswerCount >= 3){
+        if (isAnswerCount >= 3)
+        {
             imagin.SetActive(false);
-            for(int i = 0; i < clickBtns.Length;i++){
+            for (int i = 0; i < clickBtns.Length; i++)
+            {
                 clickBtns[i].gameObject.SetActive(false);
                 targets[i].gameObject.SetActive(false);
             }
             answerImage.gameObject.SetActive(false);
             itemPanel.gameObject.SetActive(false);
 
-            Invoke("EndGame",2.0f);
-        }   
-       
+            Invoke("EndGame", 2.0f);
+        }
+
     }
-    void EndGame(){
-        isGameEnd =true;
+    void EndGame()
+    {
+        isGameEnd = true;
+
+        // 게임 종료 시 endPanel을 활성화
+        if (endPanel != null)
+        {
+            endPanel.SetActive(true);
+        }
     }
-    void endBtnClick() {
+    void GoToMapScene()
+    {
+        SceneManager.LoadScene("MapScene");
+    }
+    void endBtnClick()
+    {
         SceneManager.LoadScene("MapScene");
     }
 

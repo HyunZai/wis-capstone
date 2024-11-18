@@ -11,11 +11,27 @@ public class AnimalNextButtonHandler : MonoBehaviour
     public Button nextButton;
     private AnimalRandomizer animalRandomizer;
     // Start is called before the first frame update
+
+    public GameObject endPanel; // 끝내기 패널
+    public Button endPanelButton; // 끝내기 패널 안의 버튼
+
     void Start()
     {
         animalRandomizer = FindObjectOfType<AnimalRandomizer>();
-        
+
         nextButton.onClick.AddListener(NextButtonClick);
+
+        // endPanel 초기 비활성화
+        if (endPanel != null)
+        {
+            endPanel.SetActive(false);
+        }
+
+        // endPanelButton에 클릭 이벤트 추가
+        if (endPanelButton != null)
+        {
+            endPanelButton.onClick.AddListener(LoadMapScene);
+        }
     }
 
     public Sprite defaultSprite;
@@ -30,7 +46,7 @@ public class AnimalNextButtonHandler : MonoBehaviour
 
         foreach (GameObject star in starList)
         {
-            switch(star.name)
+            switch (star.name)
             {
                 case "Star_1": star_1 = star; break;
                 case "Star_2": star_2 = star; break;
@@ -63,7 +79,13 @@ public class AnimalNextButtonHandler : MonoBehaviour
 
             if (animalRandomizer != null) animalRandomizer.SetRandomAnimalName(true);
 
-            nextButton.GetComponentInChildren<TextMeshProUGUI>().text = "끝내기";
+            nextButton.GetComponentInChildren<TextMeshProUGUI>().text = "성공!";
+
+            // endPanel을 활성화
+            if (endPanel != null)
+            {
+                endPanel.SetActive(true);
+            }
         }
         else
         {
@@ -80,5 +102,10 @@ public class AnimalNextButtonHandler : MonoBehaviour
         {
             line.positionCount = 0;
         }
+    }
+
+    void LoadMapScene()
+    {
+        SceneManager.LoadScene("MapScene");
     }
 }
