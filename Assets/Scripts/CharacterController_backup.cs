@@ -31,10 +31,12 @@ public class CharacterSensorController : MonoBehaviour
     public Button nBtn, goHomeBtn;
     public VideoClip[] videoClips;
     private VideoPlayer videoPlayer;
+    private DatabaseManager dbManager;
     string buildingName;
 
     ///////////Codes
     void Awake(){
+
         SetBeforeStart();
     }
     void Start(){
@@ -47,7 +49,6 @@ public class CharacterSensorController : MonoBehaviour
     ///////////For BeforeStart    
     void SetBeforeStart(){ 
         Time.timeScale = 1f;
-        characterList = GameObject.FindGameObjectsWithTag("Player").OrderBy(p => p.name).ToArray();
         crossPoints = GameObject.FindGameObjectsWithTag("CrossPoint").OrderBy(crossingPoint => crossingPoint.name).ToArray();
         destinationPoints = GameObject.FindGameObjectsWithTag("DestinationPoint").OrderBy(distinationPoint => distinationPoint.name).ToArray(); 
         buildingPoints = GameObject.FindGameObjectsWithTag("BuildingPoint").OrderBy(building =>  building.name).ToArray();
@@ -84,6 +85,9 @@ public class CharacterSensorController : MonoBehaviour
             AskGoHomePopup();
         }
     }
+
+    //성별에 따라 캐릭터 선택
+    
     
     ///////////For Popup Button
     void NoButtonClick(){
