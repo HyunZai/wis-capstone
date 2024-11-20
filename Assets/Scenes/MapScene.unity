@@ -3196,9 +3196,9 @@ MonoBehaviour:
   - {fileID: 32900000, guid: 4978b20677c774016871fc845a642571, type: 3}
   - {fileID: 32900000, guid: 83a7e22d0150b4144a6a2bc9919d2fb4, type: 3}
   - {fileID: 32900000, guid: 921114220f6ec4fdcbdd27382499c1f7, type: 3}
-  - {fileID: 32900000, guid: ffc763097a9124a48aa1e193af20d519, type: 3}
   - {fileID: 32900000, guid: 636f524a0092c467f9e232d2c359b639, type: 3}
   - {fileID: 32900000, guid: 97031b993e8b94d7c91cef002090355d, type: 3}
+  - {fileID: 32900000, guid: ffc763097a9124a48aa1e193af20d519, type: 3}
   - {fileID: 32900000, guid: 2016a70de9ee240f19d327135bb593d7, type: 3}
   - {fileID: 32900000, guid: 3c6ac7f871566408394bed5e1f18813f, type: 3}
   audioSource: {fileID: 519420033}
@@ -4464,6 +4464,19 @@ MonoBehaviour:
   hintPopup: {fileID: 464770733}
   phoneNumText: {fileID: 1022742072}
   textShake: {fileID: 1022742074}
+  audioSource: {fileID: 519420033}
+  audioClips:
+  - {fileID: 8300000, guid: c3ef4550cf0de472181337a27ddf4ac7, type: 3}
+  - {fileID: 8300000, guid: 64fec8ec3891f4bbcbe5c665c46a4726, type: 3}
+  - {fileID: 8300000, guid: c450d61bd090744fcbc8e02bfdc752e4, type: 3}
+  - {fileID: 8300000, guid: e1b786fc92c33477cb196b20e77e34c8, type: 3}
+  - {fileID: 8300000, guid: e5c0f79292f11472ba2deae4668fb0de, type: 3}
+  - {fileID: 8300000, guid: ed5b620968ee143ad82cdc3d8ed563ee, type: 3}
+  - {fileID: 8300000, guid: 5c453d2b70da4419399da85c3ef31c47, type: 3}
+  - {fileID: 8300000, guid: c1e6e06664e1145e488860242f08e3be, type: 3}
+  - {fileID: 8300000, guid: 0881f2886c3424dcb85d2bed2f00e5b9, type: 3}
+  - {fileID: 8300000, guid: 0be6148fe68144e28a842c95e7fdb0ba, type: 3}
+  isComplate: 0
 --- !u!1 &1311948533
 GameObject:
   m_ObjectHideFlags: 0

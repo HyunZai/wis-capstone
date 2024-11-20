@@ -3,10 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -19,7 +17,7 @@ public class CharacterSensorController : MonoBehaviour
 
     private static Vector2 pp;
     private float moveSpeed = 4.0f;
-    private GameObject[] crossPoints ,destinationPoints ,buildingPoints;    //캐릭터 설정 리스트 ++++ 캐릭터 목록 추가점요
+    private GameObject[] crossPoints ,destinationPoints ,buildingPoints;
     private Button[] setDistinationBtns;// 빌딩목록 넣기
     private int destinationNum ,beforeDestination, routeCheckCount; 
     private Vector2 [] cp, dp, bp;
@@ -41,12 +39,18 @@ public class CharacterSensorController : MonoBehaviour
     public AudioSource audioSource; //오디오 파일 컨트롤
     public AudioClip[] audioClips; //오디오 클립 배열(리스트)
     public GameObject smartPhone;
+    private SmartPhone smartPhoneScript;
+
+    private User user;
 
     ///////////Codes
     void Awake(){
         SetBeforeStart();
     }
     void Start(){
+        //부모님 전화번호 입력 성공 후 귀가경로 안내가 시작되도록 처리하기 위한..
+        smartPhoneScript = smartPhone.GetComponent<SmartPhone>();
+        smartPhoneScript.OnConditionMet += GoHomeButtonClick;
     }
     void Update(){
          
@@ -59,7 +63,10 @@ public class CharacterSensorController : MonoBehaviour
 
         dbManager = new DatabaseManager();
         dbManager.Connect();
-        User user = dbManager.login();
+        user = dbManager.login();
+
+        //11-20 김현재
+        PlayerPrefs.SetInt("userId", user.user_id);
 
         crossPoints = GameObject.FindGameObjectsWithTag("CrossPoint").OrderBy(crossingPoint => crossingPoint.name).ToArray();
         destinationPoints = GameObject.FindGameObjectsWithTag("DestinationPoint").OrderBy(distinationPoint => distinationPoint.name).ToArray(); 
@@ -67,18 +74,20 @@ public class CharacterSensorController : MonoBehaviour
         setDistinationBtns = buildingBtns.GetComponentsInChildren<Button>().OrderBy(btn => btn.name).ToArray();
         askText = popup.GetComponentInChildren<TextMeshProUGUI>();
         videoPlayer = FindObjectOfType<VideoPlayer>();
-       //characterList = GameObject.FindGameObjectsWithTag("Player").OrderBy(p => p.name.Contains("Male") ? 0 : 1).ToArray();
-
 
         cp = new Vector2[crossPoints.Length];
         dp = new Vector2[destinationPoints.Length];
         bp = new Vector2[buildingPoints.Length];    
 
-        
-
-
         nBtn.onClick.AddListener(() => NoButtonClick());
-        goHomeBtn.onClick.AddListener(()=> GoHomeButtonClick());
+        goHomeBtn.onClick.AddListener(()=> {
+            popup.SetActive(false); //팝업 비활성화
+            smartPhone.SetActive(true); //스마트폰 활성화
+
+            //재생시킬 오디오 파일 선택("부모님 전화번호를 입력해주세요.")
+            audioSource.clip = audioClips[1];
+            audioSource.Play(); //오디오 파일 재생
+        });
         
         for(int i = 0; i < destinationPoints.Length; i++){        
             if(i<crossPoints.Length)cp[i] = crossPoints[i].transform.position;
@@ -110,12 +119,8 @@ public class CharacterSensorController : MonoBehaviour
         ActivateBuildingBtns();
     }
     void GoHomeButtonClick(){
-        //재생시킬 오디오 파일 선택
-        audioSource.clip = audioClips[1];
-        audioSource.Play(); //오디오 파일 재생
-
-        smartPhone.SetActive(true);        
-
+        popup.SetActive(true);
+        
         SetHomeRoute();
         SetDestination(-1);
         ActivateBuildingBtns(); 
@@ -262,8 +267,8 @@ public class CharacterSensorController : MonoBehaviour
         popup.SetActive(true);
 
         //재생시킬 오디오 파일 선택
-        // audioSource.clip = audioClips[0];
-        // audioSource.Play(); //오디오 파일 재생
+        audioSource.clip = audioClips[0];
+        audioSource.Play(); //오디오 파일 재생
     }
     void SetHomeRoute(){
         popup.SetActive(false);
@@ -319,38 +324,38 @@ public class CharacterSensorController : MonoBehaviour
             switch (buildingName)
             {
                 case "School":
-                    videoPlayer.clip = videoClips[0];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 9 : 0];
                     break;
                 case "Cafe":
-                    videoPlayer.clip = videoClips[1];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 10 : 1];
                     break;
                 case "FireStation":
-                    videoPlayer.clip = videoClips[2];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 11 : 2];
                     break;
                 case "Library":
-                    videoPlayer.clip = videoClips[3];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 12 : 3];
                     break;
                 case "Home":
-                    videoPlayer.clip = videoClips[4];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 13 : 4];
                     break;
                 case "Mart":
-                    videoPlayer.clip = videoClips[5];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 14 : 5];
                     break;
                 case "Police":
-                    videoPlayer.clip = videoClips[6];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 15 : 6];
                     break;
                 case "Bank":
-                    videoPlayer.clip = videoClips[7];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 16 : 7];
                     break;
                 case "Hospital":
-                    videoPlayer.clip = videoClips[8];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 17 : 8];
                     break;
             }    
           
 
-           PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
+            PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
      
-        videoPlayer.Play();
+            videoPlayer.Play();
         }
     }
     void EndReached(VideoPlayer vp)
