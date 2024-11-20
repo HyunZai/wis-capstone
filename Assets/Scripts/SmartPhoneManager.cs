@@ -17,18 +17,24 @@ public class SmartPhone : MonoBehaviour
     public TextShake textShake;
     private DatabaseManager dbManager;
 
+    public AudioSource audioSource; //오디오 파일 컨트롤
+    public AudioClip[] audioClips; //오디오 클립 배열(리스트)
+
     // Start is called before the first frame update
     private bool isShow = false;
     private bool isHide = false;
     public bool isComplate = false;
+
+    public event Action OnConditionMet; //스마트폰 처리 추가
     void Start()
     {
         //DB 연결
         dbManager = new DatabaseManager();
         dbManager.Connect();
-        
+        User user = dbManager.login();
+
         //현재 접속한 사용자의 부모님 전화번호 가져옴
-        string parentPhoneNumber = dbManager.getParentPhoneNumber(1);
+        string parentPhoneNumber = user.parent_phone;
 
         //힌트버튼 숨김
         hintBtn.gameObject.SetActive(false);
@@ -45,6 +51,9 @@ public class SmartPhone : MonoBehaviour
         {
             btn.onClick.AddListener(() => {
                 if (phoneNumText.text.Length != 13) phoneNumText.text += (phoneNumText.text.Length == 3 || phoneNumText.text.Length == 8) ? $"-{btn.name}" : btn.name;
+
+                audioSource.clip = audioClips[int.Parse(btn.name)];
+                audioSource.Play(); //오디오 파일 재생
             });
         }
 
@@ -59,6 +68,9 @@ public class SmartPhone : MonoBehaviour
             if (inputted == parentPhoneNumber) 
             {
                 isComplate = true; //스마트폰 오브젝트 이동할 때 사용
+
+                //스마트폰 처리 추가
+                OnConditionMet?.Invoke();
 
                 foreach (Button button in numberBtns) 
                 {
