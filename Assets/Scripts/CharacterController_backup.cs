@@ -31,7 +31,6 @@ public class CharacterSensorController : MonoBehaviour
     public Button nBtn, goHomeBtn;
     public VideoClip[] videoClips;
     private VideoPlayer videoPlayer;
-    private DatabaseManager dbManager;
     string buildingName;
 
     ///////////Codes
@@ -40,6 +39,7 @@ public class CharacterSensorController : MonoBehaviour
         SetBeforeStart();
     }
     void Start(){
+        
     }
     void Update(){
          
@@ -85,9 +85,6 @@ public class CharacterSensorController : MonoBehaviour
             AskGoHomePopup();
         }
     }
-
-    //성별에 따라 캐릭터 선택
-    
     
     ///////////For Popup Button
     void NoButtonClick(){

@@ -9,8 +9,7 @@ public class SetPlayerGender : MonoBehaviour
     public int setGender = 0;
     public GameObject [] characterList;
     private DatabaseManager dbManager;
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
 
         dbManager = new DatabaseManager();
@@ -18,31 +17,28 @@ public class SetPlayerGender : MonoBehaviour
 
         // DB에서 성별 정보 가져오기
         User user = dbManager.login();
+
+        if (user != null)
+        {
+            // DB에서 가져온 성별 정보 설정 (0: 남자, 1: 여자)
+            setGender = user.gender == 0 ? 0 : 1;  // 여기서 성별을 setGender에 할당
+        }
+
         characterList = GameObject.FindGameObjectsWithTag("Player").OrderBy(p => p.name.Contains("Male") ? 0 : 1).ToArray();
-        // 성별에 따라 캐릭터 선택 (0: 남자, 1: 여자)
         SetCharacterByGender(setGender);   
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     void SetCharacterByGender(int gender){
-        if (characterList.Length < 2){
 
-            if(gender == 0 ){
-                characterList[0].SetActive(true);
-                characterList[1].SetActive(false);
-            }else if(gender == 1){
-                characterList[0].SetActive(false);
-                characterList[1].SetActive(true);
-            }
-        }
-        else
+        if (characterList[0] != null) 
         {
-            Debug.LogError("characterList에 필요한 캐릭터 오브젝트가 부족합니다.");
+            characterList[0].SetActive(gender == 0); //남자 캐릭터 활성화
+        }   
+
+        if (characterList[1] != null)  
+        {
+            characterList[1].SetActive(gender == 1);  // 여자 캐릭터 활성화
         }
+    
     }
 }
