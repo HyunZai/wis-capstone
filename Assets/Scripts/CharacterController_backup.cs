@@ -72,7 +72,9 @@ public class CharacterSensorController : MonoBehaviour
 
         cp = new Vector2[crossPoints.Length];
         dp = new Vector2[destinationPoints.Length];
-        bp = new Vector2[buildingPoints.Length];
+        bp = new Vector2[buildingPoints.Length];    
+
+        
 
 
         nBtn.onClick.AddListener(() => NoButtonClick());
@@ -92,7 +94,7 @@ public class CharacterSensorController : MonoBehaviour
         beforeDestination = loadPosNum;
         if(!goHomeMode)this.transform.position = (dp[loadPosNum] + bp[loadPosNum])/2;
 
-        Debug.Log(user.gender);
+        
         if (anim == null) anim = GetComponent<Animator>(); 
         anim.runtimeAnimatorController = animList[user.gender]; 
         
