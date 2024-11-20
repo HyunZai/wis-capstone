@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class SettingsManagerMiniGame : MonoBehaviour
+public class SettingsManager_MiniGame : MonoBehaviour
 {
     public Button settingsButton; // Settings 버튼 참조
     public Button keepPlayingButton; // KeepPlaying 버튼 참조
