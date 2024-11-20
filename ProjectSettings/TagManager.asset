@@ -14,6 +14,9 @@ TagManager:
   - CrossPoint
   - BuildingPoint
   - VideoPlayer
+  - NumberButton
+  - BackspaceButton
+  - GoHomeButton
   layers:
   - Default
   - TransparentFX

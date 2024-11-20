@@ -23,86 +23,31 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
         string buildingName = PlayerPrefs.GetString("BuildingName");
         int BuildingVisitCount = PlayerPrefs.GetInt(buildingName + "VisitCount");
 
-        List<string> cafeGameScenes = new List<string>
-        {
-            "CafeFallingGameScene"
-        };
-        List<string> fireStationGameScenes = new List<string>
-        {
-            "FireStationFindSameGameScene",
-            "FireStationFireFightingGameScene"
-        };
-        List<string> policeGameScenes = new List<string>
-        {
-            "PoliceStationcatChingThievesGameScene",
-            "PoliceStationCardMatchGameScene"
-        };
-        List<string> schoolGameScenes = new List<string>
-        {
-            "SchoolAnimalNameDrawingGameScene",
-            "SchoolLendingThingsGameScene"
-        };
-        
-        int index = BuildingVisitCount - 1;
+        List<string> scenes = new List<string>();
 
-        List<string> gameScenes = new List<string>();
-
-        switch (buildingName)
+        int sceneCount = SceneManager.sceneCountInBuildSettings;
+        for (int i = 0; i < sceneCount; i++)
         {
-            case "School":
-                gameScenes = schoolGameScenes;
-                break;
-            case "FireStation":
-                gameScenes = fireStationGameScenes;
-                break;
-            case "Library":
-                
-                break;
-            case "Home":
-                
-                break;
-            case "Mart":
-                
-                break;
-            case "Police":
-                gameScenes = policeGameScenes;
-                break;
-            case "Bank":
-                
-                break;
-            case "Hospital":
-                
-                break;
-            case "Cafe":
-                gameScenes = cafeGameScenes;
-                break;
+            string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+            string sceneName = Path.GetFileNameWithoutExtension(scenePath);
+            scenes.Add(sceneName);
         }
+
+        List<string> gameScenes = scenes.Where(scene => scene.Contains(buildingName) && scene.Contains("GameScene")).ToList();
+
+        int index = BuildingVisitCount - 1;
 
         if (gameScenes.Count > 1)
         {
-            if (BuildingVisitCount > gameScenes.Count)
-            {
-                index = BuildingVisitCount % gameScenes.Count - 1;
-            }
+            if (BuildingVisitCount > gameScenes.Count) index = (BuildingVisitCount - 1) % gameScenes.Count;
         }
-        else
-        {
-            index = 0;
-        }
+        else index = 0;
         
-        if (gameScenes.Count > 0 && Application.CanStreamedLevelBeLoaded(gameScenes[index]))
-        {
-            SceneManager.LoadScene(gameScenes[index]);
-        }
-        else
-        {
-            SceneManager.LoadScene("MapScene");
-        }
+        SceneManager.LoadScene((gameScenes.Count > 0 && Application.CanStreamedLevelBeLoaded(gameScenes[index])) ? gameScenes[index] : "MapScene");
     }
 
     public Image startButtonImg;
-    public Sprite defaultSprite;
-    public Sprite pressedSprite;
+    public Sprite pressedSprite, defaultSprite;
 
     public void OnPointerDown(PointerEventData eventData)
     {

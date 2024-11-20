@@ -29,7 +29,7 @@ public class AnimalRandomizer : MonoBehaviour
         
         if (isEnd)
         {
-            animalText.text = "참 잘했어요!";
+            animalText.text = "";
             newPosition.x = -102;
         }
         else 

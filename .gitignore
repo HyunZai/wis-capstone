@@ -72,8 +72,13 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 .DS_Store
+<<<<<<< HEAD
+
+config.json
+=======
 /[Aa]ssets/.DS_Store
 /[Aa]ssets/[Tt]extMesh Pro/.DS_Store
 
 config.json
 config.json.meta
+>>>>>>> origin/dev

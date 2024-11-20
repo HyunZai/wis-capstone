@@ -7,38 +7,44 @@ using UnityEngine.TextCore.Text;
 public class SetPlayerGender : MonoBehaviour
 {
     public int setGender = 0;
-    public GameObject [] characterList;
+    public GameObject[] characterList;
     private DatabaseManager dbManager;
-    void Awake()
-    {
 
+    // Start is called before the first frame update
+    void Start()
+    {
         dbManager = new DatabaseManager();
         dbManager.Connect();
 
         // DB에서 성별 정보 가져오기
         User user = dbManager.login();
 
-        if (user != null)
-        {
-            // DB에서 가져온 성별 정보 설정 (0: 남자, 1: 여자)
-            setGender = user.gender == 0 ? 0 : 1;  // 여기서 성별을 setGender에 할당
-        }
-
+        // Player 태그가 있는 활성화된 GameObject만 찾기
         characterList = GameObject.FindGameObjectsWithTag("Player").OrderBy(p => p.name.Contains("Male") ? 0 : 1).ToArray();
-        SetCharacterByGender(setGender);   
+
+        // 성별에 맞는 캐릭터 활성화 및 스크립트 비활성화 처리
+        SetCharacterByGender(setGender);
     }
 
-    void SetCharacterByGender(int gender){
+    // Update is called once per frame
+    void Update()
+    {
 
-        if (characterList[0] != null) 
-        {
-            characterList[0].SetActive(gender == 0); //남자 캐릭터 활성화
-        }   
+    }
 
-        if (characterList[1] != null)  
+    void SetCharacterByGender(int gender)
+    {
+        Debug.Log(characterList[0].name + " , " + characterList[1].name);
+        for (int i = 0; i < characterList.Length; i++)
         {
-            characterList[1].SetActive(gender == 1);  // 여자 캐릭터 활성화
+            bool isActive = (i == gender); // 현재 선택된 캐릭터만 활성화
+            characterList[i].SetActive(isActive); // 오브젝트 활성화/비활성화
+            MonoBehaviour[] scripts = characterList[i].GetComponents<MonoBehaviour>(); // 연결된 모든 스크립트 가져오기
+
+            foreach (var script in scripts)
+            {
+                script.enabled = isActive; // 활성화된 캐릭터의 스크립트만 활성화
+            }
         }
-    
     }
 }

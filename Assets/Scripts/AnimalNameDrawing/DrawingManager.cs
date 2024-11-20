@@ -10,8 +10,9 @@ public class Draw : MonoBehaviour
     private List<Vector3> points = new List<Vector3>();
 
     void Start() {
-        lineRenderer.startWidth = 0.1f;
-        lineRenderer.endWidth = 0.1f;
+        lineRenderer.startWidth = 0.05f;
+        lineRenderer.endWidth = 0.05f;
+        lineRenderer.sortingOrder = 1;
     }
 
     void Update()
@@ -40,8 +41,8 @@ public class Draw : MonoBehaviour
         currentLine.transform.parent = this.transform;
         lineRenderer = currentLine.GetComponent<LineRenderer>();
 
-        lineRenderer.startWidth = 0.35f;
-        lineRenderer.endWidth = 0.35f;
+        lineRenderer.startWidth = 0.2f;
+        lineRenderer.endWidth = 0.2f;
 
         lineRenderer.sortingLayerName = "Foreground";
         lineRenderer.sortingOrder = 5;
