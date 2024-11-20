@@ -49,7 +49,7 @@ public class DatabaseManager
         return user;
     }
 
-    public bool register(User user) {
+    public void register(User user) {
         IDbCommand dbCommand = dbConnection.CreateCommand();
         dbCommand.CommandText = $"INSERT INTO user (user_name, age, parent_phone, address, gender, registered) VALUES ('{user.name}', {user.age}, '{user.parent_phone}', '{user.address}', {user.gender}, '{user.registered}')";
         
@@ -66,8 +66,6 @@ public class DatabaseManager
             dbCommand.Dispose(); 
             dbConnection.Close();
         } 
-
-        return true;
     }
 
     //귀가 경로 가져오는 코드

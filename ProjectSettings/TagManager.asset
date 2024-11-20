@@ -16,6 +16,7 @@ TagManager:
   - VideoPlayer
   - NumberButton
   - BackspaceButton
+  - GoHomeButton
   layers:
   - Default
   - TransparentFX
