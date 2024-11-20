@@ -84,7 +84,7 @@ public class SmartPhone : MonoBehaviour
         if (transform.position == new Vector3(12, 0, 0) && isActiveAndEnabled) isShow = true;
         if (isComplate) isHide = true;
 
-        if (isShow) transform.position = Vector3.Lerp(transform.position, new Vector3(6, 0, 0), 7f * Time.deltaTime);
+        if (isShow) transform.position = Vector3.Lerp(transform.position, new Vector3(5.4f, 0, 0), 7f * Time.deltaTime);
         if (isHide) transform.position = Vector3.MoveTowards(transform.position, new Vector3(12, 0, 0), 50f * Time.deltaTime);
     }
 }
