@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Analytics;
@@ -109,11 +110,11 @@ public class CharacterSensorController : MonoBehaviour
         ActivateBuildingBtns();
     }
     void GoHomeButtonClick(){
-        smartPhone.SetActive(true);
-        
         //재생시킬 오디오 파일 선택
         audioSource.clip = audioClips[1];
         audioSource.Play(); //오디오 파일 재생
+
+        smartPhone.SetActive(true);        
 
         SetHomeRoute();
         SetDestination(-1);

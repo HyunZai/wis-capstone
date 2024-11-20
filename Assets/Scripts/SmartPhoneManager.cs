@@ -15,13 +15,12 @@ public class SmartPhone : MonoBehaviour
     public Image hintPopup;
     public TextMeshProUGUI phoneNumText;
     public TextShake textShake;
-
     private DatabaseManager dbManager;
 
     // Start is called before the first frame update
     private bool isShow = false;
     private bool isHide = false;
-    private bool isComplate = false;
+    public bool isComplate = false;
     void Start()
     {
         //DB 연결
@@ -60,7 +59,7 @@ public class SmartPhone : MonoBehaviour
             if (inputted == parentPhoneNumber) 
             {
                 isComplate = true; //스마트폰 오브젝트 이동할 때 사용
-                
+
                 foreach (Button button in numberBtns) 
                 {
                     //사용자가 입력한 번호가 일치하면 버튼들 리스너 제거해서 작동 안하도록 처리
@@ -84,7 +83,7 @@ public class SmartPhone : MonoBehaviour
         if (transform.position == new Vector3(12, 0, 0) && isActiveAndEnabled) isShow = true;
         if (isComplate) isHide = true;
 
-        if (isShow) transform.position = Vector3.Lerp(transform.position, new Vector3(6, 0, 0), 7f * Time.deltaTime);
+        if (isShow) transform.position = Vector3.Lerp(transform.position, new Vector3(5.4f, 0, 0), 7f * Time.deltaTime);
         if (isHide) transform.position = Vector3.MoveTowards(transform.position, new Vector3(12, 0, 0), 50f * Time.deltaTime);
     }
 }
