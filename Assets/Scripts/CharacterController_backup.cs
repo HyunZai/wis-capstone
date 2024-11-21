@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,48 +11,63 @@ using UnityEngine.Video;
 
 public class CharacterSensorController : MonoBehaviour
 {   
-    public GameObject player;    //메인 캐릭터 지정
-    float moveSpeed = 4.0f;
-    GameObject[] characterList, crossPoints ,destinationPoints ,buildingPoints;    //캐릭터 설정 리스트 ++++ 캐릭터 목록 추가점요
-    Button[] setDistinationBtns;// 빌딩목록 넣기
-    public int destinationNum ,beforeDestination; 
-    Vector2 [] cp, dp, bp;
-    static Vector2 pp;
-    Animator anim;
-    Vector2 beforePP;
-    public Vector2 isMoved;
-    public int homeRoute1, homeRoute2;
-    public GameObject popup;
-    public float popupDelay = 2.0f;
-    TextMeshProUGUI askText;
-    public bool goHomeMode, isMoveNow = false;
-    
-    public GameObject buildingBtns;
-    
+    public AnimatorController [] animList;
     public int setHome= 4;
-    public Button nBtn, goHomeBtn;
-    public VideoClip[] videoClips;
+
+
+    private static Vector2 pp;
+    private float moveSpeed = 4.0f;
+    private GameObject[] crossPoints ,destinationPoints ,buildingPoints;
+    private Button[] setDistinationBtns;// 빌딩목록 넣기
+    private int destinationNum ,beforeDestination, routeCheckCount; 
+    private Vector2 [] cp, dp, bp;
+    private Animator anim;
+    private Vector2 beforePP, isMoved;
+    public GameObject popup;   //change private
+    private float popupDelay = 2.0f;
+    private TextMeshProUGUI askText;
+    private bool goHomeMode, isMoveNow = false;
+    
+    public GameObject buildingBtns; // after delete
+    public Button nBtn, goHomeBtn; // chagne private
+    public VideoClip[] videoClips;  // change private
     private VideoPlayer videoPlayer;
-    string buildingName;
+    private DatabaseManager dbManager;
+    private List<int> homeRouteList;
+    
 
     public AudioSource audioSource; //오디오 파일 컨트롤
     public AudioClip[] audioClips; //오디오 클립 배열(리스트)
+    public GameObject smartPhone;
+    private SmartPhone smartPhoneScript;
+
+    private User user;
 
     ///////////Codes
     void Awake(){
         SetBeforeStart();
     }
     void Start(){
+        //부모님 전화번호 입력 성공 후 귀가경로 안내가 시작되도록 처리하기 위한..
+        smartPhoneScript = smartPhone.GetComponent<SmartPhone>();
+        smartPhoneScript.OnConditionMet += GoHomeButtonClick;
     }
     void Update(){
          
         MoveAnimation();
-        pp = player.transform.position; 
+        pp = this.transform.position; 
     }
     ///////////For BeforeStart    
     void SetBeforeStart(){ 
         Time.timeScale = 1f;
-        characterList = GameObject.FindGameObjectsWithTag("Player").OrderBy(p => p.name).ToArray();
+
+        dbManager = new DatabaseManager();
+        dbManager.Connect();
+        user = dbManager.login();
+
+        //11-20 김현재
+        PlayerPrefs.SetInt("userId", user.user_id);
+
         crossPoints = GameObject.FindGameObjectsWithTag("CrossPoint").OrderBy(crossingPoint => crossingPoint.name).ToArray();
         destinationPoints = GameObject.FindGameObjectsWithTag("DestinationPoint").OrderBy(distinationPoint => distinationPoint.name).ToArray(); 
         buildingPoints = GameObject.FindGameObjectsWithTag("BuildingPoint").OrderBy(building =>  building.name).ToArray();
@@ -58,15 +75,21 @@ public class CharacterSensorController : MonoBehaviour
         askText = popup.GetComponentInChildren<TextMeshProUGUI>();
         videoPlayer = FindObjectOfType<VideoPlayer>();
 
-        
-        nBtn.onClick.AddListener(() => NoButtonClick());
-        goHomeBtn.onClick.AddListener(()=> GoHomeButtonClick());
-
         cp = new Vector2[crossPoints.Length];
         dp = new Vector2[destinationPoints.Length];
-        bp = new Vector2[buildingPoints.Length];
+        bp = new Vector2[buildingPoints.Length];    
 
-        for(int i = 0; i < destinationPoints.Length; i++){        //건물 클릭 시 반응
+        nBtn.onClick.AddListener(() => NoButtonClick());
+        goHomeBtn.onClick.AddListener(()=> {
+            popup.SetActive(false); //팝업 비활성화
+            smartPhone.SetActive(true); //스마트폰 활성화
+
+            //재생시킬 오디오 파일 선택("부모님 전화번호를 입력해주세요.")
+            audioSource.clip = audioClips[1];
+            audioSource.Play(); //오디오 파일 재생
+        });
+        
+        for(int i = 0; i < destinationPoints.Length; i++){        
             if(i<crossPoints.Length)cp[i] = crossPoints[i].transform.position;
             dp[i] = destinationPoints[i].transform.position;
             bp[i] = buildingPoints[i].transform.position;
@@ -78,9 +101,11 @@ public class CharacterSensorController : MonoBehaviour
     
         destinationNum = loadPosNum;
         beforeDestination = loadPosNum;
-        if(!goHomeMode)player.transform.position = (dp[loadPosNum] + bp[loadPosNum])/2;
+        if(!goHomeMode)this.transform.position = (dp[loadPosNum] + bp[loadPosNum])/2;
 
-        if (anim == null) anim = GetComponent<Animator>();  
+        
+        if (anim == null) anim = GetComponent<Animator>(); 
+        anim.runtimeAnimatorController = animList[user.gender]; 
         
         videoPlayer.loopPointReached += EndReached;
         if(destinationNum != setHome) {
@@ -94,6 +119,8 @@ public class CharacterSensorController : MonoBehaviour
         ActivateBuildingBtns();
     }
     void GoHomeButtonClick(){
+        popup.SetActive(true);
+        
         SetHomeRoute();
         SetDestination(-1);
         ActivateBuildingBtns(); 
@@ -131,8 +158,7 @@ public class CharacterSensorController : MonoBehaviour
     }
     void SetDestination(int gotoHere){
         if(isMoveNow == false){
-            if(!goHomeMode)
-            {
+            if(!goHomeMode){
                 if(gotoHere == setHome){
                     ShowPopup($"아직은 집으로 갈때가 아니에요!\n좀 더 동네를 탐험해볼까요?");
                 }else{
@@ -141,24 +167,16 @@ public class CharacterSensorController : MonoBehaviour
                 }
             }
             else if(goHomeMode){
-                if (homeRoute1 == gotoHere && destinationNum != homeRoute2 && destinationNum != homeRoute1 && destinationNum != setHome){
-                    destinationNum = gotoHere;
-                    StartCoroutine(GoSetDestination());
-                }else if(beforeDestination == homeRoute1 && gotoHere == homeRoute2 ){
-                    destinationNum = gotoHere;
-                    StartCoroutine(GoSetDestination()); 
-                }else if(beforeDestination == homeRoute2 && gotoHere == setHome){
-                    destinationNum = gotoHere;
-                    StartCoroutine(GoSetDestination()); 
-                }else if(beforeDestination != homeRoute1 && beforeDestination != homeRoute2 && gotoHere != homeRoute1 && gotoHere!= setHome){
-                    ShowPopup($"먼저 {BuildingName(homeRoute1)}으로 이동해주세요!");
-                }else if(beforeDestination == homeRoute1 && gotoHere != homeRoute2 ){
-                    ShowPopup($"{BuildingName(homeRoute2)}으로 이동해주세요!");
-                }else if(beforeDestination == homeRoute2 && gotoHere != setHome){
-                    ShowPopup($"{BuildingName(setHome)}으로 이동해주세요!");
-                }         
-            }
-            
+                if(routeCheckCount < homeRouteList.Count){
+                    if(gotoHere==homeRouteList[routeCheckCount]){
+                        destinationNum = gotoHere;
+                        routeCheckCount++;
+                        StartCoroutine(GoSetDestination());
+                    }else{
+                        ShowPopup($"{BuildingName(homeRouteList[routeCheckCount])}으로 이동해주세요!!");
+                    }
+                }
+            }  
         }else if(isMoveNow == true){
             ShowPopup("캐릭터가 이동 중 입니다!");
         }
@@ -169,7 +187,7 @@ public class CharacterSensorController : MonoBehaviour
 
         if(beforeDestination != destinationNum || beforeDestination == setHome || goHomeMode){
             while(Vector2.Distance(pp,dp[beforeDestination])>=0.01f){
-                player.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
+                this.transform.position = Vector2.MoveTowards(pp,dp[beforeDestination],moveSpeed* Time.deltaTime);
                 yield return null;
             }
             beforePP = pp;
@@ -178,13 +196,13 @@ public class CharacterSensorController : MonoBehaviour
 
             if(!(Mathf.Abs(pp.x - dp[destinationNum].x) < 0.01f || Mathf.Abs(pp.y-dp[destinationNum].y)<0.01f)){
                 while(Vector2.Distance(pp,cp[numP])>0.01f){
-                    player.transform.position = Vector2.MoveTowards(pp,cp[numP],moveSpeed* Time.deltaTime);
+                    this.transform.position = Vector2.MoveTowards(pp,cp[numP],moveSpeed* Time.deltaTime);
                     yield return null;
                 }
                 beforePP = pp;
 
                 while(Vector2.Distance(pp,cp[numB])>0.01f){
-                    player.transform.position = Vector2.MoveTowards(pp,cp[numB],moveSpeed* Time.deltaTime);
+                    this.transform.position = Vector2.MoveTowards(pp,cp[numB],moveSpeed* Time.deltaTime);
                     if(Vector2.Distance(pp,dp[destinationNum])<0.01f)yield break;
                     yield return null;
                 }
@@ -192,13 +210,13 @@ public class CharacterSensorController : MonoBehaviour
             }
 
             while(Vector2.Distance(pp,dp[destinationNum])>0.01f){
-                player.transform.position = Vector2.MoveTowards(pp,dp[destinationNum],moveSpeed* Time.deltaTime);
+                this.transform.position = Vector2.MoveTowards(pp,dp[destinationNum],moveSpeed* Time.deltaTime);
                 yield return null;
             }
             beforePP = pp;
         }
         while(Vector2.Distance(pp,bp[destinationNum])>=0.001f){
-            player.transform.position = Vector2.MoveTowards(pp,bp[destinationNum],moveSpeed* Time.deltaTime);
+            this.transform.position = Vector2.MoveTowards(pp,bp[destinationNum],moveSpeed* Time.deltaTime);
             yield return null;
         }
         beforePP = pp;
@@ -256,31 +274,14 @@ public class CharacterSensorController : MonoBehaviour
         popup.SetActive(false);
         goHomeMode = true;
 
-        int cpPoint = 0;
-        float shortCPNum = float.MaxValue;
+        dbManager = new DatabaseManager();
+        dbManager.Connect();
 
-        float shortCPNum2 = float.MaxValue;
-        float shortCPNum3 = float.MaxValue;
-
-        for(int i = 0; i < cp.Length; i++){
-            if(Vector2.Distance(bp[destinationNum],cp[i])< shortCPNum){
-                shortCPNum = Vector2.Distance(bp[destinationNum],cp[i]);
-                cpPoint = i;
-            }
-        }
+       
+        List<HomeRoute> homeRoute = dbManager.getGoHomeRoute(destinationNum + 1);
+        homeRouteList = homeRoute.Select(hr => hr.next_building-1).ToList();
+//        Debug.Log(homeRouteList.Count+" Route"+BuildingName(destinationNum) +" : "+ string.Join(", ", homeRouteList));
         
-        for(int i= 0; i< bp.Length; i++){
-            if(destinationNum == i||setHome == i)continue;
-            if(Vector2.Distance(cp[cpPoint], dp[i]) < shortCPNum2){
-                if(Vector2.Distance(cp[cpPoint], dp[i]) < shortCPNum3){
-                    shortCPNum3 = Vector2.Distance(cp[cpPoint], dp[i]);
-                    homeRoute1 = i;
-                    continue;
-                }
-                shortCPNum2 = Vector2.Distance(cp[cpPoint], dp[i]);
-                homeRoute2 =i;
-            }
-        }
     }
     string BuildingName(int PointNum){
         string stringName;
@@ -319,42 +320,42 @@ public class CharacterSensorController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other) { 
         if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null && !goHomeMode) 
         {
-            buildingName = other.gameObject.name.Split(".")[1];
+            string buildingName = other.gameObject.name.Split(".")[1];
             switch (buildingName)
             {
                 case "School":
-                    videoPlayer.clip = videoClips[0];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 9 : 0];
                     break;
                 case "Cafe":
-                    videoPlayer.clip = videoClips[1];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 10 : 1];
                     break;
                 case "FireStation":
-                    videoPlayer.clip = videoClips[2];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 11 : 2];
                     break;
                 case "Library":
-                    videoPlayer.clip = videoClips[3];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 12 : 3];
                     break;
                 case "Home":
-                    videoPlayer.clip = videoClips[4];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 13 : 4];
                     break;
                 case "Mart":
-                    videoPlayer.clip = videoClips[5];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 14 : 5];
                     break;
                 case "Police":
-                    videoPlayer.clip = videoClips[6];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 15 : 6];
                     break;
                 case "Bank":
-                    videoPlayer.clip = videoClips[7];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 16 : 7];
                     break;
                 case "Hospital":
-                    videoPlayer.clip = videoClips[8];
+                    videoPlayer.clip = videoClips[user.gender == 0 ? 17 : 8];
                     break;
             }    
           
 
-           PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
+            PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
      
-        videoPlayer.Play();
+            videoPlayer.Play();
         }
     }
     void EndReached(VideoPlayer vp)
@@ -378,5 +379,18 @@ public class CharacterSensorController : MonoBehaviour
             setDistinationBtns[i].gameObject.SetActive(true);   
         }
     }
+    void ForCheckHomeRoute(){ //루트경로 체크하고 싶을 때 start에 넣으세용
+        for (int i = 0; i < buildingPoints.Length; i++){
+            dbManager = new DatabaseManager();
+            dbManager.Connect();
 
+            List<HomeRoute> homeRoute = dbManager.getGoHomeRoute(i+1);
+            
+            // homeRouteList는 int 타입을 저장하는 리스트로 초기화
+            List<int> homeRouteList = homeRoute.Select(hr => hr.next_building).ToList();
+            
+            // List<int>를 string.Join으로 출력
+            Debug.Log(homeRouteList.Count+" Route"+BuildingName(i) +" : "+ string.Join(", ", homeRouteList));
+        }
+    }
 }
