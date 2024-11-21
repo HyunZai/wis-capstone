@@ -3483,20 +3483,24 @@ MonoBehaviour:
     m_Y: 544
     m_Width: 3
     m_Height: 1
+<<<<<<< HEAD
+=======
   - m_X: 192
     m_Y: 594
     m_Width: 1855
     m_Height: 1
+>>>>>>> dev
   - m_X: 181
     m_Y: 644
     m_Width: 22
     m_Height: 15
+<<<<<<< HEAD
+=======
   - m_X: 230
     m_Y: 594
     m_Width: 1817
     m_Height: 50
-  - m_X: 203
-    m_Y: 694
+>>>>>>> dev
   - m_X: 203
     m_Y: 694
     m_Width: 3
