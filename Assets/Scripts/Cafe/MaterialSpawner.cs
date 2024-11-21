@@ -10,7 +10,7 @@ public class MaterialSpawner : MonoBehaviour
     private float[] arrPosX = {-8f, -6f, -4f, -2f, 0f, 2f, 4f, 6f};
     
     [SerializeField]
-    private float spawnInterval = 3.5f;
+    private float spawnInterval = 0.05f;
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +43,7 @@ public class MaterialSpawner : MonoBehaviour
         GameObject material = Instantiate(materials[index], spawPos, Quaternion.identity);
 
         // 속도를 랜덤하게 설정
-        float randomSpeed = Random.Range(0.3f, 1f);
+        float randomSpeed = Random.Range(-2, -4);
         material.GetComponent<CafeMaterial>().SetMoveSpeed(randomSpeed);
 
     }
