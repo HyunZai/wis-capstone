@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Draw : MonoBehaviour
 {
@@ -9,10 +10,11 @@ public class Draw : MonoBehaviour
     public LineRenderer lineRenderer;
     private List<Vector3> points = new List<Vector3>();
 
+    public Button eraserBtn;
+
     void Start() {
         lineRenderer.startWidth = 0.05f;
         lineRenderer.endWidth = 0.05f;
-        lineRenderer.sortingOrder = 1;
     }
 
     void Update()
@@ -45,7 +47,7 @@ public class Draw : MonoBehaviour
         lineRenderer.endWidth = 0.2f;
 
         lineRenderer.sortingLayerName = "Foreground";
-        lineRenderer.sortingOrder = 5;
+        lineRenderer.sortingOrder = 2;
 
         points.Clear();
     }
