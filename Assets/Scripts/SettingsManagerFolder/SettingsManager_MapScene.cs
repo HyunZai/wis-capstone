@@ -12,6 +12,10 @@ public class SettingsManager_MapScene : MonoBehaviour
     public Button bgmToggleButton; // 배경음 버튼 참조
     public Button sfxToggleButton; // 효과음 버튼 참조
 
+    public Button hintButton; // 힌트 버튼 참조
+    public Button closeButton; // 닫기 버튼 참조
+    public GameObject hintPanel; // 힌트 패널 참조
+
     public GameObject guiPanel;   // GUI 패널 참조
 
     public AudioSource bgmAudioSource; // 배경음 AudioSource
@@ -31,6 +35,32 @@ public class SettingsManager_MapScene : MonoBehaviour
     void Start()
     {
         InitializeBgmState(); // BGM 상태 초기화
+
+        // 힌트 패널 초기 상태를 비활성화
+        if (hintPanel != null)
+        {
+            hintPanel.SetActive(false);
+        }
+
+        // 힌트 버튼 클릭 이벤트 추가
+        if (hintButton != null)
+        {
+            hintButton.onClick.AddListener(ShowHintPanel);
+        }
+        else
+        {
+            Debug.LogError("Hint Button is not assigned in the Inspector.");
+        }
+
+        // 닫기 버튼 클릭 이벤트 추가
+        if (closeButton != null)
+        {
+            closeButton.onClick.AddListener(HideHintPanel);
+        }
+        else
+        {
+            Debug.LogError("Close Button is not assigned in the Inspector.");
+        }
 
         // GUI 패널을 처음에 비활성화
         if (guiPanel != null)
@@ -92,20 +122,24 @@ public class SettingsManager_MapScene : MonoBehaviour
         UpdateSfxIcon(); // SFX 아이콘 초기화
     }
 
-    // BGM 상태 초기화
-    // void InitializeBgmState()
-    // {
-    //     // PlayerPrefs에서 저장된 BGM 상태를 읽어옵니다 (기본값은 0)
-    //     int savedBgmState = PlayerPrefs.GetInt("BGM_STATE", 0);
-    //     isBgmMuted = (savedBgmState == 1);
+    // 힌트 패널 표시
+    void ShowHintPanel()
+    {
+        if (hintPanel != null)
+        {
+            hintPanel.SetActive(true); // 패널 활성화
+        }
+    }
 
-    //     // BGM 음소거 설정 및 아이콘 업데이트
-    //     if (bgmAudioSource != null)
-    //     {
-    //         bgmAudioSource.mute = isBgmMuted;
-    //     }
-    //     UpdateBgmIcon();
-    // }
+    // 힌트 패널 숨기기
+    void HideHintPanel()
+    {
+        if (hintPanel != null)
+        {
+            hintPanel.SetActive(false); // 패널 비활성화
+        }
+    }
+    
     void InitializeBgmState()
     {
         // AudioManager에서 BGM 상태를 가져와 초기화
