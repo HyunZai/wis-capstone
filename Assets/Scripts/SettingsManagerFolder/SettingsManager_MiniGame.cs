@@ -28,8 +28,11 @@ public class SettingsManager_MiniGame2 : MonoBehaviour
     private bool isBgmMuted = false; // 배경음 음소거 상태
     private bool isSfxMuted = false; // 효과음 음소거 상태
 
+
     void Start()
     {
+        InitializeBgmState(); // BGM 상태 초기화
+
         // GUI 패널을 처음에 비활성화
         if (guiPanel != null)
         {
@@ -109,6 +112,22 @@ public class SettingsManager_MiniGame2 : MonoBehaviour
         }
     }
 
+    void InitializeBgmState()
+    {
+        // AudioManager에서 BGM 상태를 가져와 초기화
+        isBgmMuted = AudioManager.Instance.IsBgmMuted;
+
+        // BGM 음소거 설정
+        if (bgmAudioSource != null)
+        {
+            bgmAudioSource.mute = isBgmMuted;
+        }
+
+        // BGM 아이콘 업데이트
+        UpdateBgmIcon();
+    }
+
+
     // 게임 일시 정지
     void PauseGame()
     {
@@ -143,10 +162,17 @@ public class SettingsManager_MiniGame2 : MonoBehaviour
     void ToggleBGM()
     {
         isBgmMuted = !isBgmMuted;
+
+        // BGM 음소거 설정
         if (bgmAudioSource != null)
         {
-            bgmAudioSource.mute = isBgmMuted; // 배경음 음소거 설정
+            bgmAudioSource.mute = isBgmMuted;
         }
+
+        // 싱글턴(AudioManager)에 상태 저장
+        AudioManager.Instance.IsBgmMuted = isBgmMuted;
+
+        // BGM 아이콘 업데이트
         UpdateBgmIcon();
     }
 

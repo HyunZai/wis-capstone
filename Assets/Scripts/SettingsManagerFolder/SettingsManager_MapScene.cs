@@ -30,6 +30,8 @@ public class SettingsManager_MapScene : MonoBehaviour
 
     void Start()
     {
+        InitializeBgmState(); // BGM 상태 초기화
+
         // GUI 패널을 처음에 비활성화
         if (guiPanel != null)
         {
@@ -90,6 +92,35 @@ public class SettingsManager_MapScene : MonoBehaviour
         UpdateSfxIcon(); // SFX 아이콘 초기화
     }
 
+    // BGM 상태 초기화
+    // void InitializeBgmState()
+    // {
+    //     // PlayerPrefs에서 저장된 BGM 상태를 읽어옵니다 (기본값은 0)
+    //     int savedBgmState = PlayerPrefs.GetInt("BGM_STATE", 0);
+    //     isBgmMuted = (savedBgmState == 1);
+
+    //     // BGM 음소거 설정 및 아이콘 업데이트
+    //     if (bgmAudioSource != null)
+    //     {
+    //         bgmAudioSource.mute = isBgmMuted;
+    //     }
+    //     UpdateBgmIcon();
+    // }
+    void InitializeBgmState()
+    {
+        // AudioManager에서 BGM 상태를 가져와 초기화
+        isBgmMuted = AudioManager.Instance.IsBgmMuted;
+
+        // BGM 음소거 설정
+        if (bgmAudioSource != null)
+        {
+            bgmAudioSource.mute = isBgmMuted;
+        }
+
+        // BGM 아이콘 업데이트
+        UpdateBgmIcon();
+    }
+
     // 패널 활성화/비활성화 토글 함수
     void TogglePanel()
     {
@@ -144,15 +175,33 @@ public class SettingsManager_MapScene : MonoBehaviour
     }
 
     // 배경음 토글
+    // void ToggleBGM()
+    // {
+    //     isBgmMuted = !isBgmMuted;
+    //     if (bgmAudioSource != null)
+    //     {
+    //         bgmAudioSource.mute = isBgmMuted; // 배경음 음소거 설정
+    //     }
+    //     UpdateBgmIcon();
+    // }
+
     void ToggleBGM()
     {
         isBgmMuted = !isBgmMuted;
+
+        // BGM 음소거 설정
         if (bgmAudioSource != null)
         {
-            bgmAudioSource.mute = isBgmMuted; // 배경음 음소거 설정
+            bgmAudioSource.mute = isBgmMuted;
         }
+
+        // 싱글턴(AudioManager)에 상태 저장
+        AudioManager.Instance.IsBgmMuted = isBgmMuted;
+
+        // BGM 아이콘 업데이트
         UpdateBgmIcon();
     }
+
 
     // 배경음 아이콘 업데이트
     void UpdateBgmIcon()
