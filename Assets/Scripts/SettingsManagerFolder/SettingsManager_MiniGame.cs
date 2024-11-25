@@ -4,9 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class SettingsManager : MonoBehaviour
+public class SettingsManager_MiniGame2 : MonoBehaviour
 {
-    
     public Button settingsButton; // Settings 버튼 참조
     public Button keepPlayingButton; // KeepPlaying 버튼 참조
     public Button stopPlayingButton; // 그만 놀기 버튼 참조
@@ -19,7 +18,6 @@ public class SettingsManager : MonoBehaviour
 
 
     public GameObject guiPanel;   // GUI 패널 참조
-    public WaterShooter waterShooter; // 소방 호스 스크립트 참조
 
     public AudioSource bgmAudioSource; // 배경음 AudioSource
 
@@ -31,15 +29,16 @@ public class SettingsManager : MonoBehaviour
     public Sprite sfxOnSprite; // 효과음 켜짐 상태 이미지
     public Sprite sfxOffSprite; // 효과음 꺼짐 상태 이미지
 
+    private bool isPaused = false; // 게임 일시 정지 상태를 추적
     private bool isBgmMuted = false; // 배경음 음소거 상태
     private bool isSfxMuted = false; // 효과음 음소거 상태
 
+
     void Start()
     {
-
         InitializeBgmState(); // BGM 상태 초기화
 
-        // 힌트 패널 초기 상태를 비활성화
+         // 힌트 패널 초기 상태를 비활성화
         if (hintPanel != null)
         {
             hintPanel.SetActive(false);
@@ -143,12 +142,31 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
-    // BGM 상태 초기화
+
+    // 패널 활성화/비활성화 및 타임 슬립 제어 함수
+    void TogglePanel()
+    {
+        if (guiPanel != null)
+        {
+            bool isPanelActive = guiPanel.activeSelf;
+            guiPanel.SetActive(!isPanelActive);
+
+            if (isPanelActive)
+            {
+                ResumeGame(); // 패널이 닫힐 때 게임 재개
+            }
+            else
+            {
+                PauseGame(); // 패널이 열릴 때 게임 일시 정지
+            }
+        }
+    }
+
     void InitializeBgmState()
     {
         // AudioManager에서 BGM 상태를 가져와 초기화
         isBgmMuted = AudioManager.Instance.IsBgmMuted;
-
+    
         // BGM 음소거 설정
         if (bgmAudioSource != null)
         {
@@ -159,57 +177,38 @@ public class SettingsManager : MonoBehaviour
         UpdateBgmIcon();
     }
 
-    // 패널 활성화/비활성화 및 타임 슬립 토글 함수
-    void TogglePanel()
-    {
-        if (guiPanel != null)
-        {
-            bool isPanelActive = guiPanel.activeSelf;
-            guiPanel.SetActive(!isPanelActive);
 
-            // 패널이 활성화되면 게임 일시정지, 비활성화되면 재개
-            if (guiPanel.activeSelf)
-            {
-                Time.timeScale = 0; // 게임 일시정지
-                if (waterShooter != null)
-                {
-                    waterShooter.enabled = false; // 물 발사 비활성화
-                }
-            }
-            else
-            {
-                Time.timeScale = 1; // 게임 재개
-                if (waterShooter != null)
-                {
-                    waterShooter.enabled = true; // 물 발사 활성화
-                }
-            }
-        }
+    // 게임 일시 정지
+    void PauseGame()
+    {
+        Time.timeScale = 0; // 게임 정지
+        isPaused = true;
     }
 
-    // KeepPlaying 버튼을 누르면 패널을 닫고 게임을 다시 재개
+    // 게임 재개
+    void ResumeGame()
+    {
+        Time.timeScale = 1; // 게임 재개
+        isPaused = false;
+    }
+
+    // KeepPlaying 버튼을 누르면 패널을 닫고 게임 재개
     void ClosePanelAndResume()
     {
         if (guiPanel != null)
         {
             guiPanel.SetActive(false);
-            Time.timeScale = 1; // 게임 재개
-
-            // WaterShooter 스크립트 다시 활성화
-            if (waterShooter != null)
-            {
-                waterShooter.enabled = true;
-            }
         }
+        ResumeGame();
     }
 
     // StopPlaying 버튼을 누르면 MapScene으로 이동
     void GoToMapScene()
     {
-        Time.timeScale = 1; // 씬 전환 전 시간 재개
         SceneManager.LoadScene("MapScene");
     }
 
+    // 배경음 토글
     void ToggleBGM()
     {
         isBgmMuted = !isBgmMuted;
