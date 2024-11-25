@@ -2025,11 +2025,11 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 6c8ef1c04062e44de8f84f52a15001d4, type: 3}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -5211,7 +5211,7 @@ MonoBehaviour:
   hintPopup: {fileID: 464770733}
   phoneNumText: {fileID: 1022742072}
   textShake: {fileID: 1022742074}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 519420033}
   audioClips:
   - {fileID: 8300000, guid: c3ef4550cf0de472181337a27ddf4ac7, type: 3}
   - {fileID: 8300000, guid: 64fec8ec3891f4bbcbe5c665c46a4726, type: 3}
