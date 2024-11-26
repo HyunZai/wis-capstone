@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2c180b9c869a64a9d8e23ff0bf995bdc
+guid: 4b0f859bf80414e7686069e5ebb0ce7e
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 80
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -123,13 +123,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bag2_0
+      name: bag1_0
       rect:
         serializedVersion: 2
-        x: 551
-        y: 275
-        width: 375
-        height: 478
+        x: 85
+        y: 494
+        width: 356
+        height: 427
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,8 +137,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0277d59cd8a2d41c5b55b7390bdc3e67
-      internalID: 297677820
+      spriteID: dccbdc1fc90764aebbf5ff5d3c5739d9
+      internalID: -308490367
       vertices: []
       indices: 
       edges: []
@@ -154,7 +154,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      bag2_0: 297677820
+      bag1_0: -308490367
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

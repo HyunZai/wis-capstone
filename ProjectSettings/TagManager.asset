@@ -17,6 +17,13 @@ TagManager:
   - NumberButton
   - BackspaceButton
   - GoHomeButton
+  - ScoreImage
+  - Image
+  - AnswerImage
+  - MainObject
+  - answerExamples
+  - AnswerExamples
+  - Button
   layers:
   - Default
   - TransparentFX
