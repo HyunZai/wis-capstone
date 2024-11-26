@@ -18,7 +18,7 @@ public class AnimalNextButtonHandler : MonoBehaviour
     void Start()
     {
         animalRandomizer = FindObjectOfType<AnimalRandomizer>();
-
+        
         nextButton.onClick.AddListener(NextButtonClick);
 
         // endPanel 초기 비활성화
