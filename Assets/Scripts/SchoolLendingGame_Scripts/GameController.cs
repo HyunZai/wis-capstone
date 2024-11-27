@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour
     public Image hintBackground; // 힌트의 배경 이미지
     public Sprite[] blurredSprites; // 각 아이템에 대한 흐릿한 이미지 스프라이트 배열 (순서는 itemPrefabs와 동일)
     public string[] hintDescriptions; // 각 아이템에 대한 설명 배열 (순서는 itemPrefabs와 동일)
-
+    public GameObject xMarkPrefab; // X 표시 프리팹
     private List<GameObject> spawnedItems = new List<GameObject>(); // 생성된 물건들
     private List<string> availableItems = new List<string>(); // 아직 요청되지 않은 아이템 목록
     private string currentItem; // 현재 요청하는 물건
@@ -58,6 +58,16 @@ public class GameController : MonoBehaviour
         }
     }
 
+    void ShowXMark(GameObject clickedItem)
+    {
+        // X 표시 생성
+        GameObject xMark = Instantiate(xMarkPrefab, clickedItem.transform.position, Quaternion.identity, clickedItem.transform);
+        xMark.transform.localScale = Vector3.one; // 적절한 크기로 설정
+
+        // X 표시 일정 시간 후 제거
+        Destroy(xMark, 1.0f); // 1초 뒤 삭제
+    }
+
     void SpawnItems()
     {
         // 물건들이 배치될 위치들 (예: 책상 위의 특정 위치들)
@@ -89,7 +99,7 @@ public class GameController : MonoBehaviour
         if (availableItems.Count > 0)
         {
             currentItem = availableItems[Random.Range(0, availableItems.Count)];
-            requestText.text = $"~~아 나 {currentItem} 좀 빌려줄래?";
+            requestText.text = $"~~아 나 <color=#0000FF>{currentItem}</color> 좀 빌려줄래?";
         }
     }
 
@@ -119,6 +129,11 @@ public class GameController : MonoBehaviour
             hintText.gameObject.SetActive(false);
             hintImage.gameObject.SetActive(false);
             hintBackground.gameObject.SetActive(false);
+        }
+        else
+        {
+            // 요청한 아이템이 아니라면 X 표시
+            ShowXMark(item);
         }
     }
 
