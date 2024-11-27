@@ -30,7 +30,7 @@ public class GameObjectControler : MonoBehaviour
         StartGame();
     }
     void SetBeforeStart(){
-        endPanel = GameObject.Find("endPanel");
+        endPanel = GameObject.Find("UICanvas").transform.Find("endPanel").gameObject;
 
         imageList = GameObject.FindGameObjectsWithTag("Image").OrderBy(p => p.name).ToArray();
         if (imageList.Length == 0) Debug.Log("### NOT FOUND: ImageList ###");
@@ -80,20 +80,19 @@ public class GameObjectControler : MonoBehaviour
     IEnumerator TruckControlor(){
         
         while(isPlaying){ 
-            if(Vector2.Distance(GetPos(truck), playTruckPos)<1f) {
-                statNeedObjImages(true);
-            }
+            if(Vector2.Distance(GetPos(truck), playTruckPos)<0.5f) statNeedObjImages(true);
+
             truck.transform.position = Vector2.Lerp(GetPos(truck), playTruckPos, Time.deltaTime * moveSpeed);
             yield return null;
         }
 
-        yield return new WaitForSeconds(1.5f);
+        for(int i=0; i<3; i++) answerExamples[i].SetActive(false);
 
         while(!isPlaying){ 
             truck.transform.position = Vector2.Lerp( GetPos(truck), endTruckPos, Time.deltaTime * moveSpeed);
             yield return null;
 
-            if(Vector2.Distance(GetPos(truck), playTruckPos)<0.1f) try{endPanel.SetActive(true);}catch{};
+            if(Vector2.Distance(GetPos(truck), playTruckPos)<0.5f) endPanel.SetActive(true);
         }
 
     }
@@ -149,14 +148,14 @@ public class GameObjectControler : MonoBehaviour
 
         Vector2 defaultPos = GetPos(answerExamples[i]);
         Vector2 defaultOPos = GetPos(o);
+        Vector2 defultScale = answerExamples[i].transform.lossyScale;
+
+        answerExamples[i].transform.localScale = showNeedObjImage.transform.lossyScale;
         
         o.transform.position = defaultPos;
         o.transform.position += new Vector3(0,0,-1f);
 
-        var defultScale = answerExamples[i].transform.lossyScale;
-        answerExamples[i].transform.localScale = showNeedObjImage.transform.lossyScale;
-
-        while(Vector2.Distance(GetPos(answerExamples[i]), GetPos(showNeedObjImage)) > 0.1){
+        while(Vector2.Distance(GetPos(answerExamples[i]), GetPos(showNeedObjImage)) > 0.5){
             answerExamples[i].transform.position = Vector2.Lerp( GetPos(answerExamples[i]) , GetPos(showNeedObjImage), moveSpeed * Time.deltaTime);
             yield return null;
         }
@@ -165,9 +164,9 @@ public class GameObjectControler : MonoBehaviour
         yield  return new WaitForSeconds(1.5f);
 
         answerExamples[i].transform.position = defaultPos;
-        o.transform.position = defaultOPos;
+        answerExamples[i].transform.localScale = defultScale;
         
-         answerExamples[i].transform.localScale = defultScale;
+        o.transform.position = defaultOPos;
         
         if(gameScore<scoreImages.Length){
             StartNextStage();
