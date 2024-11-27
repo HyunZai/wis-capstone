@@ -321,37 +321,17 @@ public class CharacterSensorController : MonoBehaviour
         if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null && !goHomeMode) 
         {
             string buildingName = other.gameObject.name.Split(".")[1];
-            switch (buildingName)
+            string gender = user.gender == 0 ? "male" : "female";
+            string videoFileName = $"{buildingName}_in_{gender}";
+            
+            foreach (VideoClip clip in videoClips) 
             {
-                case "School":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 9 : 0];
+                if (clip.name.Contains(videoFileName)) 
+                {
+                    videoPlayer.clip = clip; 
                     break;
-                case "Cafe":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 10 : 1];
-                    break;
-                case "FireStation":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 11 : 2];
-                    break;
-                case "Library":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 12 : 3];
-                    break;
-                case "Home":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 13 : 4];
-                    break;
-                case "Mart":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 14 : 5];
-                    break;
-                case "Police":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 15 : 6];
-                    break;
-                case "Bank":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 16 : 7];
-                    break;
-                case "Hospital":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 17 : 8];
-                    break;
-            }    
-          
+                }
+            }
 
             PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
      
