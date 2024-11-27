@@ -4,20 +4,67 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-//--------------다른 게임에선 지워야 하는 행 15, 64~68, 79~83--------------
-//스크립트를 해당 게임 씬에서 원하시는 오브젝트에 넣으신 후에 inspector 창에 세팅,킵 플레잉, 스탑 플레잉 칸에 
-//이름이 똑같은 버튼을 GUI캔버스 안 판넬에서 찾아서 드래그 앤 드롭하면 됩니다. 판넬 칸엔 GUI캔버스 안 판넬을 넣으시면 됩니다.
-
 public class SettingsManager : MonoBehaviour
 {
+    
     public Button settingsButton; // Settings 버튼 참조
     public Button keepPlayingButton; // KeepPlaying 버튼 참조
     public Button stopPlayingButton; // 그만 놀기 버튼 참조
+    public Button bgmToggleButton; // 배경음 버튼 참조
+    public Button sfxToggleButton; // 효과음 버튼 참조
+
+    public Button hintButton; // 힌트 버튼 참조
+    public Button closeButton; // 닫기 버튼 참조
+    public GameObject hintPanel; // 힌트 패널 참조
+
+
     public GameObject guiPanel;   // GUI 패널 참조
     public WaterShooter waterShooter; // 소방 호스 스크립트 참조
 
+    public AudioSource bgmAudioSource; // 배경음 AudioSource
+
+    public Image bgmButtonImage; // 배경음 버튼의 이미지
+    public Sprite bgmOnSprite; // 배경음 켜짐 상태 이미지
+    public Sprite bgmOffSprite; // 배경음 꺼짐 상태 이미지
+
+    public Image sfxButtonImage; // 효과음 버튼의 이미지
+    public Sprite sfxOnSprite; // 효과음 켜짐 상태 이미지
+    public Sprite sfxOffSprite; // 효과음 꺼짐 상태 이미지
+
+    private bool isBgmMuted = false; // 배경음 음소거 상태
+    private bool isSfxMuted = false; // 효과음 음소거 상태
+
     void Start()
     {
+
+        InitializeBgmState(); // BGM 상태 초기화
+
+        // 힌트 패널 초기 상태를 비활성화
+        if (hintPanel != null)
+        {
+            hintPanel.SetActive(false);
+        }
+
+        // 힌트 버튼 클릭 이벤트 추가
+        if (hintButton != null)
+        {
+            hintButton.onClick.AddListener(ShowHintPanel);
+        }
+        else
+        {
+            Debug.LogError("Hint Button is not assigned in the Inspector.");
+        }
+
+        // 닫기 버튼 클릭 이벤트 추가
+        if (closeButton != null)
+        {
+            closeButton.onClick.AddListener(HideHintPanel);
+        }
+        else
+        {
+            Debug.LogError("Close Button is not assigned in the Inspector.");
+        }
+
         // GUI 패널을 처음에 비활성화
         if (guiPanel != null)
         {
@@ -53,9 +100,66 @@ public class SettingsManager : MonoBehaviour
         {
             Debug.LogError("StopPlaying Button is not assigned in the inspector.");
         }
+
+        // BGM 버튼에 OnClick 이벤트 추가
+        if (bgmToggleButton != null)
+        {
+            bgmToggleButton.onClick.AddListener(ToggleBGM);
+        }
+        else
+        {
+            Debug.LogError("BGM Toggle Button is not assigned in the inspector.");
+        }
+
+        // SFX 버튼에 OnClick 이벤트 추가
+        if (sfxToggleButton != null)
+        {
+            sfxToggleButton.onClick.AddListener(ToggleSFX);
+        }
+        else
+        {
+            Debug.LogError("SFX Toggle Button is not assigned in the inspector.");
+        }
+
+        UpdateBgmIcon(); // BGM 아이콘 초기화
+        UpdateSfxIcon(); // SFX 아이콘 초기화
     }
 
-    // 패널 활성화/비활성화 토글 함수
+    // 힌트 패널 표시
+    void ShowHintPanel()
+    {
+        if (hintPanel != null)
+        {
+            hintPanel.SetActive(true); // 패널 활성화
+        }
+    }
+
+    // 힌트 패널 숨기기
+    void HideHintPanel()
+    {
+        if (hintPanel != null)
+        {
+            hintPanel.SetActive(false); // 패널 비활성화
+        }
+    }
+
+    // BGM 상태 초기화
+    void InitializeBgmState()
+    {
+        // AudioManager에서 BGM 상태를 가져와 초기화
+        isBgmMuted = AudioManager.Instance.IsBgmMuted;
+
+        // BGM 음소거 설정
+        if (bgmAudioSource != null)
+        {
+            bgmAudioSource.mute = isBgmMuted;
+        }
+
+        // BGM 아이콘 업데이트
+        UpdateBgmIcon();
+    }
+
+    // 패널 활성화/비활성화 및 타임 슬립 토글 함수
     void TogglePanel()
     {
         if (guiPanel != null)
@@ -63,10 +167,22 @@ public class SettingsManager : MonoBehaviour
             bool isPanelActive = guiPanel.activeSelf;
             guiPanel.SetActive(!isPanelActive);
 
-            // 패널이 활성화되면 물 발사 비활성화
-            if (waterShooter != null)
+            // 패널이 활성화되면 게임 일시정지, 비활성화되면 재개
+            if (guiPanel.activeSelf)
             {
-                waterShooter.enabled = !guiPanel.activeSelf;
+                Time.timeScale = 0; // 게임 일시정지
+                if (waterShooter != null)
+                {
+                    waterShooter.enabled = false; // 물 발사 비활성화
+                }
+            }
+            else
+            {
+                Time.timeScale = 1; // 게임 재개
+                if (waterShooter != null)
+                {
+                    waterShooter.enabled = true; // 물 발사 활성화
+                }
             }
         }
     }
@@ -77,6 +193,7 @@ public class SettingsManager : MonoBehaviour
         if (guiPanel != null)
         {
             guiPanel.SetActive(false);
+            Time.timeScale = 1; // 게임 재개
 
             // WaterShooter 스크립트 다시 활성화
             if (waterShooter != null)
@@ -89,6 +206,57 @@ public class SettingsManager : MonoBehaviour
     // StopPlaying 버튼을 누르면 MapScene으로 이동
     void GoToMapScene()
     {
+        Time.timeScale = 1; // 씬 전환 전 시간 재개
         SceneManager.LoadScene("MapScene");
+    }
+
+    void ToggleBGM()
+    {
+        isBgmMuted = !isBgmMuted;
+
+        // BGM 음소거 설정
+        if (bgmAudioSource != null)
+        {
+            bgmAudioSource.mute = isBgmMuted;
+        }
+
+        // 싱글턴(AudioManager)에 상태 저장
+        AudioManager.Instance.IsBgmMuted = isBgmMuted;
+
+        // BGM 아이콘 업데이트
+        UpdateBgmIcon();
+    }
+
+    // 배경음 아이콘 업데이트
+    void UpdateBgmIcon()
+    {
+        if (bgmButtonImage != null)
+        {
+            bgmButtonImage.sprite = isBgmMuted ? bgmOffSprite : bgmOnSprite;
+        }
+        else
+        {
+            Debug.LogError("BGM Button Image is not assigned in the Inspector.");
+        }
+    }
+
+    // 효과음 토글
+    void ToggleSFX()
+    {
+        isSfxMuted = !isSfxMuted;
+        UpdateSfxIcon();
+    }
+
+    // 효과음 아이콘 업데이트
+    void UpdateSfxIcon()
+    {
+        if (sfxButtonImage != null)
+        {
+            sfxButtonImage.sprite = isSfxMuted ? sfxOffSprite : sfxOnSprite;
+        }
+        else
+        {
+            Debug.LogError("SFX Button Image is not assigned in the Inspector.");
+        }
     }
 }

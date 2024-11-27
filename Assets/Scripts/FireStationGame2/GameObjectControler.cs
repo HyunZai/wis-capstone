@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class GameObjectControler : MonoBehaviour
 {
     private Button[] answerExampleBtns = new Button[3];     
-    private GameObject truck , showNeedObjImage;
+    private GameObject truck , AnswerSilhouetteImage;
     private GameObject[] imageList; // 오브젝트 목록
     private GameObject[] answerExamples = new GameObject[3]; //정답 선택지
     private GameObject[] scoreImages = new GameObject[3];    // 점수 이미지 전구모양
@@ -35,7 +35,7 @@ public class GameObjectControler : MonoBehaviour
         imageList = GameObject.FindGameObjectsWithTag("Image").OrderBy(p => p.name).ToArray();
         if (imageList.Length == 0) Debug.Log("### NOT FOUND: ImageList ###");
 
-        answerExamples = GameObject.FindGameObjectsWithTag("AnswerExamples").OrderBy(p => p.name).ToArray();
+        answerExamples = GameObject.FindGameObjectsWithTag("AnswerExampleImage").OrderBy(p => p.name).ToArray();
         if (answerExamples.Length == 0) Debug.Log("### NOT FOUND: AnswerExamples ###");
 
         scoreImages = GameObject.FindGameObjectsWithTag("ScoreImage").OrderBy(p => p.name).ToArray();
@@ -50,8 +50,8 @@ public class GameObjectControler : MonoBehaviour
         truck = GameObject.Find("FireTruck");
         if (truck == null) Debug.Log("### NOT FOUND: FireTruck ###");
 
-        showNeedObjImage = GameObject.Find("Answer");
-        if (showNeedObjImage == null) Debug.Log("### NOT FOUND: AnswerImage ###");
+        AnswerSilhouetteImage = GameObject.Find("AnswerSilhouetteImage");
+        if (AnswerSilhouetteImage == null) Debug.Log("### NOT FOUND: AnswerImage ###");
 
         o = GameObject.Find("O");
         if (o == null) Debug.Log("### NOT FOUND: O ###");
@@ -64,12 +64,12 @@ public class GameObjectControler : MonoBehaviour
         Time.timeScale = 1f;
 
         isPlaying = true; 
-        showNeedObjImage.SetActive(true);
+        AnswerSilhouetteImage.SetActive(true);
         try{endPanel.SetActive(false);}catch{}
 
         for(int i=0; i< answerExamples.Length; i++) answerExamples[i].SetActive(true);
 
-        statNeedObjImages(false);
+        statButtonImages(false);
     }
 
     void StartGame(){
@@ -80,9 +80,9 @@ public class GameObjectControler : MonoBehaviour
     IEnumerator TruckControlor(){
         
         while(isPlaying){ 
-            if(Vector2.Distance(GetPos(truck), playTruckPos)<0.5f) statNeedObjImages(true);
+            if(Vector2.Distance(GetPos(truck), playTruckPos)<1f) statButtonImages(true);
 
-            truck.transform.position = Vector2.Lerp(GetPos(truck), playTruckPos, Time.deltaTime * moveSpeed);
+            truck.transform.position = Vector2.Lerp( GetPos(truck), playTruckPos, Time.deltaTime * moveSpeed);
             yield return null;
         }
 
@@ -121,21 +121,21 @@ public class GameObjectControler : MonoBehaviour
     void SetAnswerExampleImages(int [] randomImageNum){
         for (int i = 0; i < answerExamples.Length; i++){
             answerExamples[i].gameObject.GetComponent<SpriteRenderer>().sprite = GetSprite(imageList[randomImageNum[i]].gameObject);
-            if(beforeAnswer == GetSprite(answerExamples[i])) i--;
         }
         SetAnswerImage();
     }
     void SetAnswerImage(){
-        int randAnswer = Random.Range(0, selectedImageList.Length);
-        showNeedObjImage.GetComponent<SpriteRenderer>().sprite = GetSprite(answerExamples[randAnswer]);
-
-        beforeAnswer = GetSprite(showNeedObjImage);
+        int selectRandAnswerNum;
+        do{
+            selectRandAnswerNum = Random.Range(0, selectedImageList.Length);
+        }while(GetSprite(answerExamples[selectRandAnswerNum]) == beforeAnswer);
+        AnswerSilhouetteImage.GetComponent<SpriteRenderer>().sprite = GetSprite(answerExamples[selectRandAnswerNum]);
     }
     void CheckMatchImage(int i){
-        if (GetSprite(answerExamples[i]).name == GetSprite(showNeedObjImage).name){
+        if (GetSprite(answerExamples[i]).name == GetSprite(AnswerSilhouetteImage).name){
             StartCoroutine(MoveToAnswerPos(i));
             updateScore();
-        }else if(GetSprite(answerExamples[i]).name != GetSprite(showNeedObjImage).name){
+        }else if(GetSprite(answerExamples[i]).name != GetSprite(AnswerSilhouetteImage).name){
             answerExamples[i].GetComponent<SpriteRenderer>().sprite = GetSprite(x); 
         }
     }
@@ -150,16 +150,16 @@ public class GameObjectControler : MonoBehaviour
         Vector2 defaultOPos = GetPos(o);
         Vector2 defultScale = answerExamples[i].transform.lossyScale;
 
-        answerExamples[i].transform.localScale = showNeedObjImage.transform.lossyScale;
+        answerExamples[i].transform.localScale = AnswerSilhouetteImage.transform.lossyScale;
         
         o.transform.position = defaultPos;
         o.transform.position += new Vector3(0,0,-1f);
 
-        while(Vector2.Distance(GetPos(answerExamples[i]), GetPos(showNeedObjImage)) > 0.5){
-            answerExamples[i].transform.position = Vector2.Lerp( GetPos(answerExamples[i]) , GetPos(showNeedObjImage), moveSpeed * Time.deltaTime);
+        while(Vector2.Distance(GetPos(answerExamples[i]), GetPos(AnswerSilhouetteImage)) > 0.5){
+            answerExamples[i].transform.position = Vector2.Lerp( GetPos(answerExamples[i]) , GetPos(AnswerSilhouetteImage), moveSpeed * Time.deltaTime);
             yield return null;
         }
-        answerExamples[i].transform.position = GetPos(showNeedObjImage);
+        answerExamples[i].transform.position = GetPos(AnswerSilhouetteImage);
 
         yield  return new WaitForSeconds(1.5f);
 
@@ -168,11 +168,12 @@ public class GameObjectControler : MonoBehaviour
         
         o.transform.position = defaultOPos;
         
+        beforeAnswer = GetSprite(AnswerSilhouetteImage);
         if(gameScore<scoreImages.Length){
             StartNextStage();
         }
         else {
-            statNeedObjImages(false);
+            statButtonImages(false);
             isPlaying = false;
         }
     }
@@ -180,9 +181,11 @@ public class GameObjectControler : MonoBehaviour
 
 
     // Stat Control
-    void statNeedObjImages(bool stat){
-        GameObject.Find("ShowNeedOBjImage").GetComponent<SpriteRenderer>().enabled = stat;
-        GameObject.Find("Answer").GetComponent<SpriteRenderer>().enabled = stat;
+    void statButtonImages(bool stat){
+        AnswerSilhouetteImage.GetComponent<SpriteRenderer>().enabled = stat;
+        for(int i=0; i< answerExamples.Length; i++){
+            answerExamples[i].GetComponent<SpriteRenderer>().enabled = stat;
+        }
     }
     void StatBtns(bool stat){
         for (int i = 0; i < answerExampleBtns.Length; i++) {

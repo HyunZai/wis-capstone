@@ -40,12 +40,16 @@ public class CharacterSensorController : MonoBehaviour
     public AudioClip[] audioClips; //오디오 클립 배열(리스트)
     public GameObject smartPhone;
     private SmartPhone smartPhoneScript;
+    private string playerStat = "out";
+    private string gender;
 
     private User user;
 
     ///////////Codes
     void Awake(){
         SetBeforeStart();
+        
+                       
     }
     void Start(){
         //부모님 전화번호 입력 성공 후 귀가경로 안내가 시작되도록 처리하기 위한..
@@ -59,12 +63,16 @@ public class CharacterSensorController : MonoBehaviour
     }
     ///////////For BeforeStart    
     void SetBeforeStart(){ 
+        
+
         Time.timeScale = 1f;
 
         dbManager = new DatabaseManager();
         dbManager.Connect();
         user = dbManager.login();
 
+
+        gender = user.gender == 0 ? "male":"female";
         //11-20 김현재
         PlayerPrefs.SetInt("userId", user.user_id);
 
@@ -98,7 +106,9 @@ public class CharacterSensorController : MonoBehaviour
         }
 
         int loadPosNum = PlayerPrefs.GetInt("DestinationPoinNum", setHome); // 씬 복원될떄 위치 번호 불러오기 없으면 setHome 위치 
-    
+        
+        Debug.Log(loadPosNum);
+
         destinationNum = loadPosNum;
         beforeDestination = loadPosNum;
         if(!goHomeMode)this.transform.position = (dp[loadPosNum] + bp[loadPosNum])/2;
@@ -107,10 +117,18 @@ public class CharacterSensorController : MonoBehaviour
         if (anim == null) anim = GetComponent<Animator>(); 
         anim.runtimeAnimatorController = animList[user.gender]; 
         
-        videoPlayer.loopPointReached += EndReached;
+        Debug.Log(buildingPoints[loadPosNum].name.Split(".")[1]+"_"+playerStat+"_"+gender);
+        
+
+        
         if(destinationNum != setHome) {
+            //videoPlayer.clip = videoClips.FirstOrDefault(clip => clip.name == buildingPoints[loadPosNum].name.Split(".")[1]+"_"+playerStat+"_"+gender);
+            videoPlayer.Play();
             AskGoHomePopup();
         }
+
+        videoPlayer.loopPointReached += EndReached;
+        
     }
     
     ///////////For Popup Button
@@ -183,6 +201,7 @@ public class CharacterSensorController : MonoBehaviour
     }
     IEnumerator GoSetDestination(){ 
         isMoveNow = true;
+        playerStat = "in";
         beforePP = pp;
 
         if(beforeDestination != destinationNum || beforeDestination == setHome || goHomeMode){
@@ -318,44 +337,25 @@ public class CharacterSensorController : MonoBehaviour
     
     /////////For Move Scenes
     private void OnTriggerEnter2D(Collider2D other) { 
-        if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null && !goHomeMode) 
-        {
-            string buildingName = other.gameObject.name.Split(".")[1];
-            switch (buildingName)
-            {
-                case "School":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 9 : 0];
-                    break;
-                case "Cafe":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 10 : 1];
-                    break;
-                case "FireStation":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 11 : 2];
-                    break;
-                case "Library":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 12 : 3];
-                    break;
-                case "Home":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 13 : 4];
-                    break;
-                case "Mart":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 14 : 5];
-                    break;
-                case "Police":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 15 : 6];
-                    break;
-                case "Bank":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 16 : 7];
-                    break;
-                case "Hospital":
-                    videoPlayer.clip = videoClips[user.gender == 0 ? 17 : 8];
-                    break;
-            }    
-          
+        string buildingName = other.gameObject.name.Split(".")[1];
 
-            PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
-     
-            videoPlayer.Play();
+        if (other.gameObject.tag == "BuildingPoint"){
+            if(!goHomeMode){
+                for(int i = 0; i< videoClips.Length; i++){
+                    if(videoClips[i].name.Contains(other.gameObject.name.Split(".")[1]) 
+                        && videoClips[i].name.Contains(playerStat) 
+                        && videoClips[i].name.Contains(gender)){
+                
+                        PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);       
+               
+                        videoPlayer.clip = videoClips[i];
+                        break;
+                    }
+                    if(i == videoClips.Length -1) Debug.Log("### CHECK VIDEO PLEASE ###");
+                }
+
+                videoPlayer.Play();
+            }  
         }
     }
     void EndReached(VideoPlayer vp)
