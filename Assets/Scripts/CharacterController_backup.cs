@@ -14,7 +14,6 @@ public class CharacterSensorController : MonoBehaviour
     public AnimatorController [] animList;
     public int setHome= 4;
 
-
     private static Vector2 pp;
     private float moveSpeed = 4.0f;
     private GameObject[] crossPoints ,destinationPoints ,buildingPoints;
@@ -35,7 +34,6 @@ public class CharacterSensorController : MonoBehaviour
     private DatabaseManager dbManager;
     private List<int> homeRouteList;
     
-
     public AudioSource audioSource; //오디오 파일 컨트롤
     public AudioClip[] audioClips; //오디오 클립 배열(리스트)
     public GameObject smartPhone;
@@ -48,12 +46,33 @@ public class CharacterSensorController : MonoBehaviour
         SetBeforeStart();
     }
     void Start(){
-        //부모님 전화번호 입력 성공 후 귀가경로 안내가 시작되도록 처리하기 위한..
+        //------------------------------건물에서 나왔을 때 재생되는 영상 실행------------------------------
+        string buildingName = PlayerPrefs.GetString("BuildingName");
+        if (!string.IsNullOrEmpty(buildingName))
+        {
+            string gender = user.gender == 0 ? "male" : "female";
+            string videoFileName = $"{buildingName}_out_{gender}";
+
+            foreach (VideoClip clip in videoClips) 
+            {
+                if (clip.name.Contains(videoFileName)) 
+                {
+                    videoPlayer.clip = clip; 
+                    break;
+                }
+            }
+            videoPlayer.loopPointReached -= EndReached;
+            videoPlayer.loopPointReached += askGoHomeAudioPlay;
+            videoPlayer.Play();
+        }
+        //------------------------------건물에서 나왔을 때 재생되는 영상 실행------------------------------
+
+        //부모님 전화번호 입력 성공 후 귀가경로 안내가 시작되도록 처리
         smartPhoneScript = smartPhone.GetComponent<SmartPhone>();
         smartPhoneScript.OnConditionMet += GoHomeButtonClick;
     }
+
     void Update(){
-         
         MoveAnimation();
         pp = this.transform.position; 
     }
@@ -65,15 +84,14 @@ public class CharacterSensorController : MonoBehaviour
         dbManager.Connect();
         user = dbManager.login();
 
-        //11-20 김현재
         PlayerPrefs.SetInt("userId", user.user_id);
 
+        videoPlayer = FindObjectOfType<VideoPlayer>();
         crossPoints = GameObject.FindGameObjectsWithTag("CrossPoint").OrderBy(crossingPoint => crossingPoint.name).ToArray();
         destinationPoints = GameObject.FindGameObjectsWithTag("DestinationPoint").OrderBy(distinationPoint => distinationPoint.name).ToArray(); 
         buildingPoints = GameObject.FindGameObjectsWithTag("BuildingPoint").OrderBy(building =>  building.name).ToArray();
         setDistinationBtns = buildingBtns.GetComponentsInChildren<Button>().OrderBy(btn => btn.name).ToArray();
         askText = popup.GetComponentInChildren<TextMeshProUGUI>();
-        videoPlayer = FindObjectOfType<VideoPlayer>();
 
         cp = new Vector2[crossPoints.Length];
         dp = new Vector2[destinationPoints.Length];
@@ -106,8 +124,7 @@ public class CharacterSensorController : MonoBehaviour
         
         if (anim == null) anim = GetComponent<Animator>(); 
         anim.runtimeAnimatorController = animList[user.gender]; 
-        
-        videoPlayer.loopPointReached += EndReached;
+
         if(destinationNum != setHome) {
             AskGoHomePopup();
         }
@@ -265,10 +282,6 @@ public class CharacterSensorController : MonoBehaviour
         nBtn.gameObject.SetActive(true);
         goHomeBtn.gameObject.SetActive(true);
         popup.SetActive(true);
-
-        //재생시킬 오디오 파일 선택
-        audioSource.clip = audioClips[0];
-        audioSource.Play(); //오디오 파일 재생
     }
     void SetHomeRoute(){
         popup.SetActive(false);
@@ -334,16 +347,27 @@ public class CharacterSensorController : MonoBehaviour
             }
 
             PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
-     
+
+            videoPlayer.loopPointReached += EndReached;
             videoPlayer.Play();
         }
     }
     void EndReached(VideoPlayer vp)
     {
+        Debug.Log("재생이 끝난 영상 클립 이름: " + vp.clip.name);
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
         PlayerPrefs.Save();
         SceneManager.LoadScene("InformationScene");
     }
+
+    // 건물에서 나오는 영상이 끝난 후 "집으로 돌아갈까요?" 음성 재생
+    void askGoHomeAudioPlay(VideoPlayer vp)
+    {
+        //재생시킬 오디오 파일 선택
+        audioSource.clip = audioClips[0];
+        audioSource.Play(); //오디오 파일 재생
+    }
+    
     void OnApplicationQuit() {
         PlayerPrefs.DeleteAll();
     }
