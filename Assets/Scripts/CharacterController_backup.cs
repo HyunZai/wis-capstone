@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEditor.Animations;
+// using UnityEditor.Animations; 
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,7 +11,8 @@ using UnityEngine.Video;
 
 public class CharacterSensorController : MonoBehaviour
 {   
-    public AnimatorController [] animList;
+    //public AnimatorController [] animList;
+    public RuntimeAnimatorController[] animList;
     public int setHome= 4;
 
 
