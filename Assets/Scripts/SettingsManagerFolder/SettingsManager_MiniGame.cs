@@ -165,7 +165,7 @@ public class SettingsManager_MiniGame2 : MonoBehaviour
     void InitializeBgmState()
     {
         // AudioManager에서 BGM 상태를 가져와 초기화
-        isBgmMuted = AudioManager.Instance.IsBgmMuted;
+        //isBgmMuted = AudioManager.Instance.IsBgmMuted;
     
         // BGM 음소거 설정
         if (bgmAudioSource != null)
