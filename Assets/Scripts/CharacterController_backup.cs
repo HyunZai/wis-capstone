@@ -354,7 +354,6 @@ public class CharacterSensorController : MonoBehaviour
     }
     void EndReached(VideoPlayer vp)
     {
-        Debug.Log("재생이 끝난 영상 클립 이름: " + vp.clip.name);
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
         PlayerPrefs.Save();
         SceneManager.LoadScene("InformationScene");
