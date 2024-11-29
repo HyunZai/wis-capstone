@@ -35,6 +35,7 @@ public class InputFormHandler : MonoBehaviour
 
     void SaveAndStartButtonClick()
     {
+        GameObject[] textboxs = GameObject.FindGameObjectsWithTag("Text box");
         User user = new User();
 
         user.registered = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
