@@ -190,7 +190,7 @@ public class CharacterSensorController : MonoBehaviour
                         routeCheckCount++;
                         StartCoroutine(GoSetDestination());
                     }else{
-                        ShowPopup($"{BuildingName(homeRouteList[routeCheckCount])}으로 이동해주세요!!");
+                        ShowPopup($"{BuildingName(homeRouteList[routeCheckCount])} 이동해주세요!!");
                     }
                 }
             }  
@@ -299,15 +299,15 @@ public class CharacterSensorController : MonoBehaviour
     string BuildingName(int PointNum){
         string stringName;
         switch (PointNum){
-                case 0: stringName = "학교"; break;
-                case 1: stringName = "카페"; break;
-                case 2: stringName = "소방서"; break;
-                case 3: stringName = "도서관"; break;
-                case 4: stringName = "집"; break;
-                case 5: stringName = "마켓"; break;
-                case 6: stringName = "경찰서"; break;
-                case 7: stringName = "은행"; break;
-                case 8: stringName = "병원"; break;
+                case 0: stringName = "학교로"; break;
+                case 1: stringName = "카페로"; break;
+                case 2: stringName = "소방서로"; break;
+                case 3: stringName = "도서관으로"; break;
+                case 4: stringName = "집으로"; break;
+                case 5: stringName = "마트로"; break;
+                case 6: stringName = "경찰서로"; break;
+                case 7: stringName = "은행으로"; break;
+                case 8: stringName = "병원으로"; break;
                 default: stringName = "알 수 없음"; break;
             }
         return stringName;
