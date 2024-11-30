@@ -3550,6 +3550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad8220c861b674b90b016bb17c0dc169, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eventSystem: {fileID: 1444099214}
   animList:
   - {fileID: 9100000, guid: 50f3f65a511c6cc48affd217a091b9ab, type: 2}
   - {fileID: 9100000, guid: 180b591007a3b39469d8a7dd14f37088, type: 2}
@@ -3599,6 +3600,15 @@ MonoBehaviour:
   audioClips:
   - {fileID: 8300000, guid: 60d0b3e715acd0640a3d55b9eea10b25, type: 3}
   - {fileID: 8300000, guid: cfead1ea8feab40f38e06fa1108a2f34, type: 3}
+  - {fileID: 8300000, guid: b2003c37da9be4442a0fe36c5b7d2df2, type: 3}
+  - {fileID: 8300000, guid: 3e11ae1002c254eecae4bfb9f1e63100, type: 3}
+  - {fileID: 8300000, guid: bc18fc4bf2702470991054ff41b4ae48, type: 3}
+  - {fileID: 8300000, guid: 4fbef4561c001479c8d4bb5f25e5c861, type: 3}
+  - {fileID: 8300000, guid: 5b6ba3f70cce54054b0c22488cb12d09, type: 3}
+  - {fileID: 8300000, guid: 9c9367e7624104c6cb77c695636026e3, type: 3}
+  - {fileID: 8300000, guid: 38e9e1575925e411b853eeffa297ea01, type: 3}
+  - {fileID: 8300000, guid: 747653812ea2d4e03b4936129eab9a5f, type: 3}
+  - {fileID: 8300000, guid: f0c1cb0969dde4ba1bb0e60759776fbd, type: 3}
   smartPhone: {fileID: 1294729479}
 --- !u!1 &1022742070
 GameObject:
