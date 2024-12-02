@@ -19,8 +19,13 @@ TagManager:
   - GoHomeButton
   - ScoreImage
   - Image
+  - AnswerImage
+  - MainObject
+  - answerExamples
+  - AnswerExamples
   - Button
-  - AnswerExampleImage
+  - BuildingButton
+  - MainText
   layers:
   - Default
   - TransparentFX

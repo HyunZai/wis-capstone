@@ -14,7 +14,6 @@ public class CharacterSensorController : MonoBehaviour
     public AnimatorController [] animList;
     public int setHome= 4;
 
-
     private static Vector2 pp;
     private float moveSpeed = 4.0f;
     private GameObject[] crossPoints ,destinationPoints ,buildingPoints;
@@ -35,53 +34,64 @@ public class CharacterSensorController : MonoBehaviour
     private DatabaseManager dbManager;
     private List<int> homeRouteList;
     
-
     public AudioSource audioSource; //오디오 파일 컨트롤
     public AudioClip[] audioClips; //오디오 클립 배열(리스트)
     public GameObject smartPhone;
     private SmartPhone smartPhoneScript;
-    private string playerStat = "out";
-    private string gender;
 
     private User user;
 
     ///////////Codes
     void Awake(){
         SetBeforeStart();
-        
-                       
     }
     void Start(){
-        //부모님 전화번호 입력 성공 후 귀가경로 안내가 시작되도록 처리하기 위한..
+        //------------------------------건물에서 나왔을 때 재생되는 영상 실행------------------------------
+        string buildingName = PlayerPrefs.GetString("BuildingName");
+        if (!string.IsNullOrEmpty(buildingName))
+        {
+            string gender = user.gender == 0 ? "male" : "female";
+            string videoFileName = $"{buildingName}_out_{gender}";
+
+            foreach (VideoClip clip in videoClips) 
+            {
+                if (clip.name.Contains(videoFileName)) 
+                {
+                    videoPlayer.clip = clip; 
+                    break;
+                }
+            }
+            videoPlayer.loopPointReached -= EndReached;
+            videoPlayer.loopPointReached += askGoHomeAudioPlay;
+            videoPlayer.Play();
+        }
+        //------------------------------건물에서 나왔을 때 재생되는 영상 실행------------------------------
+
+        //부모님 전화번호 입력 성공 후 귀가경로 안내가 시작되도록 처리
         smartPhoneScript = smartPhone.GetComponent<SmartPhone>();
         smartPhoneScript.OnConditionMet += GoHomeButtonClick;
     }
+
     void Update(){
-         
         MoveAnimation();
         pp = this.transform.position; 
     }
     ///////////For BeforeStart    
     void SetBeforeStart(){ 
-        
-
         Time.timeScale = 1f;
 
         dbManager = new DatabaseManager();
         dbManager.Connect();
         user = dbManager.login();
 
-
-        gender = user.gender == 0 ? "male":"female";
-        //11-20 김현재
         PlayerPrefs.SetInt("userId", user.user_id);
 
+        videoPlayer = FindObjectOfType<VideoPlayer>();
         crossPoints = GameObject.FindGameObjectsWithTag("CrossPoint").OrderBy(crossingPoint => crossingPoint.name).ToArray();
         destinationPoints = GameObject.FindGameObjectsWithTag("DestinationPoint").OrderBy(distinationPoint => distinationPoint.name).ToArray(); 
         buildingPoints = GameObject.FindGameObjectsWithTag("BuildingPoint").OrderBy(building =>  building.name).ToArray();
         setDistinationBtns = buildingBtns.GetComponentsInChildren<Button>().OrderBy(btn => btn.name).ToArray();
         askText = popup.GetComponentInChildren<TextMeshProUGUI>();
-        videoPlayer = FindObjectOfType<VideoPlayer>();
 
         cp = new Vector2[crossPoints.Length];
         dp = new Vector2[destinationPoints.Length];
@@ -106,9 +116,7 @@ public class CharacterSensorController : MonoBehaviour
         }
 
         int loadPosNum = PlayerPrefs.GetInt("DestinationPoinNum", setHome); // 씬 복원될떄 위치 번호 불러오기 없으면 setHome 위치 
-        
-        Debug.Log(loadPosNum);
-
+    
         destinationNum = loadPosNum;
         beforeDestination = loadPosNum;
         if(!goHomeMode)this.transform.position = (dp[loadPosNum] + bp[loadPosNum])/2;
@@ -116,19 +124,10 @@ public class CharacterSensorController : MonoBehaviour
         
         if (anim == null) anim = GetComponent<Animator>(); 
         anim.runtimeAnimatorController = animList[user.gender]; 
-        
-        Debug.Log(buildingPoints[loadPosNum].name.Split(".")[1]+"_"+playerStat+"_"+gender);
-        
 
-        
         if(destinationNum != setHome) {
-            //videoPlayer.clip = videoClips.FirstOrDefault(clip => clip.name == buildingPoints[loadPosNum].name.Split(".")[1]+"_"+playerStat+"_"+gender);
-            videoPlayer.Play();
             AskGoHomePopup();
         }
-
-        videoPlayer.loopPointReached += EndReached;
-        
     }
     
     ///////////For Popup Button
@@ -201,7 +200,6 @@ public class CharacterSensorController : MonoBehaviour
     }
     IEnumerator GoSetDestination(){ 
         isMoveNow = true;
-        playerStat = "in";
         beforePP = pp;
 
         if(beforeDestination != destinationNum || beforeDestination == setHome || goHomeMode){
@@ -284,10 +282,6 @@ public class CharacterSensorController : MonoBehaviour
         nBtn.gameObject.SetActive(true);
         goHomeBtn.gameObject.SetActive(true);
         popup.SetActive(true);
-
-        //재생시킬 오디오 파일 선택
-        audioSource.clip = audioClips[0];
-        audioSource.Play(); //오디오 파일 재생
     }
     void SetHomeRoute(){
         popup.SetActive(false);
@@ -337,25 +331,25 @@ public class CharacterSensorController : MonoBehaviour
     
     /////////For Move Scenes
     private void OnTriggerEnter2D(Collider2D other) { 
-        string buildingName = other.gameObject.name.Split(".")[1];
-
-        if (other.gameObject.tag == "BuildingPoint"){
-            if(!goHomeMode){
-                for(int i = 0; i< videoClips.Length; i++){
-                    if(videoClips[i].name.Contains(other.gameObject.name.Split(".")[1]) 
-                        && videoClips[i].name.Contains(playerStat) 
-                        && videoClips[i].name.Contains(gender)){
-                
-                        PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);       
-               
-                        videoPlayer.clip = videoClips[i];
-                        break;
-                    }
-                    if(i == videoClips.Length -1) Debug.Log("### CHECK VIDEO PLEASE ###");
+        if (other.gameObject.tag == "BuildingPoint" && videoPlayer != null && !goHomeMode) 
+        {
+            string buildingName = other.gameObject.name.Split(".")[1];
+            string gender = user.gender == 0 ? "male" : "female";
+            string videoFileName = $"{buildingName}_in_{gender}";
+            
+            foreach (VideoClip clip in videoClips) 
+            {
+                if (clip.name.Contains(videoFileName)) 
+                {
+                    videoPlayer.clip = clip; 
+                    break;
                 }
+            }
 
-                videoPlayer.Play();
-            }  
+            PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
+
+            videoPlayer.loopPointReached += EndReached;
+            videoPlayer.Play();
         }
     }
     void EndReached(VideoPlayer vp)
@@ -364,6 +358,15 @@ public class CharacterSensorController : MonoBehaviour
         PlayerPrefs.Save();
         SceneManager.LoadScene("InformationScene");
     }
+
+    // 건물에서 나오는 영상이 끝난 후 "집으로 돌아갈까요?" 음성 재생
+    void askGoHomeAudioPlay(VideoPlayer vp)
+    {
+        //재생시킬 오디오 파일 선택
+        audioSource.clip = audioClips[0];
+        audioSource.Play(); //오디오 파일 재생
+    }
+    
     void OnApplicationQuit() {
         PlayerPrefs.DeleteAll();
     }

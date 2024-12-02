@@ -30,7 +30,7 @@ public class SettingsManager_MiniGame2 : MonoBehaviour
     public Sprite sfxOffSprite; // 효과음 꺼짐 상태 이미지
 
     private bool isPaused = false; // 게임 일시 정지 상태를 추적
-    private bool isBgmMuted; // 배경음 음소거 상태
+    private bool isBgmMuted = false; // 배경음 음소거 상태
     private bool isSfxMuted = false; // 효과음 음소거 상태
 
 
@@ -165,7 +165,7 @@ public class SettingsManager_MiniGame2 : MonoBehaviour
     void InitializeBgmState()
     {
         // AudioManager에서 BGM 상태를 가져와 초기화
-//        isBgmMuted = AudioManager.Instance.IsBgmMuted;
+        //isBgmMuted = AudioManager.Instance.IsBgmMuted;
     
         // BGM 음소거 설정
         if (bgmAudioSource != null)
