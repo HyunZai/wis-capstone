@@ -19707,3 +19707,34 @@ Received data: 00
 Received data: 00
 Received data: 00
 Received data: 00
+Serial port could not be opened: No such file or directory
+Serial port could not be opened: No such file or directory
+Serial port could not be opened: No such file or directory
+Serial port could not be opened: No such file or directory
+SetDestination() - no.222 : gotoHere = 0
+귀가 경로 : 1 -> 2
+귀가 경로 : 2 -> 4
+귀가 경로 : 4 -> 5
+SetDestination() - no.222 : gotoHere = -1
+SetDestination() - no.233 : goHomeMode = True
+SetDestination() - no.222 : gotoHere = 1
+SetDestination() - no.233 : goHomeMode = True
+SetDestination() - no.222 : gotoHere = -1
+SetDestination() - no.233 : goHomeMode = True
+SetDestination() - no.222 : gotoHere = 3
+SetDestination() - no.233 : goHomeMode = True
+SetDestination() - no.222 : gotoHere = -1
+SetDestination() - no.233 : goHomeMode = True
+SetDestination() - no.222 : gotoHere = 4
+SetDestination() - no.233 : goHomeMode = True
+SetDestination() - line.222 : gotoHere = 2
+귀가 경로 : 3 -> 6
+귀가 경로 : 6 -> 5
+SetDestination() - line.222 : gotoHere = -1
+SetDestination() - line.233 : goHomeMode = True
+SetDestination() - line.222 : gotoHere = 5
+SetDestination() - line.233 : goHomeMode = True
+SetDestination() - line.222 : gotoHere = -1
+SetDestination() - line.233 : goHomeMode = True
+SetDestination() - line.222 : gotoHere = 4
+SetDestination() - line.233 : goHomeMode = True

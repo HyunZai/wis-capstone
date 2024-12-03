@@ -13,8 +13,11 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-public class CC : MonoBehaviour
+public class CharacterController2 : MonoBehaviour
 {   
+    public GameObject eventSystem; //영상 재생되는 동안 다른 오브젝트 상호작용 차단
+    
+    public RuntimeAnimatorController[] animList;
     public GameObject player;    //메인 캐릭터 지정
     float moveSpeed = 4.0f;
     GameObject[] characterList, crossPoints ,destinationPoints ,buildingPoints;    //캐릭터 설정 리스트 ++++ 캐릭터 목록 추가점요
@@ -488,8 +491,8 @@ public class CC : MonoBehaviour
         else previousData = data;
     }
 
-    public static implicit operator CC(CharacterController v)
-    {
-        throw new NotImplementedException();
-    }
+    // public static implicit operator CC(CharacterController v)
+    // {
+    //     throw new NotImplementedException();
+    // }
 }
