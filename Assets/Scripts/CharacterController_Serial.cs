@@ -361,6 +361,14 @@ public class CharacterController : MonoBehaviour
 
         List<HomeRoute> homeRoute = dbManager.getGoHomeRoute(destinationNum + 1);
 
+        // 12/03 김현재
+        //소방서, 병원에서 집으로 돌아갈 때 DB에서 Select해오는 데이터의 순서가 바뀌어 마트를 거치지 않고 바로 집으로 이동하는 이슈 발생 -> 아래 코드를 임시방편으로 해결함(sql쿼리를 수정해서 근본적인 원인을 해결해야됨)
+        if (homeRoute[0].building_id != destinationNum + 1 && homeRoute.Count == 2) {
+            HomeRoute temp = homeRoute[0];
+            homeRoute[0] = homeRoute[1];
+            homeRoute[1] = temp;
+        }
+
         foreach(HomeRoute r in homeRoute) logManager.Log($"귀가 경로 : {r.building_id} -> {r.next_building}", "", LogType.Log);
         
         homeRouteList = homeRoute.Select(hr => hr.next_building-1).ToList();
