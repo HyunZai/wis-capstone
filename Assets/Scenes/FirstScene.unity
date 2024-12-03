@@ -393,6 +393,7 @@ GameObject:
   m_Component:
   - component: {fileID: 192912039}
   - component: {fileID: 192912040}
+  - component: {fileID: 192912041}
   m_Layer: 5
   m_Name: InputForm
   m_TagString: Untagged
@@ -441,6 +442,22 @@ MonoBehaviour:
   title: {fileID: 1137231897}
   progressbarHandler: {fileID: 1478557057}
   genderToggleGroup: {fileID: 1844577727}
+--- !u!114 &192912041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192912038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79be6a61854de9d49bc44c1bd85b2913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputFields:
+  - {fileID: 1485213533}
+  - {fileID: 1943129327}
+  - {fileID: 1662778344}
 --- !u!1 &375242355
 GameObject:
   m_ObjectHideFlags: 0
