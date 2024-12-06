@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -57,11 +58,13 @@ public class RoadPainterAi : MonoBehaviour
         transform.position = (bp[startPointNum]+ dp[startPointNum])/2;
     }
     private void AddButtonListener(){
-        for(int i = 0; i < destinationPoints.Length; i++){  
-            int index = i;
-            setDestinationBtns[index].onClick.AddListener(() => SetDestination(index));
-            Debug.Log("isWork");
-        }
+        foreach (Button btn in setDestinationBtns) btn.onClick.AddListener(() => SetDestination(btn));
+        
+        // for(int i = 0; i < destinationPoints.Length; i++){  
+        //     int index = i;
+        //     setDestinationBtns[index].onClick.AddListener(() => SetDestination(index));
+        //     Debug.Log("isWork");
+        // }
     }
     private(int numB, int numP) SetCrossPoint(){
         int numB = int.MaxValue;
@@ -94,25 +97,48 @@ public class RoadPainterAi : MonoBehaviour
         }
         return (numB,  numP);
     }
-    private void SetDestination(int gotoHere){
+
+    private void SetDestination(Button clickedBtn){
+        int clickedBuildingNum = int.Parse(Regex.Replace(clickedBtn.name, @"\D", ""));
+
         if(isMoveNow == false){
             if(!goHomeMode){
-                if(gotoHere != home){
-                    endPointNum = gotoHere;
+                if(clickedBuildingNum != home){
+                    endPointNum = clickedBuildingNum;
                     StartCoroutine(GoSetDestination());
                 }
             }
             else if(goHomeMode){     
                 GetGoHomeRoute();
-                if(gotoHere == homeRouteList[routeCheckCount]){
+                if(clickedBuildingNum == homeRouteList[routeCheckCount]){
                     Debug.Log("isWorking");
-                    endPointNum = gotoHere;
+                    endPointNum = clickedBuildingNum;
                     StartCoroutine(GoSetDestination());
                 }
                 
             }  
         }
     }
+
+    // private void SetDestination(int gotoHere){
+    //     if(isMoveNow == false){
+    //         if(!goHomeMode){
+    //             if(gotoHere != home){
+    //                 endPointNum = gotoHere;
+    //                 StartCoroutine(GoSetDestination());
+    //             }
+    //         }
+    //         else if(goHomeMode){     
+    //             GetGoHomeRoute();
+    //             if(gotoHere == homeRouteList[routeCheckCount]){
+    //                 Debug.Log("isWorking");
+    //                 endPointNum = gotoHere;
+    //                 StartCoroutine(GoSetDestination());
+    //             }
+                
+    //         }  
+    //     }
+    // }
     private IEnumerator GoSetDestination(){ 
         transform.position = player.transform.position;
         
