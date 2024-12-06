@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,7 +10,10 @@ using UnityEngine.Video;
 
 public class CharacterSensorController : MonoBehaviour
 {   
-    public AnimatorController [] animList;
+    public GameObject eventSystem; //영상 재생되는 동안 다른 오브젝트 상호작용 차단
+
+    //public AnimatorController [] animList;
+    public RuntimeAnimatorController[] animList;
     public int setHome= 4;
 
     private static Vector2 pp;
@@ -63,6 +65,7 @@ public class CharacterSensorController : MonoBehaviour
             }
             videoPlayer.loopPointReached -= EndReached;
             videoPlayer.loopPointReached += askGoHomeAudioPlay;
+            eventSystem.SetActive(false);
             videoPlayer.Play();
         }
         //------------------------------건물에서 나왔을 때 재생되는 영상 실행------------------------------
@@ -190,7 +193,10 @@ public class CharacterSensorController : MonoBehaviour
                         routeCheckCount++;
                         StartCoroutine(GoSetDestination());
                     }else{
-                        ShowPopup($"{BuildingName(homeRouteList[routeCheckCount])}으로 이동해주세요!!");
+                        ShowPopup($"{BuildingName(homeRouteList[routeCheckCount])} 이동해주세요!!");
+                        
+                        audioSource.clip = GetGoNextBuildingClip(homeRouteList[routeCheckCount]);
+                        audioSource.Play(); //오디오 파일 재생
                     }
                 }
             }  
@@ -198,6 +204,25 @@ public class CharacterSensorController : MonoBehaviour
             ShowPopup("캐릭터가 이동 중 입니다!");
         }
     }
+
+    private AudioClip GetGoNextBuildingClip(int nextBuildingId)
+    {
+        string clipName = "Go";
+        switch (nextBuildingId){
+                case 0: clipName += "School"; break;
+                case 1: clipName += "Cafe"; break;
+                case 2: clipName += "FireStation"; break;
+                case 3: clipName += "Library"; break;
+                case 4: clipName += "Home"; break;
+                case 5: clipName += "Mart"; break;
+                case 6: clipName += "Police"; break;
+                case 7: clipName += "Bank"; break;
+                case 8: clipName += "Hospital"; break;
+        }
+
+        return audioClips.Where(clip => clip.name == clipName).ToArray().First();
+    }
+
     IEnumerator GoSetDestination(){ 
         isMoveNow = true;
         beforePP = pp;
@@ -299,17 +324,17 @@ public class CharacterSensorController : MonoBehaviour
     string BuildingName(int PointNum){
         string stringName;
         switch (PointNum){
-                case 0: stringName = "학교"; break;
-                case 1: stringName = "카페"; break;
-                case 2: stringName = "소방서"; break;
-                case 3: stringName = "도서관"; break;
-                case 4: stringName = "집"; break;
-                case 5: stringName = "마켓"; break;
-                case 6: stringName = "경찰서"; break;
-                case 7: stringName = "은행"; break;
-                case 8: stringName = "병원"; break;
+                case 0: stringName = "학교로"; break;
+                case 1: stringName = "카페로"; break;
+                case 2: stringName = "소방서로"; break;
+                case 3: stringName = "도서관으로"; break;
+                case 4: stringName = "집으로"; break;
+                case 5: stringName = "마트로"; break;
+                case 6: stringName = "경찰서로"; break;
+                case 7: stringName = "은행으로"; break;
+                case 8: stringName = "병원으로"; break;
                 default: stringName = "알 수 없음"; break;
-            }
+        }
         return stringName;
     }
     void ShowPopup(string showMessage){
@@ -349,11 +374,13 @@ public class CharacterSensorController : MonoBehaviour
             PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
 
             videoPlayer.loopPointReached += EndReached;
+            eventSystem.SetActive(false);
             videoPlayer.Play();
         }
     }
     void EndReached(VideoPlayer vp)
     {
+        eventSystem.SetActive(true);
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
         PlayerPrefs.Save();
         SceneManager.LoadScene("InformationScene");
@@ -362,6 +389,7 @@ public class CharacterSensorController : MonoBehaviour
     // 건물에서 나오는 영상이 끝난 후 "집으로 돌아갈까요?" 음성 재생
     void askGoHomeAudioPlay(VideoPlayer vp)
     {
+        eventSystem.SetActive(true);
         //재생시킬 오디오 파일 선택
         audioSource.clip = audioClips[0];
         audioSource.Play(); //오디오 파일 재생

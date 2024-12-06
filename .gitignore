@@ -93,3 +93,5 @@ mono_crash.*
 
 UpgradeLog.htm
 wis_log.txt
+ignore.conf
+ignore.conf.meta

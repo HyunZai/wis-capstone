@@ -118,7 +118,7 @@ public class CharacterControler : MonoBehaviour
         MoveAnimation();
     }
     private void LoadPosNum(){
-        int loadPosNum = PlayerPrefs.GetInt("DestinationPoinNum", setHome); // 씬 복원될떄 위치 번호 불러오기 없으면 setHome 위치
+        int loadPosNum = PlayerPrefs.GetInt("DestinationPointNum", setHome); // 씬 복원될떄 위치 번호 불러오기 없으면 setHome 위치
         
         destinationNum = loadPosNum;
         beforeDestinationNum = loadPosNum;
