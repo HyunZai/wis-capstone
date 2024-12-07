@@ -45,6 +45,8 @@ public class CharacterController : MonoBehaviour
     private SmartPhone smartPhoneScript;
 
     //시리얼 포트 통신
+    /// private SerialPortConnManager serialPortConnManager;
+    
     // private string portName = "COM3"; // 시리얼 포트 이름
     // private int baudRate = 115200;      // 시리얼 통신 속도
     // private SerialPort serialPort;
@@ -52,13 +54,12 @@ public class CharacterController : MonoBehaviour
     // private bool isSerialPortRunning = false;
     // private ConcurrentQueue<string> dataQueue = new ConcurrentQueue<string>();
 
-    // // 시리얼 포트 통신 테스트용
     private LogManager logManager;
-
     private User user;
 
     ///////////Codes
     void Awake(){
+        ///if (serialPortConnManager == null) serialPortConnManager = new SerialPortConnManager();
         SetBeforeStart();
     }
     void Start(){
@@ -116,6 +117,19 @@ public class CharacterController : MonoBehaviour
     }
 
     void Update(){
+        /// if (PlayerPrefs.HasKey("previousSensorData")) previousData = PlayerPrefs.GetInt("previousSensorData");
+        
+        /// if (serialPortConnManager.dataQueue.TryDequeue(out string sensorData)) 
+        /// {
+        ///     int sendData = int.Parse(sensorData);
+            
+        ///     if (!isMoveNow && sendData != previousData && sendData != 0)
+        ///     {
+        ///         PlayerPrefs.SetInt("previousSensorData", sendData);
+        ///         SetDestination(sendData - 1);
+        ///     }
+        ///     else previousData = sendData;
+        /// }
         //if (dataQueue.TryDequeue(out string sensorData)) MoveCharacter(sensorData);
 
         MoveAnimation();
@@ -434,6 +448,7 @@ public class CharacterController : MonoBehaviour
     }
     void EndReached(VideoPlayer vp)
     {
+        ///serialPortConnManager.isSerialPortRunning = false; //시리얼 포트 통신 정지
         //isSerialPortRunning = false; //시리얼 포트 통신 정지
 
         eventSystem.SetActive(true);
@@ -453,6 +468,7 @@ public class CharacterController : MonoBehaviour
     
     void OnApplicationQuit() {
         //시리얼 포트 통신 중단
+        ///serialPortConnManager.Disconnect();
         // isSerialPortRunning = false;
         // if (serialPort != null && serialPort.IsOpen) serialPort.Close();
         // if (serialThread != null && serialThread.IsAlive) serialThread.Join();

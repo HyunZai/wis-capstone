@@ -850,7 +850,7 @@ MonoBehaviour:
   - {fileID: 791981163369927023, guid: c91aaa18bab16d44f84834fb79cbde5a, type: 3}
   - {fileID: 791981163369927023, guid: 6fce852d952ca724ab39c0993d40923e, type: 3}
   - {fileID: 791981163369927023, guid: 078b96b486eb8fe4799847c0327f3404, type: 3}
-  - {fileID: 791981163369927023, guid: 581db677561fd374aa69c713f69f2e1e, type: 3}
+  - {fileID: 791981163369927023, guid: 2621af558342046d3a4349f16e213ffa, type: 3}
   - {fileID: 791981163369927023, guid: b5694aca2d7f9364ea7daabce3ca6a2c, type: 3}
   spawnInterval: 3
 --- !u!1 &765512141
