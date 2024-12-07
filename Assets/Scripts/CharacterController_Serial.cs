@@ -61,7 +61,7 @@ public class CharacterController : MonoBehaviour
     ///////////Codes
     void Awake(){
         //시리얼포트 통신을 할 때 주석 해제
-        //if (serialPortConnManager == null) serialPortConnManager = new SerialPortConnManager();
+        if (serialPortConnManager == null) serialPortConnManager = new SerialPortConnManager();
         
         SetBeforeStart();
     }
