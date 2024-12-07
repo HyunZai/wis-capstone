@@ -51,7 +51,7 @@ public class ObjectPainter : MonoBehaviour
     {
         if (points.Count == 0) return;
 
-        float removeRadius = 0.1f; // 지워지는 반경 설정
+        float removeRadius = 0.2f; // 지워지는 반경 설정
         Vector3 playerPosition = player.position;
 
         // 플레이어 위치와 가까운 점들을 제거
