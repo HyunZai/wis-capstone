@@ -134,9 +134,6 @@ public class RoadPainterAi : MonoBehaviour
         }
         painterAiIsMoveNow = false;
         routeCheckCount+=1;
-        startPointNum = endPointNum;
-
-        
-        
+        startPointNum = endPointNum; 
     }  
 }
