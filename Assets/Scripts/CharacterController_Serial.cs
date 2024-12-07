@@ -46,6 +46,7 @@ public class CharacterController : MonoBehaviour
 
     //시리얼 포트 통신
     private SerialPortConnManager serialPortConnManager;
+
     
     // private string portName = "COM3"; // 시리얼 포트 이름
     // private int baudRate = 115200;      // 시리얼 통신 속도
@@ -59,14 +60,16 @@ public class CharacterController : MonoBehaviour
 
     ///////////Codes
     void Awake(){
-        if (serialPortConnManager == null) serialPortConnManager = new SerialPortConnManager();
+        //시리얼포트 통신을 할 때 주석 해제
+        //if (serialPortConnManager == null) serialPortConnManager = new SerialPortConnManager();
+        
         SetBeforeStart();
     }
     void Start(){
         logManager = new LogManager();
 
         // //직렬 포트 이름 가져와서 세팅 (여러 개의 직렬 포트가 연결되어있을 경우는 처리 안함)
-        serialPortConnManager.Connect();
+        if (serialPortConnManager != null) serialPortConnManager.Connect();
         // string[] portNames = SerialPort.GetPortNames();
         // if (portName.Length == 1) portName = portNames[0];
 
@@ -119,19 +122,22 @@ public class CharacterController : MonoBehaviour
 
     private int previousData = 0;
     void Update(){
-         if (PlayerPrefs.HasKey("previousSensorData")) previousData = PlayerPrefs.GetInt("previousSensorData");
-    
-         if (serialPortConnManager.dataQueue.TryDequeue(out string sensorData)) 
-         {
-             int sendData = int.Parse(sensorData);
-           
-             if (!isMoveNow && sendData != previousData && sendData != 0)
-             {
-                 PlayerPrefs.SetInt("previousSensorData", sendData);
-                 SetDestination(sendData - 1);
-             }
-             else previousData = sendData;
-         }
+        if (serialPortConnManager != null)
+        {
+            if (PlayerPrefs.HasKey("previousSensorData")) previousData = PlayerPrefs.GetInt("previousSensorData");
+            
+            if (serialPortConnManager.dataQueue.TryDequeue(out string sensorData)) 
+            {
+                int sendData = int.Parse(sensorData);
+            
+                if (!isMoveNow && sendData != previousData && sendData != 0)
+                {
+                    PlayerPrefs.SetInt("previousSensorData", sendData);
+                    SetDestination(sendData - 1);
+                }
+                else previousData = sendData;
+            }
+        }
         //if (dataQueue.TryDequeue(out string sensorData)) MoveCharacter(sensorData);
 
         MoveAnimation();
@@ -450,7 +456,7 @@ public class CharacterController : MonoBehaviour
     }
     void EndReached(VideoPlayer vp)
     {
-        serialPortConnManager.isSerialPortRunning = false; //시리얼 포트 통신 정지
+        if (serialPortConnManager != null) serialPortConnManager.isSerialPortRunning = false; //시리얼 포트 통신 정지
         //isSerialPortRunning = false; //시리얼 포트 통신 정지
 
         eventSystem.SetActive(true);
@@ -470,7 +476,7 @@ public class CharacterController : MonoBehaviour
     
     void OnApplicationQuit() {
         //시리얼 포트 통신 중단
-        serialPortConnManager.Disconnect();
+        if (serialPortConnManager != null) serialPortConnManager.Disconnect();
         // isSerialPortRunning = false;
         // if (serialPort != null && serialPort.IsOpen) serialPort.Close();
         // if (serialThread != null && serialThread.IsAlive) serialThread.Join();
