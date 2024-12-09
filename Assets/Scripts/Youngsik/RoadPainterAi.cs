@@ -10,7 +10,6 @@ public class RoadPainterAi : MonoBehaviour
     private float moveSpeed = 50.0f;
     private GameObject[] crossPoints ,destinationPoints ,buildingPoints;
     private int home;
-    public Button[] setDestinationBtns;// 빌딩목록 넣기
     private int startPointNum, endPointNum , routeCheckCount; 
     private Vector2 [] cp, dp, bp;
     private bool painterAiIsMoveNow , goHomeMode = false;
@@ -26,14 +25,15 @@ public class RoadPainterAi : MonoBehaviour
         transform.position = player.transform.position;
     }
     void Update(){
+        if(!goHomeMode) transform.position = player.transform.position;
        pp = transform.position; 
     }   
-    private IEnumerator StartGoHomeMode(){
+    public IEnumerator StartGoHomeMode(){
         routeCheckCount = 0;
         startPointNum = PlayerPrefs.GetInt("DestinationPointNum",home);
 
         while (true){
-            goHomeMode = player.GetComponent<CharacterController>().goHomeMode;
+            goHomeMode = player.GetComponent<PlayerController>().goHomeMode;
             transform.position = player.transform.position;
 
             if(goHomeMode){
@@ -46,7 +46,7 @@ public class RoadPainterAi : MonoBehaviour
     private void OnTriggerStay2D(Collider2D other) { 
         if (other.gameObject.tag == "Player" && goHomeMode && painterAiIsMoveNow == false && endPointNum != home) {
             painterAiIsMoveNow = true;
-            endPointNum = player.GetComponent<CharacterController>().homeRouteList[routeCheckCount];
+            endPointNum = player.GetComponent<PlayerController>().homeRouteList[routeCheckCount];
             StartCoroutine(GoSetDestination());  
         }else if (other.gameObject.tag == "Player" && goHomeMode && painterAiIsMoveNow == false && endPointNum == home){
             StartCoroutine(StartGoHomeMode());
@@ -56,7 +56,7 @@ public class RoadPainterAi : MonoBehaviour
         crossPoints = GameObject.FindGameObjectsWithTag("CrossPoint").OrderBy(crossingPoint => crossingPoint.name).ToArray();
         destinationPoints = GameObject.FindGameObjectsWithTag("DestinationPoint").OrderBy(distinationPoint => distinationPoint.name).ToArray(); 
         buildingPoints = GameObject.FindGameObjectsWithTag("BuildingPoint").OrderBy(building =>  building.name).ToArray();
-        home = player.GetComponent<CharacterController>().setHome;
+        home = player.GetComponent<PlayerController>().setHome;
         
         cp = new Vector2[crossPoints.Length];
         dp = new Vector2[destinationPoints.Length];

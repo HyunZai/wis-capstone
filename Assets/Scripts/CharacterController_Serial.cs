@@ -44,52 +44,16 @@ public class CharacterController : MonoBehaviour
     public GameObject smartPhone;
     private SmartPhone smartPhoneScript;
 
-    //시리얼 포트 통신
-    /// private SerialPortConnManager serialPortConnManager;
-    
-    // private string portName = "COM3"; // 시리얼 포트 이름
-    // private int baudRate = 115200;      // 시리얼 통신 속도
-    // private SerialPort serialPort;
-    // private Thread serialThread;
-    // private bool isSerialPortRunning = false;
-    // private ConcurrentQueue<string> dataQueue = new ConcurrentQueue<string>();
-
     private LogManager logManager;
     private User user;
 
     ///////////Codes
     void Awake(){
-        ///if (serialPortConnManager == null) serialPortConnManager = new SerialPortConnManager();
         SetBeforeStart();
     }
     void Start(){
         logManager = new LogManager();
 
-        // //직렬 포트 이름 가져와서 세팅 (여러 개의 직렬 포트가 연결되어있을 경우는 처리 안함)
-        // string[] portNames = SerialPort.GetPortNames();
-        // if (portName.Length == 1) portName = portNames[0];
-
-        // if (serialPort == null || !serialPort.IsOpen) {
-        //     //시리얼 포트 연결 및 세팅
-        //     serialPort = new SerialPort(portName, baudRate);
-        //     serialPort.ReadTimeout = 1000;
-        //     try
-        //     {
-        //         Thread.Sleep(500); //OS 캐싱 이슈로 인해 "엑세스가 거부되었습니다." 에러 발생 -> 해결하기 위해 0.5초 딜레이
-
-        //         serialPort.Open();
-        //         isSerialPortRunning = true;
-        //         serialThread = new Thread(ReadSerialData);
-        //         serialThread.Start();
-        //     }
-        //     catch (IOException e)
-        //     {
-        //         Debug.LogError($"Serial port could not be opened: {e.Message}");
-        //         logManager.Log($"Serial port could not be opened: {e.Message}", "", LogType.Error);
-        //     }
-        // }
-
-        //------------------------------건물에서 나왔을 때 재생되는 영상 실행------------------------------
         string buildingName = PlayerPrefs.GetString("BuildingName");
         if (!string.IsNullOrEmpty(buildingName))
         {
@@ -109,29 +73,12 @@ public class CharacterController : MonoBehaviour
             eventSystem.SetActive(false);
             videoPlayer.Play();
         }
-        //------------------------------건물에서 나왔을 때 재생되는 영상 실행------------------------------
-
-        //부모님 전화번호 입력 성공 후 귀가경로 안내가 시작되도록 처리
         smartPhoneScript = smartPhone.GetComponent<SmartPhone>();
         smartPhoneScript.OnConditionMet += GoHomeButtonClick;
     }
 
     void Update(){
-        /// if (PlayerPrefs.HasKey("previousSensorData")) previousData = PlayerPrefs.GetInt("previousSensorData");
         
-        /// if (serialPortConnManager.dataQueue.TryDequeue(out string sensorData)) 
-        /// {
-        ///     int sendData = int.Parse(sensorData);
-            
-        ///     if (!isMoveNow && sendData != previousData && sendData != 0)
-        ///     {
-        ///         PlayerPrefs.SetInt("previousSensorData", sendData);
-        ///         SetDestination(sendData - 1);
-        ///     }
-        ///     else previousData = sendData;
-        /// }
-        //if (dataQueue.TryDequeue(out string sensorData)) MoveCharacter(sensorData);
-
         MoveAnimation();
         pp = this.transform.position; 
     }
@@ -233,7 +180,6 @@ public class CharacterController : MonoBehaviour
         return (numB,  numP);
     }
     void SetDestination(int gotoHere){
-        logManager.Log($"SetDestination() - line.222 : gotoHere = {gotoHere}", "", LogType.Log);
         if(isMoveNow == false){
             if(!goHomeMode){
                 if(gotoHere == setHome){
@@ -244,7 +190,6 @@ public class CharacterController : MonoBehaviour
                 }
             }
             else if(goHomeMode){
-                logManager.Log($"SetDestination() - line.233 : goHomeMode = {goHomeMode}", "", LogType.Log);
                 if(routeCheckCount < homeRouteList.Count){
                     if(gotoHere==homeRouteList[routeCheckCount]){
                         destinationNum = gotoHere;
@@ -446,20 +391,14 @@ public class CharacterController : MonoBehaviour
             videoPlayer.Play();
         }
     }
-    void EndReached(VideoPlayer vp)
-    {
-        ///serialPortConnManager.isSerialPortRunning = false; //시리얼 포트 통신 정지
-        //isSerialPortRunning = false; //시리얼 포트 통신 정지
-
+    void EndReached(VideoPlayer vp){
         eventSystem.SetActive(true);
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
         PlayerPrefs.Save();
         SceneManager.LoadScene("InformationScene");
     }
 
-    // 건물에서 나오는 영상이 끝난 후 "집으로 돌아갈까요?" 음성 재생
-    void askGoHomeAudioPlay(VideoPlayer vp)
-    {
+    void askGoHomeAudioPlay(VideoPlayer vp){
         eventSystem.SetActive(true);
         //재생시킬 오디오 파일 선택
         audioSource.clip = audioClips[0];
@@ -467,12 +406,6 @@ public class CharacterController : MonoBehaviour
     }
     
     void OnApplicationQuit() {
-        //시리얼 포트 통신 중단
-        ///serialPortConnManager.Disconnect();
-        // isSerialPortRunning = false;
-        // if (serialPort != null && serialPort.IsOpen) serialPort.Close();
-        // if (serialThread != null && serialThread.IsAlive) serialThread.Join();
-
         PlayerPrefs.DeleteAll();
     }
 
@@ -487,59 +420,4 @@ public class CharacterController : MonoBehaviour
             setDistinationBtns[i].gameObject.SetActive(true);   
         }
     }
-    void ForCheckHomeRoute(){ //루트경로 체크하고 싶을 때 start에 넣으세용
-        for (int i = 0; i < buildingPoints.Length; i++){
-            dbManager = new DatabaseManager();
-            dbManager.Connect();
-
-            List<HomeRoute> homeRoute = dbManager.getGoHomeRoute(i+1);
-            
-            // homeRouteList는 int 타입을 저장하는 리스트로 초기화
-            List<int> homeRouteList = homeRoute.Select(hr => hr.next_building).ToList();
-            
-            // List<int>를 string.Join으로 출력
-            Debug.Log(homeRouteList.Count+" Route"+BuildingName(i) +" : "+ string.Join(", ", homeRouteList));
-        }
-    }
-
-    // private void ReadSerialData()
-    // {
-    //     while (isSerialPortRunning)
-    //     {
-    //         if (serialPort.IsOpen)
-    //         {
-    //             try
-    //             {
-    //                 string sensorData = serialPort.ReadLine();
-    //                 dataQueue.Enqueue(sensorData.Trim()); // 읽은 데이터를 큐에 추가
-    //             }
-    //             catch (TimeoutException)
-    //             {
-    //                 // 데이터가 없으면 무시
-    //             }
-    //             catch (Exception e)
-    //             {
-    //                 Debug.LogError("Error reading from serial port: " + e.Message);
-    //             }
-    //         }
-    //     }
-    // }
-
-    // private string previousData; //센서값 변동 체크하기 위한 변수
-    // public void MoveCharacter(string data)
-    // {
-    //     logManager.Log($"Received data: {data}", "", LogType.Log);
-    //     //Debug.Log($"받은 데이터: {data}");
-
-    //     if (string.IsNullOrEmpty(previousData))
-    //     {
-    //         previousData = data;
-    //     }
-    //     else if (previousData != data && !isMoveNow && data != "00")
-    //     {
-    //         SetDestination(Int32.Parse(data.Trim()) - 1);
-    //         previousData = data;
-    //     }
-    //     else previousData = data;
-    // }
 }

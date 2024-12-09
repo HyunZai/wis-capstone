@@ -38,7 +38,7 @@ public class WaterShooter : MonoBehaviour
         Rigidbody2D rb = water.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            rb.velocity = Vector2.up * waterSpeed;
+            rb.linearVelocity = Vector2.up * waterSpeed;
         }
         else
         {

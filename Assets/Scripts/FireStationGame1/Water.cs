@@ -31,7 +31,7 @@ public class Water : MonoBehaviour
             // 물의 이동을 멈춤
             if (rb != null)
             {
-                rb.velocity = Vector2.zero;  // 속도를 0으로 설정하여 물의 이동을 멈춤
+                rb.linearVelocity = Vector2.zero;  // 속도를 0으로 설정하여 물의 이동을 멈춤
                 rb.isKinematic = true;  // 물 오브젝트가 물리적으로 더 이상 움직이지 않도록 설정
             }
 
