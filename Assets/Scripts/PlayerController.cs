@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour
 
     public RuntimeAnimatorController[] animList;
     public int setHome =4;
-
     private float moveSpeed = 5.0f;
     private GameObject[] crossPoints ,destinationPoints ,buildingPoints;
     
@@ -43,17 +42,19 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private Vector2 movement;
     private bool stopPlayer = false;
+    public GameObject painter;
 
     ///////////Codes
     void Awake(){
         SetBeforeStart();
+        
+
+       
     }
     void Start(){
         Time.timeScale = 1f;
-
-        string buildingName = PlayerPrefs.GetString("BuildingName");
-
-        if (!string.IsNullOrEmpty(buildingName))
+         string buildingName = PlayerPrefs.GetString("BuildingName");
+         if (!string.IsNullOrEmpty(buildingName))
         {
             string gender = user.gender == 0 ? "male" : "female";
             string videoFileName = $"{buildingName}_out_{gender}";
@@ -71,6 +72,7 @@ public class PlayerController : MonoBehaviour
             eventSystem.SetActive(false);
             videoPlayer.Play();
         }
+       
         smartPhoneScript = smartPhone.GetComponent<SmartPhone>();
         smartPhoneScript.OnConditionMet +=  GetHomeRoute;
     }
@@ -217,6 +219,8 @@ public class PlayerController : MonoBehaviour
         for(int i = 0; i < homeRoute.Count; i++){
             Debug.Log($"homeRoute Num{i} : " + homeRouteList[i]);
         }
+        PopupInstance($"길을 따라서 {BuildingName(homeRouteList[routeCheckCount])} 출발해볼까요?");
+        
     }
     string BuildingName(int PointNum){
         string stringName;
@@ -246,11 +250,13 @@ public class PlayerController : MonoBehaviour
             if(goHomeMode){
                 if(destinationNum !=  homeRouteList[routeCheckCount]){
                     WrongRouteWarniing();
-                }else if(homeRouteList[routeCheckCount] == destinationNum){
+                }
+                else if(homeRouteList[routeCheckCount] == destinationNum){
                     if(homeRouteList[routeCheckCount] != setHome){
                         routeCheckCount+=1;
                         PopupInstance($"잘 도착했어요!\n다음 목적지인 {BuildingName(homeRouteList[routeCheckCount])} 이동해주세요!!");
-                    }else if(homeRouteList[routeCheckCount] == setHome){
+                    }
+                    else if(homeRouteList[routeCheckCount] == setHome){
                         goHomeMode = false;
                         PopupInstance("집에 잘 도착했네요!!\n축하해요!");
                     }
@@ -269,7 +275,6 @@ public class PlayerController : MonoBehaviour
                             break;
                         }
                     }
-                    destinationNum = buildingNum;
 
                     PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
                     PlayerPrefs.SetInt("DestinationPointNum",destinationNum);  
@@ -287,6 +292,7 @@ public class PlayerController : MonoBehaviour
         stopPlayer= true;
         movement.x =0;
         movement.y =0;
+        UpdateAnimation();
         transform.position = dp[destinationNum];
 
         if(goHomeMode)PopupInstance($"여기가 아니에요!\n{BuildingName(homeRouteList[routeCheckCount])} 이동해 볼까요?");
@@ -299,6 +305,7 @@ public class PlayerController : MonoBehaviour
     void EndReached(VideoPlayer vp){
         eventSystem.SetActive(true);
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
+        Time.timeScale = 1f;
         SceneManager.LoadScene("InformationScene");
     }
     void askGoHomeAudioPlay(VideoPlayer vp){
