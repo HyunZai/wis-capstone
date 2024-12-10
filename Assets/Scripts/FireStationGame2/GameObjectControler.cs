@@ -92,7 +92,8 @@ public class GameObjectControler : MonoBehaviour
             truck.transform.position = Vector2.Lerp( GetPos(truck), endTruckPos, Time.deltaTime * moveSpeed);
             yield return null;
 
-            if(Vector2.Distance(GetPos(truck), playTruckPos)<0.5f) endPanel.SetActive(true);
+            // if(Vector2.Distance(GetPos(truck), playTruckPos)<0.5f) 
+            endPanel.SetActive(true);
         }
 
     }

@@ -70,28 +70,28 @@ public class CharacterController : MonoBehaviour
 
         // //직렬 포트 이름 가져와서 세팅 (여러 개의 직렬 포트가 연결되어있을 경우는 처리 안함)
         ///if (serialPortConnManager != null) serialPortConnManager.Connect();
-        string[] portNames = SerialPort.GetPortNames();
-        if (portName.Length == 1) portName = portNames[0];
+        // string[] portNames = SerialPort.GetPortNames();
+        // if (portName.Length == 1) portName = portNames[0];
 
-        if (serialPort == null || !serialPort.IsOpen) {
-            //시리얼 포트 연결 및 세팅
-            serialPort = new SerialPort(portName, baudRate);
-            serialPort.ReadTimeout = 1000;
-            try
-            {
-                Thread.Sleep(500); //OS 캐싱 이슈로 인해 "엑세스가 거부되었습니다." 에러 발생 -> 해결하기 위해 0.5초 딜레이
+        // if (serialPort == null || !serialPort.IsOpen) {
+        //     //시리얼 포트 연결 및 세팅
+        //     serialPort = new SerialPort(portName, baudRate);
+        //     serialPort.ReadTimeout = 1000;
+        //     try
+        //     {
+        //         Thread.Sleep(500); //OS 캐싱 이슈로 인해 "엑세스가 거부되었습니다." 에러 발생 -> 해결하기 위해 0.5초 딜레이
 
-                serialPort.Open();
-                isSerialPortRunning = true;
-                serialThread = new Thread(ReadSerialData);
-                serialThread.Start();
-            }
-            catch (IOException e)
-            {
-                Debug.LogError($"Serial port could not be opened: {e.Message}");
-                logManager.Log($"Serial port could not be opened: {e.Message}", "", LogType.Error);
-            }
-        }
+        //         serialPort.Open();
+        //         isSerialPortRunning = true;
+        //         serialThread = new Thread(ReadSerialData);
+        //         serialThread.Start();
+        //     }
+        //     catch (IOException e)
+        //     {
+        //         Debug.LogError($"Serial port could not be opened: {e.Message}");
+        //         logManager.Log($"Serial port could not be opened: {e.Message}", "", LogType.Error);
+        //     }
+        // }
 
         //------------------------------건물에서 나왔을 때 재생되는 영상 실행------------------------------
         string buildingName = PlayerPrefs.GetString("BuildingName");
@@ -122,24 +122,24 @@ public class CharacterController : MonoBehaviour
 
     //private int previousData = 0;
     void Update(){
-        // if (serialPortConnManager != null)
-        // {
-            // if (PlayerPrefs.HasKey("previousSensorData")) previousData = PlayerPrefs.GetInt("previousSensorData");
+        /// if (serialPortConnManager != null)
+        /// {
+            /// if (PlayerPrefs.HasKey("previousSensorData")) previousData = PlayerPrefs.GetInt("previousSensorData");
             
-            // if (serialPortConnManager.dataQueue.TryDequeue(out string sensorData)) 
-            // {
-            //     int sendData = int.Parse(sensorData);
+            /// if (serialPortConnManager.dataQueue.TryDequeue(out string sensorData)) 
+            /// {
+            ///     int sendData = int.Parse(sensorData);
             
-            //     if (!isMoveNow && sendData != previousData && sendData != 0)
-            //     {
-            //         PlayerPrefs.SetInt("previousSensorData", sendData);
-            //         SetDestination(sendData - 1);
-            //     }
-            //     else previousData = sendData;
-            // }
-            if (dataQueue.TryDequeue(out string sensorData)) MoveCharacter(sensorData);
-        // }
-        //if (dataQueue.TryDequeue(out string sensorData)) MoveCharacter(sensorData);
+            ///     if (!isMoveNow && sendData != previousData && sendData != 0)
+            ///     {
+            ///         PlayerPrefs.SetInt("previousSensorData", sendData);
+            ///         SetDestination(sendData - 1);
+            ///     }
+            ///     else previousData = sendData;
+            /// }
+            //if (dataQueue.TryDequeue(out string sensorData)) MoveCharacter(sensorData);
+        /// }
+        ///if (dataQueue.TryDequeue(out string sensorData)) MoveCharacter(sensorData);
 
         MoveAnimation();
         pp = this.transform.position; 
@@ -457,8 +457,8 @@ public class CharacterController : MonoBehaviour
     }
     void EndReached(VideoPlayer vp)
     {
-        //if (serialPortConnManager != null) serialPortConnManager.isSerialPortRunning = false; //시리얼 포트 통신 정지
-        isSerialPortRunning = false; //시리얼 포트 통신 정지
+        ///if (serialPortConnManager != null) serialPortConnManager.isSerialPortRunning = false; //시리얼 포트 통신 정지
+        //isSerialPortRunning = false; //시리얼 포트 통신 정지
 
         eventSystem.SetActive(true);
         PlayerPrefs.SetString("BuildingName", vp.clip.name.Split("_")[0]);
@@ -478,9 +478,9 @@ public class CharacterController : MonoBehaviour
     void OnApplicationQuit() {
         //시리얼 포트 통신 중단
         ///if (serialPortConnManager != null) serialPortConnManager.Disconnect();
-        isSerialPortRunning = false;
-        if (serialPort != null && serialPort.IsOpen) serialPort.Close();
-        if (serialThread != null && serialThread.IsAlive) serialThread.Join();
+        // isSerialPortRunning = false;
+        // if (serialPort != null && serialPort.IsOpen) serialPort.Close();
+        // if (serialThread != null && serialThread.IsAlive) serialThread.Join();
 
         PlayerPrefs.DeleteAll();
     }
@@ -511,44 +511,44 @@ public class CharacterController : MonoBehaviour
         }
     }
 
-    private void ReadSerialData()
-    {
-        while (isSerialPortRunning)
-        {
-            if (serialPort.IsOpen)
-            {
-                try
-                {
-                    string sensorData = serialPort.ReadLine();
-                    dataQueue.Enqueue(sensorData.Trim()); // 읽은 데이터를 큐에 추가
-                }
-                catch (TimeoutException)
-                {
-                    // 데이터가 없으면 무시
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError("Error reading from serial port: " + e.Message);
-                }
-            }
-        }
-    }
+    // private void ReadSerialData()
+    // {
+    //     while (isSerialPortRunning)
+    //     {
+    //         if (serialPort.IsOpen)
+    //         {
+    //             try
+    //             {
+    //                 string sensorData = serialPort.ReadLine();
+    //                 dataQueue.Enqueue(sensorData.Trim()); // 읽은 데이터를 큐에 추가
+    //             }
+    //             catch (TimeoutException)
+    //             {
+    //                 // 데이터가 없으면 무시
+    //             }
+    //             catch (Exception e)
+    //             {
+    //                 Debug.LogError("Error reading from serial port: " + e.Message);
+    //             }
+    //         }
+    //     }
+    // }
 
-    private string previousData; //센서값 변동 체크하기 위한 변수
-    public void MoveCharacter(string data)
-    {
-        logManager.Log($"Received data: {data}", "", LogType.Log);
-        //Debug.Log($"받은 데이터: {data}");
+    // private string previousData; //센서값 변동 체크하기 위한 변수
+    // public void MoveCharacter(string data)
+    // {
+    //     logManager.Log($"Received data: {data}", "", LogType.Log);
+    //     //Debug.Log($"받은 데이터: {data}");
 
-        if (string.IsNullOrEmpty(previousData))
-        {
-            previousData = data;
-        }
-        else if (previousData != data && !isMoveNow && data != "00")
-        {
-            SetDestination(Int32.Parse(data.Trim()) - 1);
-            previousData = data;
-        }
-        else previousData = data;
-    }
+    //     if (string.IsNullOrEmpty(previousData))
+    //     {
+    //         previousData = data;
+    //     }
+    //     else if (previousData != data && !isMoveNow && data != "00")
+    //     {
+    //         SetDestination(Int32.Parse(data.Trim()) - 1);
+    //         previousData = data;
+    //     }
+    //     else previousData = data;
+    // }
 }

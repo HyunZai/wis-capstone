@@ -81,7 +81,7 @@ public class SmartPhone : MonoBehaviour
             }
             else 
             {
-                textShake.ShakeText();
+                textShake.ShakeText(phoneNumText);
                 hintBtn.gameObject.SetActive(true); //사용자가 입력한 전화번호가 틀렸을 경우 힌트버튼 가시화
             }
         });

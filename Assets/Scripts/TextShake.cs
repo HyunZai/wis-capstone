@@ -19,12 +19,12 @@ public class TextShake : MonoBehaviour
         originalPosition = textMeshPro.rectTransform.localPosition;
     }
 
-    public void ShakeText()
+    public void ShakeText(TextMeshProUGUI phoneNumText)
     {
-        StartCoroutine(Shake());
+        StartCoroutine(Shake(phoneNumText));
     }
 
-    private IEnumerator Shake()
+    private IEnumerator Shake(TextMeshProUGUI phoneNumText)
     {
         float elapsedTime = 0f;
 
@@ -44,5 +44,6 @@ public class TextShake : MonoBehaviour
         }
 
         textMeshPro.rectTransform.localPosition = originalPosition; // 원래 위치로 복구
+        phoneNumText.text = "";
     }
 }
