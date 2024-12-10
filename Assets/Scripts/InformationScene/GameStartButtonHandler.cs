@@ -43,6 +43,12 @@ public class GameStartButtonHandler : MonoBehaviour, IPointerDownHandler, IPoint
         }
         else index = 0;
         
+        if (buildingName.Contains("FireStation"))
+        {
+            string temp = gameScenes[0];
+            gameScenes[0] = gameScenes[1];
+            gameScenes[1] = temp;
+        }
         SceneManager.LoadScene((gameScenes.Count > 0 && Application.CanStreamedLevelBeLoaded(gameScenes[index])) ? gameScenes[index] : "MapScene");
     }
 
