@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
 
     public RuntimeAnimatorController[] animList;
     public int setHome =4;
-    private float moveSpeed = 5.0f;
+    private float moveSpeed = 4.0f;
     private GameObject[] crossPoints ,destinationPoints ,buildingPoints;
     
     public int destinationNum ,beforeDestination, routeCheckCount; 
@@ -241,49 +241,51 @@ public class PlayerController : MonoBehaviour
     
     /////////For Move Scenes
     private void OnTriggerEnter2D(Collider2D other) { 
-        
-        string buildingName = other.name.Split(".")[1];
-        int buildingNum = int.Parse(other.name.Split(".")[0]);
-        destinationNum =  buildingNum;
+        if (other.name.Contains("."))
+        {
+            string buildingName = other.name.Split(".")[1];
+            int buildingNum = int.Parse(other.name.Split(".")[0]);
+            destinationNum =  buildingNum;
 
-        if (other.gameObject.tag == "BuildingPoint"  && videoPlayer != null ) {
-            if(goHomeMode){
-                if(destinationNum !=  homeRouteList[routeCheckCount]){
-                    WrongRouteWarniing();
-                }
-                else if(homeRouteList[routeCheckCount] == destinationNum){
-                    if(homeRouteList[routeCheckCount] != setHome){
-                        routeCheckCount+=1;
-                        PopupInstance($"잘 도착했어요!\n다음 목적지인 {BuildingName(homeRouteList[routeCheckCount])} 이동해주세요!!");
+            if (other.gameObject.tag == "BuildingPoint"  && videoPlayer != null ) {
+                if(goHomeMode){
+                    if(destinationNum !=  homeRouteList[routeCheckCount]){
+                        WrongRouteWarniing();
                     }
-                    else if(homeRouteList[routeCheckCount] == setHome){
-                        goHomeMode = false;
-                        PopupInstance("집에 잘 도착했네요!!\n축하해요!");
-                    }
-                }
-
-            }else if(!goHomeMode){
-                if(buildingNum == setHome){
-                    WrongRouteWarniing();
-                }else{
-                    string gender = user.gender == 0 ? "male" : "female";
-                    string videoFileName = $"{buildingName}_in_{gender}";
-                
-                    foreach (VideoClip clip in videoClips) {
-                        if (clip.name.Contains(videoFileName)){
-                            videoPlayer.clip = clip; 
-                            break;
+                    else if(homeRouteList[routeCheckCount] == destinationNum){
+                        if(homeRouteList[routeCheckCount] != setHome){
+                            routeCheckCount+=1;
+                            PopupInstance($"잘 도착했어요!\n다음 목적지인 {BuildingName(homeRouteList[routeCheckCount])} 이동해주세요!!");
+                        }
+                        else if(homeRouteList[routeCheckCount] == setHome){
+                            goHomeMode = false;
+                            PopupInstance("집에 잘 도착했네요!!\n축하해요!");
                         }
                     }
 
-                    PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
-                    PlayerPrefs.SetInt("DestinationPointNum",destinationNum);  
-                    videoPlayer.loopPointReached += EndReached;
+                }else if(!goHomeMode){
+                    if(buildingNum == setHome){
+                        WrongRouteWarniing();
+                    }else{
+                        string gender = user.gender == 0 ? "male" : "female";
+                        string videoFileName = $"{buildingName}_in_{gender}";
+                    
+                        foreach (VideoClip clip in videoClips) {
+                            if (clip.name.Contains(videoFileName)){
+                                videoPlayer.clip = clip; 
+                                break;
+                            }
+                        }
 
-                    eventSystem.SetActive(false);
-                    Time.timeScale = 0f;
-                    PlayerPrefs.Save();
-                    videoPlayer.Play();
+                        PlayerPrefs.SetInt(buildingName + "VisitCount", PlayerPrefs.GetInt(buildingName + "VisitCount") + 1);
+                        PlayerPrefs.SetInt("DestinationPointNum",destinationNum);  
+                        videoPlayer.loopPointReached += EndReached;
+
+                        eventSystem.SetActive(false);
+                        Time.timeScale = 0f;
+                        PlayerPrefs.Save();
+                        videoPlayer.Play();
+                    }
                 }
             }
         }

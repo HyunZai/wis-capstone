@@ -60,14 +60,14 @@ public class InputFormHandler : MonoBehaviour
             }
         }
 
-        dbManager.register(user);
-
         if (!isAnyEmpty || user.gender == -1)
         {
             Debug.Log("잘못된 정보가 존재합니다. 다시 입력하세요!");
         }
         else
         {
+            dbManager.register(user);
+            
             inputForm.SetActive(false);
             title.gameObject.SetActive(true);
             progressbarHandler.StartLoading();
